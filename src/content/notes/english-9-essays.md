@@ -3,7 +3,7 @@ title: "English — Important Essays for Class 9"
 subject: "English"
 class: "9"
 board: "All Boards"
-pdfUrl: "/pdfs/english-9-essays.pdf"
+pdfUrl: "https://drive.google.com/file/d/1htcHiKXe50EGxjPTjYnA6fev74toRpHB/view"
 date: 2026-01-15
 ---
 
