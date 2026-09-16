@@ -1,3 +1,78 @@
+#!/bin/bash
+set -e
+
+echo "Adding type-list pages..."
+
+# ═══════════════════════════════════════════════
+#  1. Add getClassTypeContent to boardContent.ts
+# ═══════════════════════════════════════════════
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path("src/lib/boardContent.ts")
+s = p.read_text()
+
+if "getClassTypeContent" in s:
+    print("  getClassTypeContent already present")
+    raise SystemExit(0)
+
+addition = '''
+
+const TYPE_MAP: Record<string, { label: string; icon: string; collection: string; base: string }> = {
+  'notes':            { label: 'Notes',           icon: 'file-text',     collection: 'notes',           base: '/notes' },
+  'quizzes':          { label: 'Quizzes',         icon: 'circle-help',   collection: 'quizzes',         base: '/quizzes' },
+  'books':            { label: 'Books',           icon: 'book-marked',   collection: 'books',           base: '/books' },
+  'past-papers':      { label: 'Past Papers',     icon: 'scroll-text',   collection: 'pastPapers',      base: '/past-papers' },
+  'guess-papers':     { label: 'Guess Papers',    icon: 'sparkles',      collection: 'guessPapers',     base: '/guess-papers' },
+  'pairing-schemes':  { label: 'Pairing Schemes', icon: 'list',          collection: 'pairingSchemes',  base: '/pairing-schemes' },
+  'gazettes':         { label: 'Result Gazettes', icon: 'newspaper',     collection: 'gazettes',        base: '/gazettes' },
+};
+
+export const TYPE_SLUGS = Object.keys(TYPE_MAP);
+
+export async function getClassTypeContent(boardSlug: string, cls: string, typeSlug: string) {
+  const board = boardBySlug(boardSlug);
+  const cfg = TYPE_MAP[typeSlug];
+  if (!board || !cfg) return null;
+
+  const all = await loadAll();
+  const collection = (all as any)[cfg.collection] as any[];
+  const items = collection.filter(
+    (i: any) => itemBoards(i.data).includes(board.name) && i.data.class === cls
+  );
+
+  // Group by subject when possible (past-papers, notes, quizzes, books, guess-papers)
+  const subjectMap = new Map<string, any[]>();
+  let hasSubjects = false;
+  for (const i of items) {
+    if (i.data.subject) {
+      hasSubjects = true;
+      const key = i.data.subject;
+      if (!subjectMap.has(key)) subjectMap.set(key, []);
+      subjectMap.get(key)!.push(i);
+    }
+  }
+  const groups = hasSubjects
+    ? [...subjectMap.entries()].map(([subject, items]) => ({ subject, items })).sort((a, b) => a.subject.localeCompare(b.subject))
+    : null;
+
+  // For year-based types, sort descending
+  if (!hasSubjects) {
+    items.sort((a: any, b: any) => (b.data.year || 0) - (a.data.year || 0));
+  }
+
+  return { board, class: cls, type: typeSlug, ...cfg, items, groups };
+}
+'''
+
+p.write_text(s + addition)
+print("  boardContent.ts updated")
+PY
+
+# ═══════════════════════════════════════════════
+#  2. Rewrite [subject].astro to handle both
+#     content types and subject hubs
+# ═══════════════════════════════════════════════
+cat > 'src/pages/board/[board]/[class]/[subject].astro' <<'ASTRO'
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import Icon from '../../../../components/Icon.astro';
@@ -215,3 +290,27 @@ const totalItems = (typeData?.items?.length) || 0;
   </div>
 </BaseLayout>
 )}
+ASTRO
+
+echo "  [subject].astro rewritten"
+
+# ═══════════════════════════════════════════════
+#  3. Rebuild
+# ═══════════════════════════════════════════════
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -15
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Add type-list pages for class content'"
+echo "    git push"
+echo ""
+echo "  Then test:"
+echo "    /board/punjab/class-9/past-papers"
+echo "    /board/punjab/class-9/notes"
+echo "    /board/punjab/class-9/quizzes"
+echo "════════════════════════════════════════════"
