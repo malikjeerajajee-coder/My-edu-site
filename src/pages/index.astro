@@ -6,78 +6,105 @@ import { BOARDS } from '../lib/boards';
 import { getBoardCounts } from '../lib/boardContent';
 
 const counts = await getBoardCounts();
+
+const resources = [
+  { href: '/notes',           icon: 'file-text',     label: 'Notes',           desc: 'Chapter-wise revision' },
+  { href: '/past-papers',     icon: 'scroll-text',   label: 'Past Papers',     desc: 'Previous years solved' },
+  { href: '/guess-papers',    icon: 'sparkles',      label: 'Guess Papers',    desc: 'Expected questions' },
+  { href: '/pairing-schemes', icon: 'list',          label: 'Pairing Schemes', desc: 'Paper structure' },
+  { href: '/quizzes',         icon: 'circle-help',   label: 'Quizzes',         desc: 'Practice MCQs' },
+  { href: '/books',           icon: 'book-marked',   label: 'Books',           desc: 'Full textbooks' },
+  { href: '/gazettes',        icon: 'newspaper',     label: 'Result Gazettes', desc: 'Board results' },
+  { href: '/boards',          icon: 'graduation-cap',label: 'All Boards',      desc: 'Browse everything' },
+];
 ---
-<BaseLayout title="TaleemHub — Board & Class-Specific Study Material for Pakistani Students">
-  <section class="border-b border-neutral-200 bg-neutral-50">
-    <div class="mx-auto max-w-[1320px] px-4 py-16 lg:px-8 lg:py-20">
+<BaseLayout title="TaleemHub — Free Notes, Past Papers & Books for Pakistani Students">
+  <!-- ═══ HERO ═══ -->
+  <section class="border-b border-neutral-200">
+    <div class="mx-auto max-w-[1320px] px-4 pt-14 pb-12 sm:px-6 sm:pt-20 sm:pb-16 lg:px-10 lg:pt-24 lg:pb-20">
       <div class="max-w-3xl">
-        <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0620ed]">
-          <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed] text-white"></span>
-          Trusted by students across Pakistan
+        <div class="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-600">
+          <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed]"></span>
+          Free for every Pakistani student
         </div>
-        <h1 class="mt-5 text-[2.5rem] font-extrabold leading-[1.08] tracking-[-0.035em] text-neutral-900 sm:text-6xl">
-          Your board. Your class.<br />
-          Your syllabus.
+        <h1 class="mt-6 text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.035em] text-neutral-900 sm:text-6xl lg:text-[4rem]">
+          Your complete<br />
+          <span class="text-[#0620ed]">exam prep library.</span>
         </h1>
-        <p class="mt-6 max-w-xl text-base leading-relaxed text-neutral-500 sm:text-lg">
-          Notes, past papers, guess papers, pairing schemes, quizzes and result gazettes — organised for your exact board and class.
+        <p class="mt-6 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">
+          Notes, past papers, guess papers, pairing schemes and result gazettes — organised by board and class for Class 9 through 12.
         </p>
 
-        <form action={url('/search')} method="get" role="search" class="mt-8 flex max-w-lg items-center gap-2 rounded-2xl border border-neutral-200 bg-white p-1.5 pl-4 focus-within:border-[#0620ed]">
+        <form action={url('/search')} method="get" role="search" class="mt-9 flex max-w-xl items-center gap-2 rounded-xl border border-neutral-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#0620ed]">
           <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-400" />
-          <input type="search" name="q" placeholder="Search notes, papers, books..." class="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-neutral-900 outline-none placeholder:text-neutral-400" />
-          <button type="submit" class="rounded-xl bg-[#0620ed] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#110176] !text-white">Search</button>
+          <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400" />
+          <button type="submit" class="rounded-lg bg-[#0620ed] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#110176]">
+            Search
+          </button>
         </form>
       </div>
     </div>
   </section>
 
-  <section class="mx-auto max-w-[1320px] px-4 py-14 lg:px-8">
+  <!-- ═══ CHOOSE YOUR BOARD ═══ -->
+  <section class="mx-auto max-w-[1320px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
     <div class="mb-8">
       <h2 class="text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">Choose your board</h2>
-      <p class="mt-2 text-sm text-neutral-500">Everything is organised for your specific board.</p>
+      <p class="mt-2 text-sm text-neutral-500">Every resource is organised for your specific board.</p>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {BOARDS.map(b => (
-        <a href={url(`/board/${b.slug}`)} class="group rounded-2xl border border-neutral-200 bg-white p-6 transition-colors hover:border-[#0620ed]">
-          <div class="flex items-start justify-between">
-            <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
-              <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
-            </span>
-            <Icon name="arrow-up-right" size={18} strokeWidth={2.4} class="text-neutral-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+        <a href={url(`/board/${b.slug}`)} class="card-link group">
+          <span class="icon-tile">
+            <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="text-base font-extrabold tracking-tight text-neutral-900">{b.name}</div>
+            <div class="text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
           </div>
-          <h3 class="mt-5 text-xl font-extrabold tracking-tight text-neutral-900">{b.name}</h3>
-          <p class="mt-1 text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'item' : 'items'}</p>
+          <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
         </a>
       ))}
     </div>
   </section>
 
+  <!-- ═══ BROWSE BY RESOURCE ═══ -->
   <section class="border-t border-neutral-200 bg-neutral-50">
-    <div class="mx-auto max-w-[1320px] px-4 py-14 lg:px-8">
+    <div class="mx-auto max-w-[1320px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
       <div class="mb-8">
-        <h2 class="text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">What you'll find</h2>
-        <p class="mt-2 text-sm text-neutral-500">Seven content types, always organised by board and class.</p>
+        <h2 class="text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">Browse by resource</h2>
+        <p class="mt-2 text-sm text-neutral-500">Eight content types, all free, all board-specific.</p>
       </div>
+
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {[
-          { href: '/notes',           label: 'Notes',           icon: 'file-text',   desc: 'Chapter-wise notes' },
-          { href: '/past-papers',     label: 'Past Papers',     icon: 'scroll-text', desc: 'Previous years' },
-          { href: '/guess-papers',    label: 'Guess Papers',    icon: 'sparkles',    desc: 'Expected questions' },
-          { href: '/pairing-schemes', label: 'Pairing Schemes', icon: 'list',        desc: 'Paper structure' },
-          { href: '/quizzes',         label: 'Quizzes',         icon: 'circle-help', desc: 'Practice MCQs' },
-          { href: '/books',           label: 'Books',           icon: 'book-marked', desc: 'Full textbooks' },
-          { href: '/gazettes',        label: 'Result Gazettes', icon: 'newspaper',   desc: 'Board results' },
-          { href: '/boards',          label: 'All Boards',      icon: 'graduation-cap', desc: 'Browse by board' },
-        ].map(c => (
-          <a href={url(c.href)} class="group rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#0620ed]">
-            <span class="grid h-11 w-11 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
-              <Icon name={c.icon} size={19} strokeWidth={2.2} />
+        {resources.map(r => (
+          <a href={url(r.href)} class="group flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#0620ed]">
+            <span class="icon-tile">
+              <Icon name={r.icon} size={20} strokeWidth={2.2} />
             </span>
-            <div class="mt-4 text-sm font-extrabold tracking-tight text-neutral-900">{c.label}</div>
-            <div class="mt-0.5 text-xs text-neutral-500">{c.desc}</div>
+            <div class="mt-4 text-sm font-extrabold tracking-tight text-neutral-900">{r.label}</div>
+            <div class="mt-1 text-xs leading-snug text-neutral-500">{r.desc}</div>
           </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TRUST STRIP ═══ -->
+  <section class="border-t border-neutral-200">
+    <div class="mx-auto max-w-[1320px] px-4 py-12 sm:px-6 lg:px-10">
+      <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+        {[
+          { label: 'Boards covered', value: '6' },
+          { label: 'Classes', value: '9–12' },
+          { label: 'Resource types', value: '7' },
+          { label: 'Cost', value: 'Free' },
+        ].map(s => (
+          <div class="text-center">
+            <div class="text-2xl font-extrabold tracking-tight text-neutral-900 sm:text-3xl">{s.value}</div>
+            <div class="mt-1 text-xs font-semibold uppercase tracking-wider text-neutral-500">{s.label}</div>
+          </div>
         ))}
       </div>
     </div>

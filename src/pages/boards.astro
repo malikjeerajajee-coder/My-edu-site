@@ -7,24 +7,32 @@ import { getBoardCounts } from '../lib/boardContent';
 
 const counts = await getBoardCounts();
 ---
-<BaseLayout title="Boards — TaleemHub" description="Choose your board: Punjab, Federal, KPK, Sindh, Balochistan or AJK.">
-  <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
-    <div class="mb-10">
-      <h1 class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">Choose your board</h1>
-      <p class="mt-2 text-neutral-500">Notes, past papers, guess papers and more — tailored to your board.</p>
+<BaseLayout title="All Boards — TaleemHub" description="Browse notes, past papers, guess papers and result gazettes for all Pakistani boards: Punjab, Federal, KPK, Sindh, Balochistan, AJK.">
+  <div class="mx-auto max-w-[1320px] px-4 pt-12 pb-16 sm:px-6 lg:px-10 lg:pt-16">
+    <nav class="mb-8 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
+      <a href={url('/')} class="hover:text-[#0620ed]">Home</a>
+      <span>/</span>
+      <span class="text-neutral-500">Boards</span>
+    </nav>
+
+    <div class="max-w-2xl">
+      <h1 class="text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl">All boards</h1>
+      <p class="mt-4 text-base leading-relaxed text-neutral-600 sm:text-lg">
+        Pick your board to find every note, past paper, guess paper and result gazette tailored to your syllabus.
+      </p>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
+    <div class="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {BOARDS.map(b => (
-        <a href={url(`/board/${b.slug}`)} class="group rounded-2xl border border-neutral-200 bg-white p-6 transition-colors hover:border-[#0620ed]">
-          <div class="flex items-start justify-between">
-            <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
-              <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
-            </span>
-            <Icon name="arrow-up-right" size={18} strokeWidth={2.4} class="text-neutral-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+        <a href={url(`/board/${b.slug}`)} class="card-link group">
+          <span class="icon-tile">
+            <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="text-base font-extrabold tracking-tight text-neutral-900">{b.name}</div>
+            <div class="text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
           </div>
-          <h3 class="mt-5 text-xl font-extrabold tracking-tight text-neutral-900">{b.name}</h3>
-          <p class="mt-1 text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'item' : 'items'}</p>
+          <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
         </a>
       ))}
     </div>

@@ -6,16 +6,11 @@ import { url } from '../lib/url';
 interface Props { title: string; description?: string; }
 const {
   title,
-  description = 'Free notes, interactive quizzes, textbooks and result gazettes for Pakistani students.',
+  description = 'Free notes, past papers, guess papers, pairing schemes, quizzes and result gazettes for Pakistani students.',
 } = Astro.props;
 
 const path = Astro.url.pathname;
-const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const navMain = [
-  { href: '/',       label: 'Home',   icon: 'home' },
-  { href: '/boards', label: 'Boards', icon: 'graduation-cap' },
-];
 const navStudy = [
   { href: '/notes',   label: 'Notes',   icon: 'file-text' },
   { href: '/quizzes', label: 'Quizzes', icon: 'circle-help' },
@@ -53,7 +48,7 @@ const isActive = (href: string) => {
 </head>
 <body class="min-h-screen bg-white">
 
-  <!-- DESKTOP SIDEBAR -->
+  <!-- ═══ DESKTOP SIDEBAR ═══ -->
   <aside class="fixed inset-y-0 left-0 z-40 hidden w-[260px] flex-col border-r border-neutral-200 bg-white lg:flex">
     <a href={url('/')} class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-neutral-200 px-5">
       <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#0620ed] text-white">
@@ -65,17 +60,24 @@ const isActive = (href: string) => {
     <nav class="flex-1 overflow-y-auto px-3 py-5">
       <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Main</div>
       <ul class="space-y-0.5">
-        {navMain.map(item => (
-          <li>
-            <a href={url(item.href)} class:list={[
-              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-              isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
-            ]}>
-              <Icon name={item.icon} size={18} strokeWidth={2.1} class="shrink-0" />
-              <span>{item.label}</span>
-            </a>
-          </li>
-        ))}
+        <li>
+          <a href={url('/')} class:list={[
+            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
+            isActive('/') ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+          ]}>
+            <Icon name="home" size={18} strokeWidth={2.1} class="shrink-0" />
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href={url('/boards')} class:list={[
+            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
+            isActive('/boards') ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+          ]}>
+            <Icon name="graduation-cap" size={18} strokeWidth={2.1} class="shrink-0" />
+            <span>Boards</span>
+          </a>
+        </li>
       </ul>
 
       <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Study Material</div>
@@ -117,10 +119,10 @@ const isActive = (href: string) => {
     </div>
   </aside>
 
-  <!-- MOBILE TOP BAR -->
-  <header class="sticky top-0 z-30 flex h-16 w-full items-center gap-3 border-b border-neutral-200 bg-white/95 px-4 backdrop-blur-xl lg:hidden">
-    <button id="open-drawer" type="button" aria-label="Open menu" class="grid h-10 w-10 place-items-center rounded-lg border border-neutral-200 bg-white text-neutral-700 active:bg-neutral-100">
-      <Icon name="menu" size={20} strokeWidth={2.4} />
+  <!-- ═══ MOBILE TOP BAR ═══ -->
+  <header class="sticky top-0 z-30 flex h-16 w-full items-center gap-3 border-b border-neutral-200 bg-white px-4 lg:hidden">
+    <button id="open-drawer" type="button" aria-label="Open menu" class="grid h-10 w-10 place-items-center rounded-lg text-neutral-700 active:bg-neutral-100">
+      <Icon name="menu" size={22} strokeWidth={2.4} />
     </button>
     <a href={url('/')} class="flex items-center gap-2">
       <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#0620ed] text-white">
@@ -128,12 +130,12 @@ const isActive = (href: string) => {
       </span>
       <span class="text-base font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
     </a>
-    <a href={url('/search')} class="ml-auto grid h-10 w-10 place-items-center rounded-lg border border-neutral-200 bg-white text-neutral-700 active:bg-neutral-100" aria-label="Search">
-      <Icon name="search" size={18} strokeWidth={2.4} />
+    <a href={url('/search')} class="ml-auto grid h-10 w-10 place-items-center rounded-lg text-neutral-700 active:bg-neutral-100" aria-label="Search">
+      <Icon name="search" size={20} strokeWidth={2.4} />
     </a>
   </header>
 
-  <!-- MOBILE DRAWER -->
+  <!-- ═══ MOBILE DRAWER ═══ -->
   <div id="drawer" class="fixed inset-0 z-50 hidden lg:hidden">
     <div id="drawer-backdrop" class="absolute inset-0 bg-neutral-900/40 opacity-0 transition-opacity duration-300"></div>
     <aside id="drawer-panel" class="absolute inset-y-0 left-0 flex w-[280px] -translate-x-full flex-col border-r border-neutral-200 bg-white transition-transform duration-300 ease-out">
@@ -151,9 +153,8 @@ const isActive = (href: string) => {
       <nav class="flex-1 overflow-y-auto px-3 py-5">
         <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Main</div>
         <ul class="space-y-0.5">
-          {navMain.map(item => (
-            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
-          ))}
+          <li><a href={url('/')} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive('/') ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name="home" size={18} strokeWidth={2.1} /><span>Home</span></a></li>
+          <li><a href={url('/boards')} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive('/boards') ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name="graduation-cap" size={18} strokeWidth={2.1} /><span>Boards</span></a></li>
         </ul>
         <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Study Material</div>
         <ul class="space-y-0.5">
@@ -177,14 +178,12 @@ const isActive = (href: string) => {
     </aside>
   </div>
 
-  <!-- CONTENT -->
+  <!-- ═══ CONTENT ═══ -->
   <div class="lg:pl-[260px]">
-    <main class="min-h-[60vh]">
-      <slot />
-    </main>
+    <main class="min-h-[60vh]"><slot /></main>
 
     <footer class="mt-20 border-t border-neutral-200 bg-neutral-50">
-      <div class="mx-auto max-w-[1320px] px-4 py-12 lg:px-8">
+      <div class="mx-auto max-w-[1320px] px-4 py-14 lg:px-8">
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div class="sm:col-span-2">
             <div class="flex items-center gap-2.5">
@@ -194,7 +193,7 @@ const isActive = (href: string) => {
               <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
             </div>
             <p class="mt-4 max-w-sm text-sm leading-relaxed text-neutral-500">
-              Free notes, quizzes, textbooks, past papers and result gazettes for Pakistani students — organised by board and class.
+              Free notes, past papers, guess papers, and result gazettes for Pakistani students — organised by board and class.
             </p>
           </div>
           <div>
@@ -216,7 +215,7 @@ const isActive = (href: string) => {
             </ul>
           </div>
         </div>
-        <div class="mt-10 border-t border-neutral-200 pt-6 text-xs text-neutral-400">
+        <div class="mt-12 border-t border-neutral-200 pt-6 text-xs text-neutral-400">
           <p>© {new Date().getFullYear()} TaleemHub. Built for students, forever free.</p>
         </div>
       </div>
