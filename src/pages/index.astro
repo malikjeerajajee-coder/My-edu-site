@@ -6,108 +6,130 @@ import { BOARDS } from '../lib/boards';
 import { getBoardCounts } from '../lib/boardContent';
 
 const counts = await getBoardCounts();
-
-const resources = [
-  { href: '/notes',           icon: 'file-text',     label: 'Notes',           desc: 'Chapter-wise revision' },
-  { href: '/past-papers',     icon: 'scroll-text',   label: 'Past Papers',     desc: 'Previous years solved' },
-  { href: '/guess-papers',    icon: 'sparkles',      label: 'Guess Papers',    desc: 'Expected questions' },
-  { href: '/pairing-schemes', icon: 'list',          label: 'Pairing Schemes', desc: 'Paper structure' },
-  { href: '/quizzes',         icon: 'circle-help',   label: 'Quizzes',         desc: 'Practice MCQs' },
-  { href: '/books',           icon: 'book-marked',   label: 'Books',           desc: 'Full textbooks' },
-  { href: '/gazettes',        icon: 'newspaper',     label: 'Result Gazettes', desc: 'Board results' },
-  { href: '/boards',          icon: 'graduation-cap',label: 'All Boards',      desc: 'Browse everything' },
-];
 ---
 <BaseLayout title="TaleemHub — Free Notes, Past Papers & Books for Pakistani Students">
-  <!-- HERO -->
-  <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[1320px] px-4 pt-16 pb-14 sm:px-6 sm:pt-24 sm:pb-20 lg:px-10 lg:pt-28 lg:pb-24">
-      <div class="max-w-3xl">
-        <div class="inline-flex items-center gap-2 border border-slate-200 bg-white px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-600 rounded-full">
-          <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
-          Free for every Pakistani student
+  <!-- ═══ HERO — centered, SME style ═══ -->
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-16 pb-14 sm:pt-24 sm:pb-20 lg:px-10 lg:pt-28 lg:pb-24">
+      <div class="mx-auto max-w-3xl text-center">
+        <div class="pill mx-auto">
+          <span class="pill-dot"></span>
+          Trusted by students across Pakistan
         </div>
-        <h1 class="mt-6 text-[2.75rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-slate-900 sm:text-6xl lg:text-[4.25rem]">
-          Study smarter,<br />
-          <span class="text-[#1d4ed8]">score higher.</span>
+        <h1 class="mt-6 text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-slate-900 sm:text-[3.5rem] lg:text-[4rem]">
+          Exam-specific revision,<br />
+          made by trusted educators
         </h1>
-        <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
           Notes, past papers, guess papers, pairing schemes and result gazettes — organised for your board and class from 9 to 12.
         </p>
 
-        <form action={url('/search')} method="get" role="search" class="mt-9 flex max-w-xl items-center gap-2 rounded-xl border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
+        <form action={url('/search')} method="get" role="search" class="mx-auto mt-9 flex max-w-xl items-center gap-2 rounded-lg border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
           <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-slate-400" />
           <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
-          <button type="submit" class="btn-primary">Search</button>
+          <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-slate-500">
-          <span class="flex items-center gap-1.5"><Icon name="zap" size={14} strokeWidth={2.4} class="text-[#1d4ed8]" /> Instant access</span>
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium text-slate-500">
+          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> 6 boards</span>
           <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-          <span class="flex items-center gap-1.5"><Icon name="download" size={14} strokeWidth={2.4} class="text-[#1d4ed8]" /> Free PDFs</span>
+          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> Class 9–12</span>
           <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> All boards</span>
+          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> 100% free</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CHOOSE YOUR BOARD -->
-  <section class="section">
+  <!-- ═══ WHY IT WORKS — SME numbered steps ═══ -->
+  <section class="section border-b border-slate-200">
     <div class="section-inner">
-      <div class="mb-8 flex items-end justify-between gap-4">
-        <div>
-          <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Choose your board</h2>
-          <p class="mt-2 text-sm text-slate-500">Every resource is organised for your specific board.</p>
-        </div>
-        <a href={url('/boards')} class="hidden items-center gap-1 text-sm font-bold text-[#1d4ed8] hover:text-[#1e3a8a] sm:inline-flex">
-          All boards <Icon name="arrow-right" size={14} strokeWidth={2.6} />
-        </a>
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Why it works</h2>
+        <p class="mt-3 text-base text-slate-600">Everything is built around your exam board — nothing more, nothing less.</p>
       </div>
 
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
+        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
+          <span class="step-num">1</span>
+          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Revise only what you need</h3>
+          <p class="text-sm leading-relaxed text-slate-600">Every resource is written for your specific board and class, so you only revise what's on your paper.</p>
+        </div>
+        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
+          <span class="step-num">2</span>
+          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Test yourself and check progress</h3>
+          <p class="text-sm leading-relaxed text-slate-600">Practice with past papers and interactive quizzes so you walk into your exam hall with confidence.</p>
+        </div>
+        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
+          <span class="step-num">3</span>
+          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Improve answer by answer</h3>
+          <p class="text-sm leading-relaxed text-slate-600">See exactly which topics carry the most marks, from pairing schemes and examiner trends.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHAT ARE YOU STUDYING? — SME board list ═══ -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">What are you studying?</h2>
+        <p class="mt-3 text-base text-slate-600">Choose your board to get started.</p>
+      </div>
+
+      <div class="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
         {BOARDS.map(b => (
-          <a href={url(`/board/${b.slug}`)} class="card-link group">
-            <span class="icon-tile">
-              <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
+          <a href={url(`/board/${b.slug}`)} class="row group">
+            <span class="tile">
+              <Icon name="graduation-cap" size={20} strokeWidth={2.2} />
             </span>
             <div class="min-w-0 flex-1">
-              <div class="text-base font-extrabold tracking-tight text-slate-900">{b.name}</div>
-              <div class="text-sm text-slate-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
+              <div class="text-[15px] font-extrabold tracking-tight text-slate-900">{b.name}</div>
+              <div class="text-xs text-slate-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
             </div>
-            <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- BROWSE BY RESOURCE -->
-  <section class="border-y border-slate-200 bg-white">
+  <!-- ═══ RESOURCES ═══ -->
+  <section class="border-t border-slate-200 bg-slate-50">
     <div class="section-inner">
-      <div class="mb-8">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Browse by resource</h2>
-        <p class="mt-2 text-sm text-slate-500">Seven content types, all free, all board-specific.</p>
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Everything you need, in one place</h2>
+        <p class="mt-3 text-base text-slate-600">Seven content types, all free, all board-specific.</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {resources.map(r => (
-          <a href={url(r.href)} class="card group flex flex-col p-5">
-            <span class="icon-tile">
-              <Icon name={r.icon} size={20} strokeWidth={2.2} />
+      <div class="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {[
+          { href: '/notes',           icon: 'file-text',     label: 'Notes' },
+          { href: '/past-papers',     icon: 'scroll-text',   label: 'Past Papers' },
+          { href: '/guess-papers',    icon: 'sparkles',      label: 'Guess Papers' },
+          { href: '/pairing-schemes', icon: 'list',          label: 'Pairing Schemes' },
+          { href: '/quizzes',         icon: 'circle-help',   label: 'Quizzes' },
+          { href: '/books',           icon: 'book-marked',   label: 'Books' },
+          { href: '/gazettes',        icon: 'newspaper',     label: 'Result Gazettes' },
+          { href: '/boards',          icon: 'graduation-cap', label: 'All Boards' },
+        ].map(r => (
+          <a href={url(r.href)} class="row group">
+            <span class="tile">
+              <Icon name={r.icon} size={18} strokeWidth={2.2} />
             </span>
-            <div class="mt-4 text-sm font-extrabold tracking-tight text-slate-900">{r.label}</div>
-            <div class="mt-1 text-xs leading-snug text-slate-500">{r.desc}</div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-extrabold tracking-tight text-slate-900">{r.label}</div>
+            </div>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- TRUST STRIP -->
-  <section class="section">
+  <!-- ═══ TRUST STATS ═══ -->
+  <section class="section border-t border-slate-200">
     <div class="section-inner">
-      <div class="grid grid-cols-2 gap-6 rounded-2xl border border-slate-200 bg-white p-8 sm:grid-cols-4 sm:p-10">
+      <div class="mx-auto grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
         {[
           { label: 'Boards covered', value: '6' },
           { label: 'Classes', value: '9–12' },
