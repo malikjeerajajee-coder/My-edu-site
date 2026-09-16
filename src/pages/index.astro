@@ -7,77 +7,74 @@ import { getBoardCounts } from '../lib/boardContent';
 
 const counts = await getBoardCounts();
 ---
-<BaseLayout title="TaleemHub — Free Notes, Past Papers & Books for Pakistani Students">
-  <!-- ═══ HERO — centered, SME style ═══ -->
-  <section class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-16 pb-14 sm:pt-24 sm:pb-20 lg:px-10 lg:pt-28 lg:pb-24">
+<BaseLayout title="TaleemHub — Exam-specific revision for Pakistani students">
+  <!-- ═══ HERO ═══ -->
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-20 pb-16 sm:px-7 sm:pt-28 sm:pb-20 lg:px-10 lg:pt-32 lg:pb-24">
       <div class="mx-auto max-w-3xl text-center">
         <div class="pill mx-auto">
           <span class="pill-dot"></span>
           Trusted by students across Pakistan
         </div>
-        <h1 class="mt-6 text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-slate-900 sm:text-[3.5rem] lg:text-[4rem]">
+        <h1 class="mt-7 text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-slate-900 sm:text-[3.5rem] lg:text-[4rem]">
           Exam-specific revision,<br />
           made by trusted educators
         </h1>
-        <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Notes, past papers, guess papers, pairing schemes and result gazettes — organised for your board and class from 9 to 12.
+        <p class="mx-auto mt-7 max-w-xl text-base leading-relaxed text-slate-600 sm:text-lg">
+          Real expertise. Real results. Everything you need — notes, past papers, guess papers and pairing schemes — organised for your exact board and class.
         </p>
 
-        <form action={url('/search')} method="get" role="search" class="mx-auto mt-9 flex max-w-xl items-center gap-2 rounded-lg border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
+        <form action={url('/search')} method="get" role="search" class="mx-auto mt-10 flex max-w-xl items-center gap-2 rounded-lg border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
           <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-slate-400" />
           <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
           <button type="submit" class="btn btn-primary">Search</button>
         </form>
-
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium text-slate-500">
-          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> 6 boards</span>
-          <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> Class 9–12</span>
-          <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-          <span class="flex items-center gap-1.5"><Icon name="check" size={14} strokeWidth={2.6} class="text-[#1d4ed8]" /> 100% free</span>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ WHY IT WORKS — SME numbered steps ═══ -->
-  <section class="section border-b border-slate-200">
-    <div class="section-inner">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Why it works</h2>
-        <p class="mt-3 text-base text-slate-600">Everything is built around your exam board — nothing more, nothing less.</p>
-      </div>
-
-      <div class="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
-        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
-          <span class="step-num">1</span>
-          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Revise only what you need</h3>
-          <p class="text-sm leading-relaxed text-slate-600">Every resource is written for your specific board and class, so you only revise what's on your paper.</p>
-        </div>
-        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
-          <span class="step-num">2</span>
-          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Test yourself and check progress</h3>
-          <p class="text-sm leading-relaxed text-slate-600">Practice with past papers and interactive quizzes so you walk into your exam hall with confidence.</p>
-        </div>
-        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
-          <span class="step-num">3</span>
-          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Improve answer by answer</h3>
-          <p class="text-sm leading-relaxed text-slate-600">See exactly which topics carry the most marks, from pairing schemes and examiner trends.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ WHAT ARE YOU STUDYING? — SME board list ═══ -->
+  <!-- ═══ WHY IT WORKS ═══ -->
   <section class="section">
     <div class="section-inner">
       <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">What are you studying?</h2>
-        <p class="mt-3 text-base text-slate-600">Choose your board to get started.</p>
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Why it works</h2>
       </div>
 
-      <div class="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
+      <div class="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-12 sm:grid-cols-3 sm:gap-10">
+        <div class="flex flex-col items-start gap-5 sm:items-center sm:text-center">
+          <span class="step-num">1</span>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900">Revise only what you need</h3>
+          <p class="text-sm leading-relaxed text-slate-600">
+            Enjoy the relief and reassurance that every revision guide is written specifically for your board — so you only revise what you need to know.
+          </p>
+        </div>
+        <div class="flex flex-col items-start gap-5 sm:items-center sm:text-center">
+          <span class="step-num">2</span>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900">Test yourself and check progress</h3>
+          <p class="text-sm leading-relaxed text-slate-600">
+            Feel empowered and confident going into exams knowing that you've covered all the topics and have a greater understanding of each subject.
+          </p>
+        </div>
+        <div class="flex flex-col items-start gap-5 sm:items-center sm:text-center">
+          <span class="step-num">3</span>
+          <h3 class="text-lg font-extrabold tracking-tight text-slate-900">Improve answer by answer</h3>
+          <p class="text-sm leading-relaxed text-slate-600">
+            Gain certainty that you're answering questions that get maximum marks, from model answers for every question, explained by an expert examiner.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHAT ARE YOU STUDYING? ═══ -->
+  <section class="border-t border-slate-200 bg-slate-50 section">
+    <div class="section-inner">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">What are you studying?</h2>
+        <p class="mt-4 text-base text-slate-600">Choose your board to get started.</p>
+      </div>
+
+      <div class="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
         {BOARDS.map(b => (
           <a href={url(`/board/${b.slug}`)} class="row group">
             <span class="tile">
@@ -87,60 +84,72 @@ const counts = await getBoardCounts();
               <div class="text-[15px] font-extrabold tracking-tight text-slate-900">{b.name}</div>
               <div class="text-xs text-slate-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
             </div>
-            <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-600 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- ═══ RESOURCES ═══ -->
-  <section class="border-t border-slate-200 bg-slate-50">
-    <div class="section-inner">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Everything you need, in one place</h2>
-        <p class="mt-3 text-base text-slate-600">Seven content types, all free, all board-specific.</p>
-      </div>
-
-      <div class="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {[
-          { href: '/notes',           icon: 'file-text',     label: 'Notes' },
-          { href: '/past-papers',     icon: 'scroll-text',   label: 'Past Papers' },
-          { href: '/guess-papers',    icon: 'sparkles',      label: 'Guess Papers' },
-          { href: '/pairing-schemes', icon: 'list',          label: 'Pairing Schemes' },
-          { href: '/quizzes',         icon: 'circle-help',   label: 'Quizzes' },
-          { href: '/books',           icon: 'book-marked',   label: 'Books' },
-          { href: '/gazettes',        icon: 'newspaper',     label: 'Result Gazettes' },
-          { href: '/boards',          icon: 'graduation-cap', label: 'All Boards' },
-        ].map(r => (
-          <a href={url(r.href)} class="row group">
-            <span class="tile">
-              <Icon name={r.icon} size={18} strokeWidth={2.2} />
-            </span>
-            <div class="min-w-0 flex-1">
-              <div class="text-sm font-extrabold tracking-tight text-slate-900">{r.label}</div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ TRUST STATS ═══ -->
+  <!-- ═══ GET STARTED — FOR FREE ═══ -->
   <section class="section border-t border-slate-200">
     <div class="section-inner">
-      <div class="mx-auto grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Get started — for free</h2>
+        <p class="mt-4 text-base text-slate-600">
+          No sign-up required. Every resource on TaleemHub is free, forever.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a href={url('/boards')} class="btn btn-primary">Browse boards</a>
+          <a href={url('/notes')} class="btn btn-outline">Browse notes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MEET OUR EXPERTS ═══ -->
+  <section class="section border-t border-slate-200 bg-slate-50">
+    <div class="section-inner">
+      <div class="mx-auto max-w-3xl text-center">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Meet our experts</h2>
+        <p class="mt-5 text-base leading-relaxed text-slate-600">
+          Our revision resources are written by teachers and examiners. That means notes, questions by topic and worked solutions that show exactly what the examiners for each specific exam are looking for.
+        </p>
+        <p class="mt-4 text-base font-bold text-slate-900">We work harder so you can study smarter.</p>
+      </div>
+
+      <div class="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
         {[
-          { label: 'Boards covered', value: '6' },
-          { label: 'Classes', value: '9–12' },
-          { label: 'Resource types', value: '7' },
-          { label: 'Cost', value: 'Free' },
+          { value: '6', label: 'Boards' },
+          { value: '9–12', label: 'Classes' },
+          { value: '7', label: 'Resource types' },
+          { value: 'Free', label: 'Forever' },
         ].map(s => (
-          <div class="text-center">
-            <div class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{s.value}</div>
+          <div class="text-center rounded-lg border border-slate-200 bg-white p-6">
+            <div class="text-3xl font-extrabold tracking-tight text-slate-900">{s.value}</div>
             <div class="mt-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">{s.label}</div>
           </div>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHAT IS TALEEMHUB? ═══ -->
+  <section class="section border-t border-slate-200">
+    <div class="section-inner">
+      <div class="mx-auto max-w-3xl">
+        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">What is TaleemHub?</h2>
+        <div class="mt-6 space-y-4 text-base leading-relaxed text-slate-600">
+          <p>
+            TaleemHub is an online revision platform that helps Pakistani students across Class 9 to 12 prepare for their board exams. Students gain access to resources written for their specific board and class — from notes and past papers to guess papers and pairing schemes.
+          </p>
+          <p>
+            Every resource is matched to your board's specification. That means you focus on exactly what's on your paper, not what might have been on someone else's.
+          </p>
+          <p>
+            Teachers can find ready-to-use classroom materials, and students can revise from any device — offline or online.
+          </p>
+        </div>
       </div>
     </div>
   </section>
