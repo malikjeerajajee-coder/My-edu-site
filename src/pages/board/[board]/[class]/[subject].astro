@@ -51,17 +51,17 @@ const totalItems = (typeData?.items?.length) || 0;
       <span class="text-neutral-500">{typeData.label}</span>
     </nav>
 
-    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-8 text-white sm:p-10">
+    <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">
           <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {board.name}
         </span>
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">
           Class {cls}
         </span>
       </div>
       <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">{typeData.label}</h1>
-      <p class="mt-2 text-slate-300">{totalItems} {totalItems === 1 ? 'item' : 'items'}</p>
+      <p class="mt-2 text-neutral-600">{totalItems} {totalItems === 1 ? 'item' : 'items'}</p>
     </div>
 
     {totalItems === 0 ? (
@@ -149,12 +149,12 @@ const totalItems = (typeData?.items?.length) || 0;
       <span class="text-neutral-500">{subjectData.subject}</span>
     </nav>
 
-    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-8 text-white sm:p-10">
+    <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">
           <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {subjectData.board.name}
         </span>
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">
           Class {cls}
         </span>
       </div>

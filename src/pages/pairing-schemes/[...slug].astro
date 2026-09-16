@@ -21,13 +21,13 @@ const d = scheme.data;
       <span class="text-neutral-500">Class {d.class}</span>
     </nav>
 
-    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-7 text-white sm:p-9">
+    <div class="border-b border-neutral-200 pb-8 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
         {d.boards?.map((b: string) => (
-          <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">{b}</span>
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{b}</span>
         ))}
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">Class {d.class}</span>
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">{d.year}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {d.class}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{d.year}</span>
       </div>
       <h1 class="mt-4 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{d.title}</h1>
     </div>

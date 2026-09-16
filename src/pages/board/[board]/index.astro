@@ -52,27 +52,27 @@ const faqJsonLd = info?.faq?.length ? {
     </a>
 
     <!-- HERO -->
-    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-8 text-white sm:p-10">
-      <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+    <div class="border-b border-neutral-200 pb-10 text-neutral-900">
+      <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">
         <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> Board
       </span>
       <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">{board.full}</h1>
-      <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-300">
+      <p class="mt-3 max-w-3xl text-base leading-relaxed text-neutral-600">
         {info?.overview || `All study material for ${board.full}: notes, past papers, guess papers and more.`}
       </p>
       <div class="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm">
         <div>
-          <span class="font-extrabold text-white text-2xl">{classes.length}</span>
-          <span class="ml-1 text-slate-300">{classes.length === 1 ? 'class' : 'classes'}</span>
+          <span class="text-2xl font-extrabold text-neutral-900">{classes.length}</span>
+          <span class="ml-1 text-neutral-600">{classes.length === 1 ? 'class' : 'classes'}</span>
         </div>
         <div>
-          <span class="font-extrabold text-white text-2xl">{total}</span>
-          <span class="ml-1 text-slate-300">items</span>
+          <span class="text-2xl font-extrabold text-neutral-900">{total}</span>
+          <span class="ml-1 text-neutral-600">items</span>
         </div>
         {info && (
           <div>
-            <span class="font-extrabold text-white text-2xl">{info.boardsServed.length}</span>
-            <span class="ml-1 text-slate-300">BISE boards served</span>
+            <span class="text-2xl font-extrabold text-neutral-900">{info.boardsServed.length}</span>
+            <span class="ml-1 text-neutral-600">BISE boards served</span>
           </div>
         )}
       </div>
@@ -121,7 +121,7 @@ const faqJsonLd = info?.faq?.length ? {
           <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {info.boardsServed.map(b => (
               <div class="flex items-center gap-2.5 rounded-xl border border-neutral-200 bg-white px-4 py-3">
-                <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed]"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed] text-white"></span>
                 <span class="text-sm font-bold text-neutral-800">{b}</span>
               </div>
             ))}
@@ -241,7 +241,7 @@ const faqJsonLd = info?.faq?.length ? {
                 <ul class="mt-4 space-y-2">
                   {g.subjects.map(s => (
                     <li class="flex items-start gap-2.5 text-sm text-neutral-600">
-                      <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0620ed]"></span>
+                      <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0620ed] text-white"></span>
                       <span>{s}</span>
                     </li>
                   ))}

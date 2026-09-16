@@ -77,17 +77,17 @@ const faqJsonLd = d.faq && d.faq.length ? {
     </nav>
 
     <!-- Hero -->
-    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-8 text-white sm:p-10">
+    <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
         {(d.boards || []).map((b: string) => (
-          <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">{b}</span>
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{b}</span>
         ))}
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">Class {d.class}</span>
-        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">{d.year}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {d.class}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{d.year}</span>
       </div>
       <h1 class="mt-5 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{d.title}</h1>
       {d.totalMarks && (
-        <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
+        <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-600">
           <span><strong class="font-extrabold text-white">{d.totalMarks} marks</strong> total</span>
           {d.duration && <span>Duration: <strong class="font-extrabold text-white">{d.duration}</strong></span>}
         </div>
