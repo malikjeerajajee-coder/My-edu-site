@@ -52,27 +52,27 @@ const faqJsonLd = info?.faq?.length ? {
     </a>
 
     <!-- HERO -->
-    <div class="rounded-3xl border border-[#0620ed] bg-gradient-to-br from-[#110176] via-[#0620ed] to-[#265bf6] p-8 text-white sm:p-10">
+    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-8 text-white sm:p-10">
       <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
         <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> Board
       </span>
       <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">{board.full}</h1>
-      <p class="mt-3 max-w-3xl text-base leading-relaxed text-blue-100">
+      <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-300">
         {info?.overview || `All study material for ${board.full}: notes, past papers, guess papers and more.`}
       </p>
       <div class="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm">
         <div>
           <span class="font-extrabold text-white text-2xl">{classes.length}</span>
-          <span class="ml-1 text-blue-100">{classes.length === 1 ? 'class' : 'classes'}</span>
+          <span class="ml-1 text-slate-300">{classes.length === 1 ? 'class' : 'classes'}</span>
         </div>
         <div>
           <span class="font-extrabold text-white text-2xl">{total}</span>
-          <span class="ml-1 text-blue-100">items</span>
+          <span class="ml-1 text-slate-300">items</span>
         </div>
         {info && (
           <div>
             <span class="font-extrabold text-white text-2xl">{info.boardsServed.length}</span>
-            <span class="ml-1 text-blue-100">BISE boards served</span>
+            <span class="ml-1 text-slate-300">BISE boards served</span>
           </div>
         )}
       </div>
@@ -274,15 +274,15 @@ const faqJsonLd = info?.faq?.length ? {
         <!-- PUNJAB BOARD RESULTS LINK -->
         <section class="mt-14 pb-20">
           <div class="rounded-3xl border border-neutral-200 bg-gradient-to-br from-[#f5f8ff] to-white p-8 sm:p-10">
-            <div class="flex flex-wrap items-center gap-4">
-              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-[#eef2fe] text-[#0620ed]">
+            <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+              <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#eef2fe] text-[#0620ed]">
                 <Icon name="newspaper" size={26} strokeWidth={2.2} />
               </span>
               <div class="min-w-0 flex-1">
                 <h2 class="text-xl font-extrabold tracking-tight text-neutral-900 sm:text-2xl">Looking for your result?</h2>
                 <p class="mt-1 text-sm text-neutral-500">Download the latest {board.name} result gazettes for Class 9 and Class 10.</p>
               </div>
-              <a href={url('/gazettes')} class="inline-flex items-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3 text-sm font-bold text-white hover:bg-[#110176]">
+              <a href={url('/gazettes')} class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3 text-sm font-bold text-white hover:bg-[#110176]">
                 View gazettes <Icon name="arrow-right" size={15} strokeWidth={2.6} />
               </a>
             </div>

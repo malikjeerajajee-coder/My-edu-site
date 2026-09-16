@@ -36,14 +36,14 @@ const sections = [
       <span class="text-neutral-500">Class {cls}</span>
     </nav>
 
-    <div class="rounded-3xl border border-[#0620ed] bg-gradient-to-br from-[#110176] via-[#0620ed] to-[#265bf6] p-8 text-white sm:p-10">
+    <div class="rounded-2xl border border-slate-900 bg-slate-900 p-8 text-white sm:p-10">
       <div class="flex flex-wrap gap-1.5">
         <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
           <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {board.name}
         </span>
       </div>
       <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">Class {cls}</h1>
-      <p class="mt-2 text-blue-100">{subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'} · {data.total} items</p>
+      <p class="mt-2 text-slate-300">{subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'} · {data.total} items</p>
     </div>
 
     {sections.length > 0 && (
