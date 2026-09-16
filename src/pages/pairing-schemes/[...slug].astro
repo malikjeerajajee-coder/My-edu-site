@@ -32,7 +32,7 @@ const d = scheme.data;
       <h1 class="mt-4 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{d.title}</h1>
     </div>
 
-    <PdfViewer url={url(d.pdfUrl)} title={d.title} />
+    <a href="#" target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
 
     <div class="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8">
       <h2 class="text-lg font-extrabold tracking-tight text-neutral-900">About this pairing scheme</h2>
