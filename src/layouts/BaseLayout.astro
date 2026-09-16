@@ -34,7 +34,7 @@ const isActive = (href: string) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#1d4ed8" />
   <title>{title}</title>
   <meta name="description" content={description} />
   <meta property="og:title" content={title} />
@@ -45,14 +45,13 @@ const isActive = (href: string) => {
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <link rel="sitemap" href={url('/sitemap-index.xml')} />
-<link rel="stylesheet" href="/My-edu-site/polish.css">
-<script src="/My-edu-site/search-enhance.js" defer></script></head>
+</head>
 <body class="min-h-screen bg-white">
 
   <!-- ═══ DESKTOP SIDEBAR ═══ -->
   <aside class="fixed inset-y-0 left-0 z-40 hidden w-[260px] flex-col border-r border-neutral-200 bg-white lg:flex">
     <a href={url('/')} class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-neutral-200 px-5">
-      <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#2563eb] text-white">
+      <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#1d4ed8] text-white">
         <Icon name="graduation-cap" size={19} strokeWidth={2.4} />
       </span>
       <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
@@ -64,7 +63,7 @@ const isActive = (href: string) => {
         <li>
           <a href={url('/')} class:list={[
             "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-            isActive('/') ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+            isActive('/') ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
           ]}>
             <Icon name="home" size={18} strokeWidth={2.1} class="shrink-0" />
             <span>Home</span>
@@ -73,7 +72,7 @@ const isActive = (href: string) => {
         <li>
           <a href={url('/boards')} class:list={[
             "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-            isActive('/boards') ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+            isActive('/boards') ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
           ]}>
             <Icon name="graduation-cap" size={18} strokeWidth={2.1} class="shrink-0" />
             <span>Boards</span>
@@ -87,7 +86,7 @@ const isActive = (href: string) => {
           <li>
             <a href={url(item.href)} class:list={[
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-              isActive(item.href) ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+              isActive(item.href) ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
             ]}>
               <Icon name={item.icon} size={18} strokeWidth={2.1} class="shrink-0" />
               <span>{item.label}</span>
@@ -102,7 +101,7 @@ const isActive = (href: string) => {
           <li>
             <a href={url(item.href)} class:list={[
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-              isActive(item.href) ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+              isActive(item.href) ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
             ]}>
               <Icon name={item.icon} size={18} strokeWidth={2.1} class="shrink-0" />
               <span>{item.label}</span>
@@ -113,7 +112,7 @@ const isActive = (href: string) => {
     </nav>
 
     <div class="border-t border-neutral-200 p-3">
-      <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2.5 focus-within:border-[#2563eb] focus-within:bg-white">
+      <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2.5 focus-within:border-[#1d4ed8] focus-within:bg-white">
         <Icon name="search" size={15} strokeWidth={2.3} class="shrink-0 text-neutral-400" />
         <input type="search" name="q" placeholder="Search library" class="min-w-0 flex-1 bg-transparent text-[13px] font-medium text-neutral-900 outline-none placeholder:text-neutral-400" />
       </form>
@@ -126,7 +125,7 @@ const isActive = (href: string) => {
       <Icon name="menu" size={22} strokeWidth={2.4} />
     </button>
     <a href={url('/')} class="flex items-center gap-2">
-      <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#2563eb] text-white">
+      <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
         <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
       </span>
       <span class="text-base font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
@@ -142,7 +141,7 @@ const isActive = (href: string) => {
     <aside id="drawer-panel" class="absolute inset-y-0 left-0 flex w-[280px] -translate-x-full flex-col border-r border-neutral-200 bg-white transition-transform duration-300 ease-out">
       <div class="flex h-[68px] shrink-0 items-center justify-between border-b border-neutral-200 px-4">
         <a href={url('/')} class="flex items-center gap-2.5">
-          <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#2563eb] text-white">
+          <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#1d4ed8] text-white">
             <Icon name="graduation-cap" size={19} strokeWidth={2.4} />
           </span>
           <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
@@ -154,19 +153,19 @@ const isActive = (href: string) => {
       <nav class="flex-1 overflow-y-auto px-3 py-5">
         <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Main</div>
         <ul class="space-y-0.5">
-          <li><a href={url('/')} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive('/') ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name="home" size={18} strokeWidth={2.1} /><span>Home</span></a></li>
-          <li><a href={url('/boards')} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive('/boards') ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name="graduation-cap" size={18} strokeWidth={2.1} /><span>Boards</span></a></li>
+          <li><a href={url('/')} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive('/') ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name="home" size={18} strokeWidth={2.1} /><span>Home</span></a></li>
+          <li><a href={url('/boards')} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive('/boards') ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name="graduation-cap" size={18} strokeWidth={2.1} /><span>Boards</span></a></li>
         </ul>
         <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Study Material</div>
         <ul class="space-y-0.5">
           {navStudy.map(item => (
-            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
           ))}
         </ul>
         <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Exams</div>
         <ul class="space-y-0.5">
           {navExam.map(item => (
-            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#2563eb]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#1d4ed8]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
           ))}
         </ul>
       </nav>
@@ -188,7 +187,7 @@ const isActive = (href: string) => {
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div class="sm:col-span-2">
             <div class="flex items-center gap-2.5">
-              <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#2563eb] text-white">
+              <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#1d4ed8] text-white">
                 <Icon name="graduation-cap" size={19} strokeWidth={2.4} />
               </span>
               <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
@@ -200,19 +199,19 @@ const isActive = (href: string) => {
           <div>
             <h4 class="text-sm font-bold text-neutral-900">Study</h4>
             <ul class="mt-4 space-y-2.5 text-sm text-neutral-500">
-              <li><a href={url('/boards')} class="hover:text-[#2563eb]">Boards</a></li>
-              <li><a href={url('/notes')} class="hover:text-[#2563eb]">Notes</a></li>
-              <li><a href={url('/quizzes')} class="hover:text-[#2563eb]">Quizzes</a></li>
-              <li><a href={url('/books')} class="hover:text-[#2563eb]">Books</a></li>
+              <li><a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a></li>
+              <li><a href={url('/notes')} class="hover:text-[#1d4ed8]">Notes</a></li>
+              <li><a href={url('/quizzes')} class="hover:text-[#1d4ed8]">Quizzes</a></li>
+              <li><a href={url('/books')} class="hover:text-[#1d4ed8]">Books</a></li>
             </ul>
           </div>
           <div>
             <h4 class="text-sm font-bold text-neutral-900">Exams</h4>
             <ul class="mt-4 space-y-2.5 text-sm text-neutral-500">
-              <li><a href={url('/past-papers')} class="hover:text-[#2563eb]">Past Papers</a></li>
-              <li><a href={url('/guess-papers')} class="hover:text-[#2563eb]">Guess Papers</a></li>
-              <li><a href={url('/pairing-schemes')} class="hover:text-[#2563eb]">Pairing Schemes</a></li>
-              <li><a href={url('/gazettes')} class="hover:text-[#2563eb]">Result Gazettes</a></li>
+              <li><a href={url('/past-papers')} class="hover:text-[#1d4ed8]">Past Papers</a></li>
+              <li><a href={url('/guess-papers')} class="hover:text-[#1d4ed8]">Guess Papers</a></li>
+              <li><a href={url('/pairing-schemes')} class="hover:text-[#1d4ed8]">Pairing Schemes</a></li>
+              <li><a href={url('/gazettes')} class="hover:text-[#1d4ed8]">Result Gazettes</a></li>
             </ul>
           </div>
         </div>

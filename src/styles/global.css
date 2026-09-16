@@ -34,7 +34,7 @@ h1, h2, h3, h4 { letter-spacing: -0.028em; }
   transition: border-color .15s ease, background-color .15s ease;
 }
 .card-link:hover {
-  border-color: #2563eb;
+  border-color: #1d4ed8;
   background: #fafbff;
 }
 
@@ -44,7 +44,7 @@ h1, h2, h3, h4 { letter-spacing: -0.028em; }
   width: 2.75rem; height: 2.75rem;
   border-radius: 0.75rem;
   background: #eef2fe;
-  color: #2563eb;
+  color: #1d4ed8;
   flex-shrink: 0;
 }
 
@@ -54,7 +54,7 @@ h1, h2, h3, h4 { letter-spacing: -0.028em; }
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   border-radius: 0.75rem;
-  background: #2563eb;
+  background: #1d4ed8;
   color: #ffffff !important;
   font-weight: 700;
   font-size: 0.875rem;
@@ -63,16 +63,16 @@ h1, h2, h3, h4 { letter-spacing: -0.028em; }
 .btn-primary:hover { background: #110176; }
 
 /* ── Force white text on all colored buttons ── */
-a[class*="bg-[#2563eb]"],
+a[class*="bg-[#1d4ed8]"],
 a[class*="bg-[#110176]"],
 a[class*="bg-[#265bf6]"],
 a[class*="bg-rose-600"],
 a[class*="bg-slate-900"],
-button[class*="bg-[#2563eb]"],
+button[class*="bg-[#1d4ed8]"],
 button[class*="bg-[#110176]"] {
   color: #ffffff !important;
 }
-a[class*="bg-[#2563eb]"] svg,
+a[class*="bg-[#1d4ed8]"] svg,
 a[class*="bg-rose-600"] svg,
 a[class*="bg-slate-900"] svg {
   color: #ffffff !important;
@@ -88,13 +88,13 @@ a[class*="bg-slate-900"] svg {
 .prose p { margin-bottom: 1rem; }
 .prose ul, .prose ol { padding-left: 1.25rem; margin-bottom: 1rem; }
 .prose li { margin-bottom: 0.375rem; }
-.prose li::marker { color: #2563eb; }
+.prose li::marker { color: #1d4ed8; }
 .prose code { background: #eef2fe; color: #110176; padding: 0.125rem 0.375rem; border-radius: 0.375rem; font-size: 0.85em; font-weight: 600; }
 .prose strong { font-weight: 700; color: #111827; }
 .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; }
 .prose th { background: #f9fafb; text-align: left; padding: 0.625rem 0.75rem; font-weight: 700; color: #111827; border-bottom: 1px solid #e5e7eb; }
 .prose td { padding: 0.625rem 0.75rem; border-top: 1px solid #e5e7eb; }
-.prose a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+.prose a { color: #1d4ed8; text-decoration: underline; text-underline-offset: 2px; }
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }

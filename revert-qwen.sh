@@ -1,3 +1,67 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Reverting Qwen's changes"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Delete files Qwen created
+# ─────────────────────────────────────────────
+rm -f public/polish.css
+rm -f public/search-enhance.js
+rm -f upgrade_design.py
+rm -f search-index.json
+rm -rf scripts
+echo "  Deleted: polish.css, search-enhance.js, upgrade_design.py, search-index.json, scripts/"
+
+# ─────────────────────────────────────────────
+#  2. Remove injected tags from layouts/components
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+for base in ['src/layouts', 'src/components']:
+    for p in pathlib.Path(base).glob('*.astro'):
+        s = p.read_text()
+        orig = s
+        s = re.sub(r'<link[^>]*polish\.css[^>]*/?>\s*', '', s)
+        s = re.sub(r'<script[^>]*search-enhance\.js[^>]*>\s*</script>\s*', '', s)
+        # Handle literal backslash-n leftover from bash single-quote quirk
+        s = s.replace('\\n<script src="/My-edu-site/search-enhance.js" defer></script>', '')
+        s = s.replace('<link rel="stylesheet" href="/My-edu-site/polish.css">\\n', '')
+        s = s.replace('\\n<script src="/My-edu-site/search-enhance.js" defer></script>', '')
+        if s != orig:
+            p.write_text(s)
+            print(f'  cleaned {p}')
+PY
+
+# ─────────────────────────────────────────────
+#  3. Revert color #2563eb → #1d4ed8
+# ─────────────────────────────────────────────
+find src public -type f \( -name '*.astro' -o -name '*.css' -o -name '*.html' \) -exec sed -i 's/#2563eb/#1d4ed8/g' {} + 2>/dev/null || true
+echo "  Reverted #2563eb → #1d4ed8 (our brand blue)"
+
+# ─────────────────────────────────────────────
+#  4. Revert package.json build script
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, json
+p = pathlib.Path('package.json')
+if p.exists():
+    data = json.loads(p.read_text())
+    scripts = data.get('scripts', {})
+    if 'build' in scripts:
+        scripts['build'] = 'astro build && node fix-links.mjs'
+        data['scripts'] = scripts
+        p.write_text(json.dumps(data, indent=2) + '\n')
+        print('  reverted package.json → astro build && node fix-links.mjs')
+PY
+
+# ─────────────────────────────────────────────
+#  5. Regenerate index.astro — clean, Qwen-free
+# ─────────────────────────────────────────────
+cat > src/pages/index.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -125,3 +189,37 @@ const resources = [
     </div>
   </section>
 </BaseLayout>
+ASTRO
+
+echo "  Regenerated src/pages/index.astro (Qwen-free)"
+
+# ─────────────────────────────────────────────
+#  6. Verify no Qwen artifacts remain
+# ─────────────────────────────────────────────
+echo ""
+echo "Verifying cleanup..."
+LEFTOVERS=$(grep -rln "polish.css\|search-enhance.js\|Popular:\|Why top students\|Curated by Pakistan\|Real Results from Real" src/ 2>/dev/null || true)
+if [ -z "$LEFTOVERS" ]; then
+    echo "  ✓ No Qwen artifacts remain in src/"
+else
+    echo "  ✗ Still found in:"
+    echo "$LEFTOVERS" | sed 's/^/    /'
+fi
+
+# ─────────────────────────────────────────────
+#  7. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -10
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Reverted. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Revert Qwen design changes'"
+echo "    git push"
+echo ""
+echo "  Then clear browser cache."
+echo "════════════════════════════════════════════"

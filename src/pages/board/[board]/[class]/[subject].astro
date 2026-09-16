@@ -42,21 +42,21 @@ const totalItems = (typeData?.items?.length) || 0;
 >
   <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
     <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/boards')} class="hover:text-[#2563eb]">Boards</a>
+      <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
       <span>/</span>
-      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#2563eb]">{board.name}</a>
+      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{board.name}</a>
       <span>/</span>
-      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#2563eb]">Class {cls}</a>
+      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
       <span>/</span>
       <span class="text-neutral-500">{typeData.label}</span>
     </nav>
 
     <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">
           <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {board.name}
         </span>
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">
           Class {cls}
         </span>
       </div>
@@ -68,7 +68,7 @@ const totalItems = (typeData?.items?.length) || 0;
       <div class="mt-12 rounded-2xl border border-dashed border-neutral-300 bg-white p-12 text-center">
         <p class="text-base font-bold text-neutral-900">Nothing here yet</p>
         <p class="mt-1 text-sm text-neutral-500">{typeData.label} for Class {cls} {board.name} are coming soon.</p>
-        <a href={url(`/board/${boardSlug}/class-${cls}`)} class="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-[#2563eb] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#110176] !text-white">
+        <a href={url(`/board/${boardSlug}/class-${cls}`)} class="mt-5 inline-flex items-center gap-1.5 rounded-xl bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#110176] !text-white">
           Back to Class {cls}
         </a>
       </div>
@@ -77,7 +77,7 @@ const totalItems = (typeData?.items?.length) || 0;
         {typeData.groups.map(group => (
           <section class="mt-12">
             <div class="mb-5 flex items-center gap-3">
-              <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+              <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
                 <Icon name={typeData.icon} size={19} strokeWidth={2.2} />
               </span>
               <div>
@@ -87,18 +87,18 @@ const totalItems = (typeData?.items?.length) || 0;
             </div>
             <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
               {group.items.map((item: any) => (
-                <a href={url(`${typeData.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#2563eb]">
-                  <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+                <a href={url(`${typeData.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#1d4ed8]">
+                  <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
                     <Icon name={typeData.icon} size={17} strokeWidth={2.2} />
                   </span>
                   <div class="min-w-0 flex-1">
                     <h3 class="truncate text-sm font-bold text-neutral-900">{item.data.title}</h3>
                     <div class="mt-1.5 flex flex-wrap gap-1.5">
                       {item.data.year && <span class="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-600">{item.data.year}</span>}
-                      <span class="rounded-md bg-[#eef2fe] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#2563eb]">Class {cls}</span>
+                      <span class="rounded-md bg-[#eef2fe] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">Class {cls}</span>
                     </div>
                   </div>
-                  <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#2563eb]" />
+                  <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
                 </a>
               ))}
             </div>
@@ -109,8 +109,8 @@ const totalItems = (typeData?.items?.length) || 0;
       <section class="mt-12 pb-16">
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
           {typeData.items.map((item: any) => (
-            <a href={url(`${typeData.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#2563eb]">
-              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+            <a href={url(`${typeData.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#1d4ed8]">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
                 <Icon name={typeData.icon} size={17} strokeWidth={2.2} />
               </span>
               <div class="min-w-0 flex-1">
@@ -119,7 +119,7 @@ const totalItems = (typeData?.items?.length) || 0;
                   {item.data.year && <span class="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-600">{item.data.year}</span>}
                 </div>
               </div>
-              <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#2563eb]" />
+              <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
             </a>
           ))}
         </div>
@@ -127,7 +127,7 @@ const totalItems = (typeData?.items?.length) || 0;
     )}
 
     <div class="mt-4 pb-20">
-      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#2563eb]">
+      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#1d4ed8]">
         <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {cls}
       </a>
     </div>
@@ -140,21 +140,21 @@ const totalItems = (typeData?.items?.length) || 0;
 >
   <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
     <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/boards')} class="hover:text-[#2563eb]">Boards</a>
+      <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
       <span>/</span>
-      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#2563eb]">{subjectData.board.name}</a>
+      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{subjectData.board.name}</a>
       <span>/</span>
-      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#2563eb]">Class {cls}</a>
+      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
       <span>/</span>
       <span class="text-neutral-500">{subjectData.subject}</span>
     </nav>
 
     <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">
           <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {subjectData.board.name}
         </span>
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">
           Class {cls}
         </span>
       </div>
@@ -170,7 +170,7 @@ const totalItems = (typeData?.items?.length) || 0;
     ].filter(s => s.items.length > 0).map(sec => (
       <section class="mt-12">
         <div class="mb-5 flex items-center gap-3">
-          <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
             <Icon name={sec.icon} size={19} strokeWidth={2.2} />
           </span>
           <div>
@@ -180,8 +180,8 @@ const totalItems = (typeData?.items?.length) || 0;
         </div>
         <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
           {sec.items.map((item: any) => (
-            <a href={url(`${sec.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#2563eb]">
-              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+            <a href={url(`${sec.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#1d4ed8]">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
                 <Icon name={sec.icon} size={17} strokeWidth={2.2} />
               </span>
               <div class="min-w-0 flex-1">
@@ -190,7 +190,7 @@ const totalItems = (typeData?.items?.length) || 0;
                   {item.data.year && <span class="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-600">{item.data.year}</span>}
                 </div>
               </div>
-              <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#2563eb]" />
+              <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
             </a>
           ))}
         </div>
@@ -198,7 +198,7 @@ const totalItems = (typeData?.items?.length) || 0;
     ))}
 
     <div class="mt-12 pb-20">
-      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#2563eb]">
+      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#1d4ed8]">
         <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {cls}
       </a>
     </div>
@@ -209,7 +209,7 @@ const totalItems = (typeData?.items?.length) || 0;
   <div class="mx-auto max-w-3xl px-4 pt-20 pb-20 text-center">
     <h1 class="text-2xl font-extrabold text-neutral-900">Not found</h1>
     <p class="mt-2 text-sm text-neutral-500">This page doesn't exist or has no content yet.</p>
-    <a href={url('/boards')} class="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-[#2563eb] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#110176] !text-white">
+    <a href={url('/boards')} class="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#110176] !text-white">
       Browse all boards
     </a>
   </div>

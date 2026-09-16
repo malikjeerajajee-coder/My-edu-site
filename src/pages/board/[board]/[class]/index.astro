@@ -29,16 +29,16 @@ const sections = [
 <BaseLayout title={`${board.name} Class ${cls} — All Subjects | TaleemHub`} description={`All Class ${cls} study material for ${board.full}: notes, past papers, guess papers, quizzes and more.`}>
   <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
     <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/boards')} class="hover:text-[#2563eb]">Boards</a>
+      <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
       <span>/</span>
-      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#2563eb]">{board.name}</a>
+      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{board.name}</a>
       <span>/</span>
       <span class="text-neutral-500">Class {cls}</span>
     </nav>
 
     <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">
           <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {board.name}
         </span>
       </div>
@@ -51,8 +51,8 @@ const sections = [
         <h2 class="mb-5 text-xl font-extrabold tracking-tight text-neutral-900">Browse by type</h2>
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {sections.map(s => (
-            <a href={url(`/board/${boardSlug}/class-${cls}/${s.slug}`)} class="group flex items-center gap-3.5 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#2563eb]">
-              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+            <a href={url(`/board/${boardSlug}/class-${cls}/${s.slug}`)} class="group flex items-center gap-3.5 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#1d4ed8]">
+              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
                 <Icon name={s.icon} size={19} strokeWidth={2.2} />
               </span>
               <div class="min-w-0">
@@ -70,14 +70,14 @@ const sections = [
         <h2 class="mb-5 text-xl font-extrabold tracking-tight text-neutral-900">Browse by subject</h2>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {subjects.map(s => (
-            <a href={url(`/board/${boardSlug}/class-${cls}/${slugify(s)}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#2563eb]">
-              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
+            <a href={url(`/board/${boardSlug}/class-${cls}/${slugify(s)}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#1d4ed8]">
+              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
                 <Icon name="library" size={19} strokeWidth={2.2} />
               </span>
               <div class="min-w-0 flex-1">
                 <div class="text-base font-extrabold tracking-tight text-neutral-900">{s}</div>
               </div>
-              <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#2563eb]" />
+              <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
             </a>
           ))}
         </div>
