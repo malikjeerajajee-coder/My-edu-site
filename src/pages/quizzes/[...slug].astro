@@ -21,11 +21,11 @@ const { Content } = await render(quiz);
       <span class="truncate text-neutral-500">{quiz.data.subject}</span>
     </nav>
 
-    <div class="relative overflow-hidden rounded-3xl border border-blue-700 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 p-7 text-white sm:p-9">
+    <div class="border-b border-neutral-200 pb-10 pt-2 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm">{quiz.data.subject}</span>
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm">Class {quiz.data.class}</span>
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider backdrop-blur-sm">{quiz.data.questions.length} questions</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{quiz.data.subject}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {quiz.data.class}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{quiz.data.questions.length} questions</span>
       </div>
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{quiz.data.title}</h1>
     </div>

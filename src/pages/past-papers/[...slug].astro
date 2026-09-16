@@ -89,8 +89,8 @@ const faqJsonLd = d.faq && d.faq.length ? {
       <h1 class="mt-5 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{d.title}</h1>
       {d.totalMarks && (
         <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-600">
-          <span><strong class="font-extrabold text-white">{d.totalMarks} marks</strong> total</span>
-          {d.duration && <span>Duration: <strong class="font-extrabold text-white">{d.duration}</strong></span>}
+          <span><strong class="font-extrabold">{d.totalMarks} marks</strong> total</span>
+          {d.duration && <span>Duration: <strong class="font-extrabold">{d.duration}</strong></span>}
         </div>
       )}
     </div>

@@ -23,16 +23,16 @@ const { book } = Astro.props;
       <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to textbooks
     </a>
 
-    <div class="relative overflow-hidden rounded-3xl border border-amber-700 bg-gradient-to-br from-amber-900 via-amber-800 to-amber-600 p-7 text-white sm:p-9">
+    <div class="border-b border-neutral-200 pb-10 pt-2 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{book.data.subject}</span>
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">Class {book.data.class}</span>
-        {book.data.author && <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{book.data.author}</span>}
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{book.data.subject}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {book.data.class}</span>
+        {book.data.author && <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{book.data.author}</span>}
       </div>
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{book.data.title}</h1>
     </div>
 
-    <a href={book.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-amber-700">
+    <a href={book.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-3.5 text-sm font-semibold transition-colors hover:bg-amber-700">
       <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
     </a>
   </div>

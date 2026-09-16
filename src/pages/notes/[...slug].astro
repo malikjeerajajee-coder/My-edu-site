@@ -24,11 +24,11 @@ const { Content } = await render(note);
       <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to notes
     </a>
 
-    <div class="relative overflow-hidden rounded-3xl border border-[#110176] bg-gradient-to-br from-[#06002e] via-[#110176] to-[#0620ed] p-7 text-white sm:p-9">
+    <div class="border-b border-neutral-200 pb-10 pt-2 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{note.data.subject}</span>
-        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">Class {note.data.class}</span>
-        {note.data.board && <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{note.data.board}</span>}
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{note.data.subject}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {note.data.class}</span>
+        {note.data.board && <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{note.data.board}</span>}
       </div>
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{note.data.title}</h1>
     </div>
