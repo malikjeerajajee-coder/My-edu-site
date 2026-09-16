@@ -3,7 +3,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
-import PdfViewer from '../../components/PdfViewer.astro';
 
 export async function getStaticPaths() {
   const papers = await getCollection('pastPapers');
