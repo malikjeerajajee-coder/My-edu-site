@@ -25,13 +25,13 @@ const { book } = Astro.props;
 
     <div class="border-b border-neutral-200 pb-10 pt-2 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{book.data.subject}</span>
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {book.data.class}</span>
-        {book.data.author && <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{book.data.author}</span>}
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">{book.data.subject}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">Class {book.data.class}</span>
+        {book.data.author && <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">{book.data.author}</span>}
       </div>
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{book.data.title}</h1>
     </div>
 
-    <a href={book.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
+    <a href={book.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
   </div>
 </BaseLayout>

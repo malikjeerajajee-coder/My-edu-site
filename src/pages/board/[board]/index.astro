@@ -47,13 +47,13 @@ const faqJsonLd = info?.faq?.length ? {
   {faqJsonLd && <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />}
 
   <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
-    <a href={url('/boards')} class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#0620ed]">
+    <a href={url('/boards')} class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#2563eb]">
       <Icon name="arrow-left" size={16} strokeWidth={2.4} /> All boards
     </a>
 
     <!-- HERO -->
     <div class="border-b border-neutral-200 pb-10 text-neutral-900">
-      <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">
+      <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">
         <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> Board
       </span>
       <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">{board.full}</h1>
@@ -97,8 +97,8 @@ const faqJsonLd = info?.faq?.length ? {
               + pairingSchemes.filter((i: any) => i.data.class === c).length
               + gazettes.filter((i: any) => i.data.class === c).length;
             return (
-              <a href={url(`/board/${slug}/class-${c}`)} class="group rounded-2xl border border-neutral-200 bg-white p-6 transition-colors hover:border-[#0620ed]">
-                <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
+              <a href={url(`/board/${slug}/class-${c}`)} class="group rounded-2xl border border-neutral-200 bg-white p-6 transition-colors hover:border-[#2563eb]">
+                <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#eef2fe] text-[#2563eb]">
                   <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
                 </span>
                 <h3 class="mt-5 text-2xl font-extrabold tracking-tight text-neutral-900">Class {c}</h3>
@@ -121,7 +121,7 @@ const faqJsonLd = info?.faq?.length ? {
           <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {info.boardsServed.map(b => (
               <div class="flex items-center gap-2.5 rounded-xl border border-neutral-200 bg-white px-4 py-3">
-                <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed] text-white"></span>
+                <span class="h-1.5 w-1.5 rounded-full bg-[#2563eb] text-white"></span>
                 <span class="text-sm font-bold text-neutral-800">{b}</span>
               </div>
             ))}
@@ -182,7 +182,7 @@ const faqJsonLd = info?.faq?.length ? {
                     <td class="px-5 py-3.5">
                       <span class:list={[
                         "inline-block rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide",
-                        s.type === 'compulsory' ? "bg-[#eef2fe] text-[#0620ed]" : "bg-neutral-100 text-neutral-600"
+                        s.type === 'compulsory' ? "bg-[#eef2fe] text-[#2563eb]" : "bg-neutral-100 text-neutral-600"
                       ]}>
                         {s.type}
                       </span>
@@ -241,7 +241,7 @@ const faqJsonLd = info?.faq?.length ? {
                 <ul class="mt-4 space-y-2">
                   {g.subjects.map(s => (
                     <li class="flex items-start gap-2.5 text-sm text-neutral-600">
-                      <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0620ed] text-white"></span>
+                      <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#2563eb] text-white"></span>
                       <span>{s}</span>
                     </li>
                   ))}
@@ -275,14 +275,14 @@ const faqJsonLd = info?.faq?.length ? {
         <section class="mt-14 pb-20">
           <div class="border-b border-neutral-200 pb-10 pt-2 text-neutral-900">
             <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
-              <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#eef2fe] text-[#0620ed]">
+              <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#eef2fe] text-[#2563eb]">
                 <Icon name="newspaper" size={26} strokeWidth={2.2} />
               </span>
               <div class="min-w-0 flex-1">
                 <h2 class="text-xl font-extrabold tracking-tight text-neutral-900 sm:text-2xl">Looking for your result?</h2>
                 <p class="mt-1 text-sm text-neutral-500">Download the latest {board.name} result gazettes for Class 9 and Class 10.</p>
               </div>
-              <a href={url('/gazettes')} class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3 text-sm font-bold text-white hover:bg-[#110176] !text-white">
+              <a href={url('/gazettes')} class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-bold text-white hover:bg-[#110176] !text-white">
                 View gazettes <Icon name="arrow-right" size={15} strokeWidth={2.6} />
               </a>
             </div>

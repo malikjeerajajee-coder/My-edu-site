@@ -24,27 +24,27 @@ const resources = [
     <div class="mx-auto max-w-[1320px] px-4 pt-14 pb-12 sm:px-6 sm:pt-20 sm:pb-16 lg:px-10 lg:pt-24 lg:pb-20">
       <div class="max-w-3xl">
         <div class="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-600">
-          <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed]"></span>
+          <span class="h-1.5 w-1.5 rounded-full bg-[#2563eb]"></span>
           Free for every Pakistani student
         </div>
         <h1 class="mt-6 text-[2.5rem] font-extrabold leading-[1.05] tracking-[-0.035em] text-neutral-900 sm:text-6xl lg:text-[4rem]">
           Your complete<br />
-          <span class="text-[#0620ed]">exam prep library.</span>
+          <span class="bg-gradient-to-r from-[#2563eb] via-[#4f46e5] to-[#7c3aed] bg-clip-text text-transparent">exam prep library.</span>
         </h1>
         <p class="mt-6 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">
           Notes, past papers, guess papers, pairing schemes and result gazettes — organised by board and class for Class 9 through 12.
         </p>
 
-        <form action={url('/search')} method="get" role="search" class="mt-9 flex max-w-xl items-center gap-2 rounded-xl border border-neutral-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#0620ed]">
+        <form action={url('/search')} method="get" role="search" class="mt-9 flex max-w-xl items-center gap-2 rounded-xl border border-neutral-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#2563eb]">
           <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-400" />
           <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400" />
-          <button type="submit" class="rounded-lg bg-[#0620ed] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#110176]">
+          <button type="submit" class="rounded-lg bg-[#2563eb] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#110176]">
             Search
           </button>
         </form>
     <div class="mt-6 flex flex-wrap gap-2">
       <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wide py-1.5 mr-2">Popular:</span>
-      <a href="/My-edu-site/notes" class="px-3 py-1.5 text-sm font-medium bg-blue-50 text-[#0620ed] rounded-full hover:bg-blue-100 transition-colors border border-blue-100">Matric Notes</a>
+      <a href="/My-edu-site/notes" class="px-3 py-1.5 text-sm font-medium bg-blue-50 text-[#2563eb] rounded-full hover:bg-blue-100 transition-colors border border-blue-100">Matric Notes</a>
       <a href="/My-edu-site/past-papers" class="px-3 py-1.5 text-sm font-medium bg-green-50 text-green-700 rounded-full hover:bg-green-100 transition-colors border border-green-100">FSc Past Papers</a>
       <a href="/My-edu-site/guess-papers" class="px-3 py-1.5 text-sm font-medium bg-orange-50 text-orange-700 rounded-full hover:bg-orange-100 transition-colors border border-orange-100">9th Guess Papers</a>
       <a href="/My-edu-site/books" class="px-3 py-1.5 text-sm font-medium bg-purple-50 text-purple-700 rounded-full hover:bg-purple-100 transition-colors border border-purple-100">PTB Textbooks</a>
@@ -64,17 +64,17 @@ const resources = [
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="bg-white rounded-2xl p-8 shadow-sm border border-neutral-200 hover:shadow-md transition-shadow">
-        <div class="w-12 h-12 rounded-xl bg-[#0620ed]/10 flex items-center justify-center text-[#0620ed] font-bold text-xl mb-4">1</div>
+        <div class="w-12 h-12 rounded-xl bg-[#2563eb]/10 flex items-center justify-center text-[#2563eb] font-bold text-xl mb-4">1</div>
         <h3 class="text-xl font-bold text-neutral-900 mb-2">Select Your Board</h3>
         <p class="text-neutral-600 text-sm leading-relaxed">Resources perfectly aligned with Punjab, Federal, Sindh, KPK, and AJK syllabi. No more wasting time on irrelevant material.</p>
       </div>
       <div class="bg-white rounded-2xl p-8 shadow-sm border border-neutral-200 hover:shadow-md transition-shadow">
-        <div class="w-12 h-12 rounded-xl bg-[#0620ed]/10 flex items-center justify-center text-[#0620ed] font-bold text-xl mb-4">2</div>
+        <div class="w-12 h-12 rounded-xl bg-[#2563eb]/10 flex items-center justify-center text-[#2563eb] font-bold text-xl mb-4">2</div>
         <h3 class="text-xl font-bold text-neutral-900 mb-2">Download & Revise</h3>
         <p class="text-neutral-600 text-sm leading-relaxed">Access chapter-wise notes, solved past papers, and exact pairing schemes on any device, offline or online.</p>
       </div>
       <div class="bg-white rounded-2xl p-8 shadow-sm border border-neutral-200 hover:shadow-md transition-shadow">
-        <div class="w-12 h-12 rounded-xl bg-[#0620ed]/10 flex items-center justify-center text-[#0620ed] font-bold text-xl mb-4">3</div>
+        <div class="w-12 h-12 rounded-xl bg-[#2563eb]/10 flex items-center justify-center text-[#2563eb] font-bold text-xl mb-4">3</div>
         <h3 class="text-xl font-bold text-neutral-900 mb-2">Ace Your Exams</h3>
         <p class="text-neutral-600 text-sm leading-relaxed">Practice with our exclusive guess papers and MCQs to walk into your exam hall with 100% confidence.</p>
       </div>
@@ -98,7 +98,7 @@ const resources = [
             <div class="text-base font-extrabold tracking-tight text-neutral-900">{b.name}</div>
             <div class="text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
           </div>
-          <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+          <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#2563eb]" />
         </a>
       ))}
     </div>
@@ -114,7 +114,7 @@ const resources = [
 
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {resources.map(r => (
-          <a href={url(r.href)} class="group flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#0620ed]">
+          <a href={url(r.href)} class="group flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#2563eb]">
             <span class="icon-tile">
               <Icon name={r.icon} size={20} strokeWidth={2.2} />
             </span>

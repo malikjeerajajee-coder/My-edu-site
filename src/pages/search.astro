@@ -10,7 +10,7 @@ import Icon from '../components/Icon.astro';
     </div>
 
     <div class="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-5">
-      <div class="flex items-center gap-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-1 transition-colors focus-within:border-[#0620ed] focus-within:bg-white">
+      <div class="flex items-center gap-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-1 transition-colors focus-within:border-[#2563eb] focus-within:bg-white">
         <Icon name="search" size={20} strokeWidth={2.4} class="shrink-0 text-neutral-400" />
         <input
           id="search-input"
@@ -53,7 +53,7 @@ import Icon from '../components/Icon.astro';
       }
       function typeCls(t) {
         return {
-          note: 'bg-[#eef2fe] text-[#0620ed] border-[#c7d3fd]',
+          note: 'bg-[#eef2fe] text-[#2563eb] border-[#c7d3fd]',
           quiz: 'bg-blue-50 text-blue-700 border-blue-200',
           book: 'bg-amber-50 text-amber-700 border-amber-200',
           gazette: 'bg-rose-50 text-rose-700 border-rose-200'
@@ -86,16 +86,16 @@ import Icon from '../components/Icon.astro';
 
         results.innerHTML = matches.map(function (m) {
           var badges = '';
-          if (m.subject) badges += '<span class="rounded-md bg-[#eef2fe] px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#0620ed]">' + esc(m.subject) + '</span>';
+          if (m.subject) badges += '<span class="rounded-md bg-[#eef2fe] px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#2563eb]">' + esc(m.subject) + '</span>';
           if (m.class) badges += '<span class="rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-neutral-600">Class ' + esc(m.class) + '</span>';
           var href = '../' + String(m.url || '').replace(/^\//, '');
-          return '<a href="' + esc(href) + '" class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#0620ed]">' +
+          return '<a href="' + esc(href) + '" class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#2563eb]">' +
             '<span class="rounded-md border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ' + typeCls(m.type) + '">' + esc(typeLabel(m.type)) + '</span>' +
             '<div class="min-w-0 flex-1">' +
               '<h3 class="truncate text-[0.925rem] font-bold tracking-tight text-neutral-900">' + esc(m.title) + '</h3>' +
               '<div class="mt-1.5 flex flex-wrap gap-1.5">' + badges + '</div>' +
             '</div>' +
-            '<svg class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#0620ed]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' +
+            '<svg class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#2563eb]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' +
           '</a>';
         }).join('');
       }

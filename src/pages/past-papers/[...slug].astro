@@ -67,11 +67,11 @@ const faqJsonLd = d.faq && d.faq.length ? {
   <div class="mx-auto max-w-5xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
     <!-- Breadcrumbs -->
     <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/')} class="hover:text-[#0620ed]">Home</a>
+      <a href={url('/')} class="hover:text-[#2563eb]">Home</a>
       <span>/</span>
-      <a href={url('/past-papers')} class="hover:text-[#0620ed]">Past Papers</a>
+      <a href={url('/past-papers')} class="hover:text-[#2563eb]">Past Papers</a>
       <span>/</span>
-      <a href={url('/board/punjab')} class="hover:text-[#0620ed]">Punjab</a>
+      <a href={url('/board/punjab')} class="hover:text-[#2563eb]">Punjab</a>
       <span>/</span>
       <span class="text-neutral-500">Class {d.class} · {d.subject} · {d.year}</span>
     </nav>
@@ -80,10 +80,10 @@ const faqJsonLd = d.faq && d.faq.length ? {
     <div class="border-b border-neutral-200 pb-10 text-neutral-900">
       <div class="flex flex-wrap gap-1.5">
         {(d.boards || []).map((b: string) => (
-          <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{b}</span>
+          <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">{b}</span>
         ))}
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">Class {d.class}</span>
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#0620ed]">{d.year}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">Class {d.class}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#2563eb]">{d.year}</span>
       </div>
       <h1 class="mt-5 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">{d.title}</h1>
       {d.totalMarks && (
@@ -95,7 +95,7 @@ const faqJsonLd = d.faq && d.faq.length ? {
     </div>
 
     <!-- Download -->
-    <a href="#" target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
+    <a href="#" target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
 
     <!-- Two-column content -->
     <div class="mt-8 grid gap-6 lg:grid-cols-3">
@@ -112,7 +112,7 @@ const faqJsonLd = d.faq && d.faq.length ? {
               {d.objective && (
                 <div class="rounded-xl border border-neutral-200 bg-neutral-50 p-5">
                   <div class="flex items-center gap-2">
-                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#eef2fe] text-[#0620ed]">
+                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#eef2fe] text-[#2563eb]">
                       <Icon name="circle-help" size={17} strokeWidth={2.3} />
                     </span>
                     <div class="text-sm font-extrabold text-neutral-900">Objective</div>
@@ -124,7 +124,7 @@ const faqJsonLd = d.faq && d.faq.length ? {
               {d.subjective && (
                 <div class="rounded-xl border border-neutral-200 bg-neutral-50 p-5">
                   <div class="flex items-center gap-2">
-                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#eef2fe] text-[#0620ed]">
+                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#eef2fe] text-[#2563eb]">
                       <Icon name="file-text" size={17} strokeWidth={2.3} />
                     </span>
                     <div class="text-sm font-extrabold text-neutral-900">Subjective</div>
@@ -228,7 +228,7 @@ const faqJsonLd = d.faq && d.faq.length ? {
             <ul class="mt-4 space-y-1">
               {related.map((r: any) => (
                 <li>
-                  <a href={url(`/past-papers/${r.id}`)} class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#eef2fe] hover:text-[#0620ed]">
+                  <a href={url(`/past-papers/${r.id}`)} class="flex items-center justify-between gap-3 rounded-lg px-2 py-2 text-sm font-semibold text-neutral-700 transition-colors hover:bg-[#eef2fe] hover:text-[#2563eb]">
                     <span>{r.data.year}</span>
                     <Icon name="chevron-right" size={14} strokeWidth={2.4} />
                   </a>

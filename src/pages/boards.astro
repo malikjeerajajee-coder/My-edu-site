@@ -10,7 +10,7 @@ const counts = await getBoardCounts();
 <BaseLayout title="All Boards — TaleemHub" description="Browse notes, past papers, guess papers and result gazettes for all Pakistani boards: Punjab, Federal, KPK, Sindh, Balochistan, AJK.">
   <div class="mx-auto max-w-[1320px] px-4 pt-12 pb-16 sm:px-6 lg:px-10 lg:pt-16">
     <nav class="mb-8 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/')} class="hover:text-[#0620ed]">Home</a>
+      <a href={url('/')} class="hover:text-[#2563eb]">Home</a>
       <span>/</span>
       <span class="text-neutral-500">Boards</span>
     </nav>
@@ -32,7 +32,7 @@ const counts = await getBoardCounts();
             <div class="text-base font-extrabold tracking-tight text-neutral-900">{b.name}</div>
             <div class="text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
           </div>
-          <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+          <Icon name="arrow-right" size={18} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#2563eb]" />
         </a>
       ))}
     </div>
