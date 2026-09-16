@@ -33,8 +33,6 @@ const { book } = Astro.props;
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{book.data.title}</h1>
     </div>
 
-    <a href={book.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-3.5 text-sm font-semibold transition-colors hover:bg-amber-700">
-      <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
-    </a>
+    { book.data.pdfUrl && <PdfViewer url={book.data.pdfUrl} title={book.data.title} /> }
   </div>
 </BaseLayout>

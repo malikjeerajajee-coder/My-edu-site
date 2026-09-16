@@ -34,11 +34,7 @@ const { Content } = await render(note);
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{note.data.title}</h1>
     </div>
 
-    {note.data.pdfUrl && (
-      <a href={note.data.pdfUrl} class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#110176] !text-white">
-        <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
-      </a>
-    )}
+    { note.data.pdfUrl && <PdfViewer url={note.data.pdfUrl} title={note.data.title} /> }
 
     <article class="prose mt-6 rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8">
       <Content />
