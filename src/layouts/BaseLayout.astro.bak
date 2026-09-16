@@ -1,0 +1,174 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+
+interface Props { title: string; description?: string; }
+const {
+  title,
+  description = 'Free notes, interactive quizzes, textbooks and result gazettes for Pakistani students.',
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const navItems = [
+  { href: '/',         label: 'Home',     icon: 'home' },
+  { href: '/notes',    label: 'Notes',    icon: 'book-open' },
+  { href: '/quizzes',  label: 'Quizzes',  icon: 'circle-help' },
+  { href: '/books',    label: 'Books',    icon: 'library' },
+  { href: '/gazettes', label: 'Gazettes', icon: 'newspaper' },
+];
+const isActive = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#047857" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  
+  <link rel="sitemap" href="/sitemap-index.xml" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/85 backdrop-blur-lg">
+    <div class="mx-auto flex h-16 w-full max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+      <a href="/" class="flex shrink-0 items-center gap-2.5">
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-600 text-white">
+          <Icon name="graduation-cap" size={20} strokeWidth={2.4} />
+        </span>
+        <span class="font-display text-lg font-extrabold tracking-tight">TaleemHub</span>
+      </a>
+
+      <nav class="ml-6 hidden items-center gap-1 md:flex">
+        {navItems.map(item => (
+          <a
+            href={item.href}
+            class:list={[
+              "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
+              isActive(item.href)
+                ? "bg-emerald-50 text-emerald-700"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="ml-auto flex items-center gap-2">
+        <form
+          action="/search"
+          method="get"
+          role="search"
+          class="hidden h-10 w-64 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 transition-colors focus-within:border-emerald-400 focus-within:bg-white lg:flex"
+        >
+          <Icon name="search" size={16} strokeWidth={2.4} class="shrink-0 text-slate-400" />
+          <input
+            type="search"
+            name="q"
+            placeholder="Search library"
+            class="min-w-0 flex-1 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400"
+          />
+          <kbd class="hidden rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold text-slate-500 xl:inline-block">/</kbd>
+        </form>
+
+        <a
+          href="/search"
+          class="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-colors hover:bg-white hover:text-slate-900 lg:hidden"
+          aria-label="Search"
+        >
+          <Icon name="search" size={18} strokeWidth={2.4} />
+        </a>
+
+        <a
+          href="/notes"
+          class="hidden items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 sm:inline-flex"
+        >
+          Start learning
+          <Icon name="arrow-right" size={14} strokeWidth={2.6} />
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="min-h-[60vh] pb-28 md:pb-0">
+    <slot />
+  </main>
+
+  <footer class="mt-24 hidden border-t border-slate-200 bg-white md:block">
+    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="sm:col-span-2">
+          <div class="flex items-center gap-2.5">
+            <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-600 text-white">
+              <Icon name="graduation-cap" size={20} strokeWidth={2.4} />
+            </span>
+            <span class="font-display text-lg font-extrabold tracking-tight">TaleemHub</span>
+          </div>
+          <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-500">
+            Free notes, interactive quizzes, textbooks and result gazettes for students across Pakistan — all in one place.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-slate-900">Library</h4>
+          <ul class="mt-4 space-y-2.5 text-sm text-slate-500">
+            <li><a href="/notes" class="hover:text-emerald-700">Notes</a></li>
+            <li><a href="/quizzes" class="hover:text-emerald-700">Quizzes</a></li>
+            <li><a href="/books" class="hover:text-emerald-700">Textbooks</a></li>
+            <li><a href="/gazettes" class="hover:text-emerald-700">Gazettes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold text-slate-900">Explore</h4>
+          <ul class="mt-4 space-y-2.5 text-sm text-slate-500">
+            <li><a href="/search" class="hover:text-emerald-700">Search</a></li>
+            <li><a href="/notes" class="hover:text-emerald-700">Class 9</a></li>
+            <li><a href="/notes" class="hover:text-emerald-700">Class 10</a></li>
+            <li><a href="/gazettes" class="hover:text-emerald-700">Latest results</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-10 flex flex-col gap-2 border-t border-slate-200 pt-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+        <p>© {new Date().getFullYear()} TaleemHub. Built for students, forever free.</p>
+        <p>Made in Pakistan</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile bottom nav -->
+  <nav class="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-lg md:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
+    <div class="flex items-stretch">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            "flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-2.5 text-[10px] font-semibold leading-none transition-colors",
+            isActive(item.href) ? "text-emerald-600" : "text-slate-400",
+          ]}
+        >
+          <Icon name={item.icon} size={20} strokeWidth={2.2} />
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </div>
+  </nav>
+
+  <script is:inline>
+    document.addEventListener('keydown', function (e) {
+      var t = e.target;
+      if (e.key === '/' && t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA' && !t.isContentEditable) {
+        var input = document.querySelector('.header-search input') || document.querySelector('input[type="search"]');
+        if (input) { e.preventDefault(); input.focus(); }
+      }
+    });
+  </script>
+</body>
+</html>

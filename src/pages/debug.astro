@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+const notes = await getCollection('notes');
+const quizzes = await getCollection('quizzes');
+const books = await getCollection('books');
+const gazettes = await getCollection('gazettes');
+---
+<!DOCTYPE html>
+<html>
+<head><title>Debug</title></head>
+<body style="font-family: monospace; padding: 20px; font-size: 14px;">
+  <h1>Content Debug</h1>
+  <ul>
+    <li>notes: {notes.length}</li>
+    <li>quizzes: {quizzes.length}</li>
+    <li>books: {books.length}</li>
+    <li>gazettes: {gazettes.length}</li>
+  </ul>
+  <h2>First note raw:</h2>
+  <pre>{JSON.stringify(notes[0] ?? null, null, 2)}</pre>
+</body>
+</html>

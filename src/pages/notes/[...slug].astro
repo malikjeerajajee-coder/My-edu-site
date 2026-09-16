@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map(note => ({ params: { slug: note.id }, props: { note } }));
+}
+const { note } = Astro.props;
+const { Content } = await render(note);
+---
+<BaseLayout title={`${note.data.title} — TaleemHub`} description={`${note.data.subject} notes for Class ${note.data.class}.`}>
+  <div class="mx-auto w-full max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
+    <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
+      <a href="/" class="transition-colors hover:text-[#110176]">Home</a>
+      <span>/</span>
+      <a href="/notes" class="transition-colors hover:text-[#110176]">Notes</a>
+      <span>/</span>
+      <span class="truncate text-neutral-500">Note</span>
+    </nav>
+
+    <a href="/notes" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 transition-colors hover:text-[#110176]">
+      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to notes
+    </a>
+
+    <div class="relative overflow-hidden rounded-3xl border border-[#110176] bg-gradient-to-br from-[#06002e] via-[#110176] to-[#0620ed] p-7 text-white sm:p-9">
+      <div class="flex flex-wrap gap-1.5">
+        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{note.data.subject}</span>
+        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">Class {note.data.class}</span>
+        {note.data.board && <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{note.data.board}</span>}
+      </div>
+      <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{note.data.title}</h1>
+    </div>
+
+    {note.data.pdfUrl && (
+      <a href={note.data.pdfUrl} class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#110176]">
+        <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
+      </a>
+    )}
+
+    <article class="prose mt-6 rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8">
+      <Content />
+    </article>
+  </div>
+</BaseLayout>

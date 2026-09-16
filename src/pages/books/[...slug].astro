@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books');
+  return books.map(book => ({ params: { slug: book.id }, props: { book } }));
+}
+const { book } = Astro.props;
+---
+<BaseLayout title={`${book.data.title} — TaleemHub`} description={`Download ${book.data.title} PDF for Class ${book.data.class}.`}>
+  <div class="mx-auto w-full max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
+    <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
+      <a href="/" class="transition-colors hover:text-[#110176]">Home</a>
+      <span>/</span>
+      <a href="/books" class="transition-colors hover:text-[#110176]">Textbooks</a>
+      <span>/</span>
+      <span class="truncate text-neutral-500">Textbook</span>
+    </nav>
+
+    <a href="/books" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 transition-colors hover:text-amber-700">
+      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to textbooks
+    </a>
+
+    <div class="relative overflow-hidden rounded-3xl border border-amber-700 bg-gradient-to-br from-amber-900 via-amber-800 to-amber-600 p-7 text-white sm:p-9">
+      <div class="flex flex-wrap gap-1.5">
+        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{book.data.subject}</span>
+        <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">Class {book.data.class}</span>
+        {book.data.author && <span class="rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide backdrop-blur-sm">{book.data.author}</span>}
+      </div>
+      <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{book.data.title}</h1>
+    </div>
+
+    <a href={book.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-amber-700">
+      <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
+    </a>
+  </div>
+</BaseLayout>

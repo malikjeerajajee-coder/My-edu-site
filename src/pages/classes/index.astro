@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getTaxonomy } from '../../lib/taxonomy';
+
+const { classes } = await getTaxonomy();
+const tints = ['emerald', 'blue', 'amber', 'violet'];
+---
+<BaseLayout title="Classes — TaleemHub" description="Browse notes, quizzes and textbooks by class for Pakistani students.">
+  <div class="mx-auto w-full max-w-7xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+    <div class="mb-10">
+      <h1 class="font-display text-3xl font-extrabold tracking-tight text-stone-900 sm:text-4xl">Browse by class</h1>
+      <p class="mt-2 text-stone-500">Pick your class and see every note, quiz, textbook and gazette we have.</p>
+    </div>
+    {classes.length === 0 ? (
+      <div class="rounded-2xl border border-dashed border-stone-300 bg-white p-12 text-center">
+        <div class="text-base font-bold text-stone-900">No content yet</div>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {classes.map((c, i) => {
+          const tint = tints[i % tints.length];
+          return (
+            <a href={`/classes/${c.class}`} class="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 transition-colors hover:border-indigo-300">
+              <div class="flex items-start justify-between">
+                <span class:list={[
+                  "grid h-12 w-12 place-items-center rounded-xl",
+                  tint === 'emerald' && "bg-indigo-100 text-indigo-700",
+                  tint === 'blue'    && "bg-blue-100 text-blue-700",
+                  tint === 'amber'   && "bg-amber-100 text-amber-700",
+                  tint === 'violet'  && "bg-violet-100 text-violet-700",
+                ]}>
+                  <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
+                </span>
+                <Icon name="arrow-up-right" size={18} strokeWidth={2.4} class="text-stone-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-indigo-600" />
+              </div>
+              <h3 class="mt-5 font-display text-2xl font-extrabold tracking-tight text-stone-900">Class {c.class}</h3>
+              <p class="mt-1 text-sm text-stone-500">{c.subjects.length} {c.subjects.length === 1 ? 'subject' : 'subjects'} · {c.total} {c.total === 1 ? 'item' : 'items'}</p>
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('notes')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+<BaseLayout title="Notes — TaleemHub" description="Subject-wise notes for Pakistani students.">
+  <div class="mx-auto w-full max-w-7xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+    <div class="mb-8">
+      <h1 class="font-display text-3xl font-extrabold tracking-tight text-stone-900 sm:text-4xl">Notes</h1>
+      <p class="mt-2 text-stone-500">{notes.length} {notes.length === 1 ? 'note' : 'notes'} across all subjects</p>
+    </div>
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+      {notes.map(n => (
+        <a href={`/notes/${n.id}`} class="group flex items-center gap-4 rounded-2xl border border-stone-200 bg-white p-4 transition-colors hover:border-indigo-300">
+          <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-indigo-100 text-indigo-700">
+            <Icon name="file-text" size={18} strokeWidth={2.2} />
+          </span>
+          <div class="min-w-0 flex-1">
+            <h3 class="truncate text-[0.925rem] font-bold tracking-tight text-stone-900">{n.data.title}</h3>
+            <div class="mt-1.5 flex flex-wrap gap-1.5">
+              <span class="rounded-md bg-indigo-50 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-indigo-700">{n.data.subject}</span>
+              <span class="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-blue-700">Class {n.data.class}</span>
+            </div>
+          </div>
+          <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-stone-300 transition-transform group-hover:translate-x-0.5 group-hover:text-indigo-600" />
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
