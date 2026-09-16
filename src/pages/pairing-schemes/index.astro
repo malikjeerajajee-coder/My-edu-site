@@ -38,7 +38,7 @@ const recent = [...items].sort((a: any, b: any) => (b.data.year || 0) - (a.data.
           <a href={url(`/board/${b.slug}`)} class:list={["row group", disabled && "opacity-60"]}>
             <span class="tile"><Icon name="list" size={18} strokeWidth={2.2} /></span>
             <div class="min-w-0 flex-1">
-              <div class="row-title">{b.name}</div>
+              <div class="row-title font-bold">{b.name}</div>
               <div class="row-sub">{disabled ? 'Coming soon' : `${count} ${count === 1 ? 'item' : 'items'}`}</div>
             </div>
             {!disabled && <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />}

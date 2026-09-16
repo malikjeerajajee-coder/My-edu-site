@@ -34,7 +34,7 @@ const counts = await getBoardCounts();
             <Icon name="graduation-cap" size={20} strokeWidth={2.2} />
           </span>
           <div class="min-w-0 flex-1">
-            <div class="row-title">{b.name}</div>
+            <div class="row-title font-bold">{b.name}</div>
             <div class="row-sub">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
           </div>
           <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
