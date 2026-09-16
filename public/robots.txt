@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://malikjeerajajee-coder.github.io/My-edu-site/sitemap-index.xml
