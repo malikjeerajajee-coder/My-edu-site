@@ -27,61 +27,59 @@ const sections = [
 ].filter(s => s.count > 0);
 ---
 <BaseLayout title={`${board.name} Class ${cls} — All Subjects | TaleemHub`} description={`All Class ${cls} study material for ${board.full}: notes, past papers, guess papers, quizzes and more.`}>
-  <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
-    <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
-      <span>/</span>
-      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{board.name}</a>
-      <span>/</span>
-      <span class="text-neutral-500">Class {cls}</span>
-    </nav>
-
-    <div class="border-b border-neutral-200 pb-10 text-neutral-900">
-      <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">
-          <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {board.name}
-        </span>
+  <!-- Page header -->
+  <div class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
+        <span>/</span>
+        <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{board.name}</a>
+        <span>/</span>
+        <span class="text-slate-500">Class {cls}</span>
+      </nav>
+      <div class="max-w-2xl">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">Class {cls} · {board.name}</h1>
+        <p class="mt-3 text-base text-slate-600">{subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'} · {data.total} items</p>
       </div>
-      <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">Class {cls}</h1>
-      <p class="mt-2 text-neutral-600">{subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'} · {data.total} items</p>
     </div>
-
-    {sections.length > 0 && (
-      <section class="mt-10">
-        <h2 class="mb-5 text-xl font-extrabold tracking-tight text-neutral-900">Browse by type</h2>
-        <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {sections.map(s => (
-            <a href={url(`/board/${boardSlug}/class-${cls}/${s.slug}`)} class="group flex items-center gap-3.5 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#1d4ed8]">
-              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
-                <Icon name={s.icon} size={19} strokeWidth={2.2} />
-              </span>
-              <div class="min-w-0">
-                <div class="text-sm font-extrabold tracking-tight text-neutral-900">{s.label}</div>
-                <div class="text-xs font-semibold text-neutral-500">{s.count} {s.count === 1 ? 'item' : 'items'}</div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
-
-    {subjects.length > 0 && (
-      <section class="mt-12 pb-16">
-        <h2 class="mb-5 text-xl font-extrabold tracking-tight text-neutral-900">Browse by subject</h2>
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {subjects.map(s => (
-            <a href={url(`/board/${boardSlug}/class-${cls}/${slugify(s)}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#1d4ed8]">
-              <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#1d4ed8]">
-                <Icon name="library" size={19} strokeWidth={2.2} />
-              </span>
-              <div class="min-w-0 flex-1">
-                <div class="text-base font-extrabold tracking-tight text-neutral-900">{s}</div>
-              </div>
-              <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
   </div>
+
+  <!-- Browse by type -->
+  {sections.length > 0 && (
+    <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+      <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Browse by resource type</h2>
+      <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {sections.map(s => (
+          <a href={url(`/board/${boardSlug}/class-${cls}/${s.slug}`)} class="row group">
+            <span class="tile"><Icon name={s.icon} size={18} strokeWidth={2.2} /></span>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-extrabold tracking-tight text-slate-900">{s.label}</div>
+              <div class="text-xs text-slate-500">{s.count} {s.count === 1 ? 'item' : 'items'}</div>
+            </div>
+            <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Browse by subject -->
+  {subjects.length > 0 && (
+    <div class="border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+        <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Browse by subject</h2>
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {subjects.map(s => (
+            <a href={url(`/board/${boardSlug}/class-${cls}/${slugify(s)}`)} class="row group">
+              <span class="tile"><Icon name="library" size={18} strokeWidth={2.2} /></span>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-extrabold tracking-tight text-slate-900">{s}</div>
+              </div>
+              <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  )}
 </BaseLayout>
