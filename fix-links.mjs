@@ -14,13 +14,16 @@ function walk(dir) {
 
 function fixFile(file) {
   let html = readFileSync(file, 'utf8');
-  // Rewrite href="/xxx" → href="/My-edu-site/xxx" (skip if already has base)
+  // href="/x"  → href="/My-edu-site/x"  (skip if already has base)
   html = html.replace(/href="\/(?!My-edu-site\/)([^"]*)"/g, (m, p) => `href="${BASE}/${p}"`);
-  // Rewrite src="/xxx" → src="/My-edu-site/xxx"
+  // src="/x"   → src="/My-edu-site/x"
   html = html.replace(/src="\/(?!My-edu-site\/)([^"]*)"/g, (m, p) => `src="${BASE}/${p}"`);
+  // action="/x" → action="/My-edu-site/x" (for forms)
+  html = html.replace(/action="\/(?!My-edu-site\/)([^"]*)"/g, (m, p) => `action="${BASE}/${p}"`);
+  // Fix double-base if any: /My-edu-site/My-edu-site/ → /My-edu-site/
+  html = html.replace(new RegExp(`${BASE}${BASE}`, 'g'), BASE);
   writeFileSync(file, html);
-  console.log('  fixed:', file);
 }
 
 walk(DIST);
-console.log('Done.');
+console.log('All internal links rewritten with base path.');
