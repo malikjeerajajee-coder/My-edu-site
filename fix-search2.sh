@@ -1,3 +1,9 @@
+#!/bin/bash
+set -e
+
+echo "Rewriting search.astro cleanly..."
+
+cat > src/pages/search.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -114,3 +120,25 @@ import Icon from '../components/Icon.astro';
     })();
   </script>
 </BaseLayout>
+ASTRO
+
+echo "  search.astro rewritten"
+
+# Make sure fix-links.mjs exists (from previous script)
+if [ ! -f fix-links.mjs ]; then
+  echo "  WARNING: fix-links.mjs missing"
+fi
+
+# Rebuild
+echo ""
+echo "Rebuilding..."
+npm run build
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Now push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Fix search page'"
+echo "    git push"
+echo "════════════════════════════════════════════"
