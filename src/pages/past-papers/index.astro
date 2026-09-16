@@ -3,64 +3,120 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
-import { BOARDS, itemBoards, slugify } from '../../lib/boards';
+import { BOARDS, itemBoards } from '../../lib/boards';
 
-const papers = (await getCollection('pastPapers')).sort((a: any, b: any) => {
-  if (a.data.class !== b.data.class) return Number(a.data.class) - Number(b.data.class);
-  if (a.data.subject !== b.data.subject) return a.data.subject.localeCompare(b.data.subject);
-  return (b.data.year || 0) - (a.data.year || 0);
-});
+const papers = await getCollection('pastPapers');
 
-// Count per board
+// Count papers per board
 const boardCounts: Record<string, number> = {};
 for (const b of BOARDS) {
   boardCounts[b.slug] = papers.filter((p: any) => itemBoards(p.data).includes(b.name)).length;
 }
-const boardWithContent = BOARDS.filter(b => boardCounts[b.slug] > 0);
+
+// Group by class for the "quick jump" section
+const classSet = new Set<string>();
+papers.forEach((p: any) => classSet.add(p.data.class));
+const classes = [...classSet].sort((a, b) => Number(a) - Number(b));
+
+// Recently added (latest by year)
+const recent = [...papers]
+  .sort((a: any, b: any) => (b.data.year || 0) - (a.data.year || 0))
+  .slice(0, 6);
 ---
-<BaseLayout title="Past Papers — All Boards & Classes | TaleemHub" description="Download past papers for Class 9-12 across all Pakistani boards. Punjab, Federal, KPK, Sindh, Balochistan, AJK.">
-  <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
-    <div class="mb-10">
-      <h1 class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">Past Papers</h1>
-      <p class="mt-2 text-neutral-500">{papers.length} {papers.length === 1 ? 'paper' : 'papers'} across {boardWithContent.length} {boardWithContent.length === 1 ? 'board' : 'boards'}</p>
+<BaseLayout
+  title="Past Papers — Class 9 to 12 | All Pakistan Boards | TaleemHub"
+  description="Download past papers for Class 9, 10, 11, 12 across all Pakistani boards. Free PDFs for Punjab, Federal, KPK, Sindh, Balochistan and AJK boards."
+>
+  <div class="mx-auto max-w-[1320px] px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8">
+    <!-- HERO -->
+    <div class="max-w-2xl">
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0620ed]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#0620ed]"></span>
+        Exam preparation
+      </div>
+      <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-neutral-900 sm:text-5xl">
+        Past Papers
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-neutral-500 sm:text-lg">
+        Pick your board, then your class and subject — and find every paper you need, from 2018 to today.
+      </p>
     </div>
 
-    <section class="mb-12">
-      <h2 class="mb-4 text-sm font-bold uppercase tracking-wider text-neutral-400">Browse by board</h2>
-      <div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        {boardWithContent.map(b => (
-          <a href={url(`/board/${b.slug}`)} class="group rounded-2xl border border-neutral-200 bg-white p-5 transition-colors hover:border-[#0620ed]">
-            <div class="flex items-center justify-between">
-              <span class="grid h-11 w-11 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
-                <Icon name="scroll-text" size={19} strokeWidth={2.2} />
-              </span>
-              <span class="text-xl font-extrabold text-neutral-900">{boardCounts[b.slug]}</span>
-            </div>
-            <h3 class="mt-4 text-base font-extrabold tracking-tight text-neutral-900">{b.name}</h3>
-          </a>
-        ))}
+    <!-- PICK YOUR BOARD -->
+    <section class="mt-12">
+      <div class="mb-6 flex items-end justify-between gap-4">
+        <h2 class="text-xl font-extrabold tracking-tight text-neutral-900 sm:text-2xl">Step 1 — Choose your board</h2>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        {BOARDS.map(b => {
+          const count = boardCounts[b.slug];
+          const disabled = count === 0;
+          const cls = disabled
+            ? "cursor-default opacity-50"
+            : "hover:border-[#0620ed]";
+          const tag: any = disabled ? 'div' : 'a';
+          return (
+            <a href={url(`/board/${b.slug}`)}
+               class:list={["group rounded-2xl border border-neutral-200 bg-white p-6 transition-colors", cls]}>
+              <div class="flex items-start justify-between">
+                <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
+                  <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
+                </span>
+                {!disabled && (
+                  <Icon name="arrow-up-right" size={18} strokeWidth={2.4} class="text-neutral-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+                )}
+              </div>
+              <h3 class="mt-5 text-lg font-extrabold tracking-tight text-neutral-900">{b.name}</h3>
+              <p class:list={["mt-1 text-sm", disabled ? "text-neutral-400" : "text-neutral-500"]}>
+                {count === 0 ? "Coming soon" : `${count} paper${count === 1 ? '' : 's'}`}
+              </p>
+            </a>
+          );
+        })}
       </div>
     </section>
 
-    <section class="pb-16">
-      <h2 class="mb-4 text-sm font-bold uppercase tracking-wider text-neutral-400">All papers</h2>
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-        {papers.map((p: any) => (
-          <a href={url(`/past-papers/${p.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#0620ed]">
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
-              <Icon name="scroll-text" size={17} strokeWidth={2.2} />
-            </span>
-            <div class="min-w-0 flex-1">
-              <h3 class="truncate text-sm font-bold text-neutral-900">{p.data.title}</h3>
-              <div class="mt-1.5 flex flex-wrap gap-1.5">
-                <span class="rounded-md bg-[#eef2fe] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0620ed]">Class {p.data.class}</span>
-                <span class="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-600">{p.data.year}</span>
+    <!-- QUICK JUMP -->
+    {classes.length > 0 && (
+      <section class="mt-14 rounded-3xl border border-neutral-200 bg-neutral-50 p-8 sm:p-10">
+        <h2 class="text-xl font-extrabold tracking-tight text-neutral-900">Or jump straight by class</h2>
+        <p class="mt-2 text-sm text-neutral-500">
+          Papers vary by board, so once you pick a class we'll ask you for your board.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          {classes.map(c => (
+            <a href={url(`/past-papers/class/${c}`)} class="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-bold text-neutral-900 transition-colors hover:border-[#0620ed] hover:text-[#0620ed]">
+              <Icon name="file-text" size={15} strokeWidth={2.3} />
+              Class {c}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- RECENTLY ADDED -->
+    {recent.length > 0 && (
+      <section class="mt-14 pb-20">
+        <div class="mb-6">
+          <h2 class="text-xl font-extrabold tracking-tight text-neutral-900">Recently added</h2>
+          <p class="mt-1 text-sm text-neutral-500">The newest papers across all boards.</p>
+        </div>
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {recent.map((p: any) => (
+            <a href={url(`/past-papers/${p.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#0620ed]">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
+                <Icon name="scroll-text" size={17} strokeWidth={2.2} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <h3 class="truncate text-sm font-bold text-neutral-900">{p.data.subject}</h3>
+                <p class="truncate text-xs text-neutral-500">Class {p.data.class} · {p.data.year}</p>
               </div>
-            </div>
-            <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
-          </a>
-        ))}
-      </div>
-    </section>
+              <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 </BaseLayout>

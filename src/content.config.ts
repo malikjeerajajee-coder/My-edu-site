@@ -55,6 +55,18 @@ const gazettes = defineCollection({
   }),
 });
 
+const topicSchema = z.object({
+  chapter: z.string(),
+  mcqs: z.number().optional(),
+  short: z.number().optional(),
+  long: z.number().optional(),
+});
+
+const faqSchema = z.object({
+  q: z.string(),
+  a: z.string(),
+});
+
 const pastPapers = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/past-papers' }),
   schema: z.object({
@@ -65,6 +77,12 @@ const pastPapers = defineCollection({
     board: z.string().optional(),
     boards: z.array(z.string()).optional(),
     pdfUrl: z.string(),
+    totalMarks: z.number().optional(),
+    duration: z.string().optional(),
+    objective: z.object({ mcqs: z.number(), marks: z.number() }).optional(),
+    subjective: z.object({ short: z.number(), long: z.number(), marks: z.number() }).optional(),
+    topics: z.array(topicSchema).optional(),
+    faq: z.array(faqSchema).optional(),
   }),
 });
 
