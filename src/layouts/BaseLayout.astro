@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
-import SeoHead from '../components/SeoHead.astro';
 import { url } from '../lib/url';
 
 interface Props { title: string; description?: string; }
@@ -11,22 +10,28 @@ const {
 } = Astro.props;
 
 const path = Astro.url.pathname;
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const navMain = [
-  { href: '/',         label: 'Home',     icon: 'home' },
-  { href: '/classes',  label: 'Classes',  icon: 'graduation-cap' },
-  { href: '/subjects', label: 'Subjects', icon: 'library' },
+  { href: '/',       label: 'Home',   icon: 'home' },
+  { href: '/boards', label: 'Boards', icon: 'graduation-cap' },
 ];
-const navLibrary = [
-  { href: '/notes',    label: 'Notes',    icon: 'book-open' },
-  { href: '/quizzes',  label: 'Quizzes',  icon: 'circle-help' },
-  { href: '/books',    label: 'Books',    icon: 'book-marked' },
-  { href: '/gazettes', label: 'Gazettes', icon: 'newspaper' },
+const navStudy = [
+  { href: '/notes',   label: 'Notes',   icon: 'file-text' },
+  { href: '/quizzes', label: 'Quizzes', icon: 'circle-help' },
+  { href: '/books',   label: 'Books',   icon: 'book-marked' },
+];
+const navExam = [
+  { href: '/past-papers',     label: 'Past Papers',     icon: 'scroll-text' },
+  { href: '/guess-papers',    label: 'Guess Papers',    icon: 'sparkles' },
+  { href: '/pairing-schemes', label: 'Pairing Schemes', icon: 'list' },
+  { href: '/gazettes',        label: 'Result Gazettes', icon: 'newspaper' },
 ];
 
 const isActive = (href: string) => {
   const target = url(href);
-  return href === '/' ? path === target || path === target + '/' : path.startsWith(target);
+  if (href === '/') return path === target || path === target + '/';
+  return path.startsWith(target);
 };
 ---
 <!DOCTYPE html>
@@ -34,11 +39,16 @@ const isActive = (href: string) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0620ed" />
   <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
-  <SeoHead title={title} description={description} />
+  <link rel="sitemap" href={url('/sitemap-index.xml')} />
 </head>
 <body class="min-h-screen bg-white">
 
@@ -51,34 +61,47 @@ const isActive = (href: string) => {
       <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
     </a>
 
-    <nav class="flex-1 overflow-y-auto px-3 py-6">
+    <nav class="flex-1 overflow-y-auto px-3 py-5">
       <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Main</div>
       <ul class="space-y-0.5">
         {navMain.map(item => (
           <li>
             <a href={url(item.href)} class:list={[
-              "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors duration-150",
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
               isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
             ]}>
               <Icon name={item.icon} size={18} strokeWidth={2.1} class="shrink-0" />
               <span>{item.label}</span>
-              {isActive(item.href) && <span class="ml-auto h-1.5 w-1.5 rounded-full bg-[#0620ed]"></span>}
             </a>
           </li>
         ))}
       </ul>
 
-      <div class="mt-7 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Library</div>
+      <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Study Material</div>
       <ul class="space-y-0.5">
-        {navLibrary.map(item => (
+        {navStudy.map(item => (
           <li>
             <a href={url(item.href)} class:list={[
-              "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors duration-150",
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
               isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
             ]}>
               <Icon name={item.icon} size={18} strokeWidth={2.1} class="shrink-0" />
               <span>{item.label}</span>
-              {isActive(item.href) && <span class="ml-auto h-1.5 w-1.5 rounded-full bg-[#0620ed]"></span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Exams</div>
+      <ul class="space-y-0.5">
+        {navExam.map(item => (
+          <li>
+            <a href={url(item.href)} class:list={[
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
+              isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900",
+            ]}>
+              <Icon name={item.icon} size={18} strokeWidth={2.1} class="shrink-0" />
+              <span>{item.label}</span>
             </a>
           </li>
         ))}
@@ -86,7 +109,7 @@ const isActive = (href: string) => {
     </nav>
 
     <div class="border-t border-neutral-200 p-3">
-      <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2.5 transition-colors focus-within:border-[#0620ed] focus-within:bg-white">
+      <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2.5 focus-within:border-[#0620ed] focus-within:bg-white">
         <Icon name="search" size={15} strokeWidth={2.3} class="shrink-0 text-neutral-400" />
         <input type="search" name="q" placeholder="Search library" class="min-w-0 flex-1 bg-transparent text-[13px] font-medium text-neutral-900 outline-none placeholder:text-neutral-400" />
       </form>
@@ -95,7 +118,7 @@ const isActive = (href: string) => {
 
   <!-- MOBILE TOP BAR -->
   <header class="sticky top-0 z-30 flex h-16 w-full items-center gap-3 border-b border-neutral-200 bg-white/95 px-4 backdrop-blur-xl lg:hidden">
-    <button id="open-drawer" type="button" aria-label="Open menu" class="grid h-10 w-10 place-items-center rounded-lg border border-neutral-200 bg-white text-neutral-700 transition-colors active:bg-neutral-100">
+    <button id="open-drawer" type="button" aria-label="Open menu" class="grid h-10 w-10 place-items-center rounded-lg border border-neutral-200 bg-white text-neutral-700 active:bg-neutral-100">
       <Icon name="menu" size={20} strokeWidth={2.4} />
     </button>
     <a href={url('/')} class="flex items-center gap-2">
@@ -104,7 +127,7 @@ const isActive = (href: string) => {
       </span>
       <span class="text-base font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
     </a>
-    <a href={url('/search')} class="ml-auto grid h-10 w-10 place-items-center rounded-lg border border-neutral-200 bg-white text-neutral-700 transition-colors active:bg-neutral-100" aria-label="Search">
+    <a href={url('/search')} class="ml-auto grid h-10 w-10 place-items-center rounded-lg border border-neutral-200 bg-white text-neutral-700 active:bg-neutral-100" aria-label="Search">
       <Icon name="search" size={18} strokeWidth={2.4} />
     </a>
   </header>
@@ -120,42 +143,30 @@ const isActive = (href: string) => {
           </span>
           <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
         </a>
-        <button id="close-drawer" type="button" aria-label="Close menu" class="grid h-9 w-9 place-items-center rounded-lg text-neutral-500 transition-colors active:bg-neutral-100">
+        <button id="close-drawer" type="button" aria-label="Close" class="grid h-9 w-9 place-items-center rounded-lg text-neutral-500 active:bg-neutral-100">
           <Icon name="x" size={18} strokeWidth={2.4} />
         </button>
       </div>
-
-      <nav class="flex-1 overflow-y-auto px-3 py-6">
+      <nav class="flex-1 overflow-y-auto px-3 py-5">
         <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Main</div>
         <ul class="space-y-0.5">
           {navMain.map(item => (
-            <li>
-              <a href={url(item.href)} class:list={[
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-                isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100",
-              ]}>
-                <Icon name={item.icon} size={18} strokeWidth={2.1} />
-                <span>{item.label}</span>
-              </a>
-            </li>
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
           ))}
         </ul>
-        <div class="mt-7 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Library</div>
+        <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Study Material</div>
         <ul class="space-y-0.5">
-          {navLibrary.map(item => (
-            <li>
-              <a href={url(item.href)} class:list={[
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors",
-                isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100",
-              ]}>
-                <Icon name={item.icon} size={18} strokeWidth={2.1} />
-                <span>{item.label}</span>
-              </a>
-            </li>
+          {navStudy.map(item => (
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
+          ))}
+        </ul>
+        <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400">Exams</div>
+        <ul class="space-y-0.5">
+          {navExam.map(item => (
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eef2fe] text-[#0620ed]" : "text-neutral-600 hover:bg-neutral-100"]}><Icon name={item.icon} size={18} strokeWidth={2.1} /><span>{item.label}</span></a></li>
           ))}
         </ul>
       </nav>
-
       <div class="border-t border-neutral-200 p-3">
         <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2.5">
           <Icon name="search" size={15} strokeWidth={2.3} class="shrink-0 text-neutral-400" />
@@ -182,24 +193,25 @@ const isActive = (href: string) => {
               <span class="text-lg font-extrabold tracking-tight text-neutral-900">TaleemHub</span>
             </div>
             <p class="mt-4 max-w-sm text-sm leading-relaxed text-neutral-500">
-              Free notes, interactive quizzes, textbooks and result gazettes for students across Pakistan — all in one place.
+              Free notes, quizzes, textbooks, past papers and result gazettes for Pakistani students — organised by board and class.
             </p>
           </div>
           <div>
-            <h4 class="text-sm font-bold text-neutral-900">Library</h4>
+            <h4 class="text-sm font-bold text-neutral-900">Study</h4>
             <ul class="mt-4 space-y-2.5 text-sm text-neutral-500">
-              <li><a href={url('/classes')} class="hover:text-[#0620ed]">Classes</a></li>
-              <li><a href={url('/subjects')} class="hover:text-[#0620ed]">Subjects</a></li>
+              <li><a href={url('/boards')} class="hover:text-[#0620ed]">Boards</a></li>
               <li><a href={url('/notes')} class="hover:text-[#0620ed]">Notes</a></li>
               <li><a href={url('/quizzes')} class="hover:text-[#0620ed]">Quizzes</a></li>
+              <li><a href={url('/books')} class="hover:text-[#0620ed]">Books</a></li>
             </ul>
           </div>
           <div>
-            <h4 class="text-sm font-bold text-neutral-900">Explore</h4>
+            <h4 class="text-sm font-bold text-neutral-900">Exams</h4>
             <ul class="mt-4 space-y-2.5 text-sm text-neutral-500">
-              <li><a href={url('/books')} class="hover:text-[#0620ed]">Textbooks</a></li>
-              <li><a href={url('/gazettes')} class="hover:text-[#0620ed]">Gazettes</a></li>
-              <li><a href={url('/search')} class="hover:text-[#0620ed]">Search</a></li>
+              <li><a href={url('/past-papers')} class="hover:text-[#0620ed]">Past Papers</a></li>
+              <li><a href={url('/guess-papers')} class="hover:text-[#0620ed]">Guess Papers</a></li>
+              <li><a href={url('/pairing-schemes')} class="hover:text-[#0620ed]">Pairing Schemes</a></li>
+              <li><a href={url('/gazettes')} class="hover:text-[#0620ed]">Result Gazettes</a></li>
             </ul>
           </div>
         </div>
@@ -210,15 +222,6 @@ const isActive = (href: string) => {
     </footer>
   </div>
 
-  <style is:global>
-    main { animation: pageFadeIn 0.28s ease-out both; }
-    @keyframes pageFadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @media (prefers-reduced-motion: reduce) { main { animation: none; } }
-  </style>
-
   <script is:inline>
     (function () {
       var drawer = document.getElementById('drawer');
@@ -228,29 +231,11 @@ const isActive = (href: string) => {
       var closeBtn = document.getElementById('close-drawer');
       if (!drawer || !panel || !backdrop) return;
       var isOpen = false;
-      function open() {
-        if (isOpen) return; isOpen = true;
-        drawer.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        requestAnimationFrame(function () {
-          panel.classList.remove('-translate-x-full');
-          backdrop.classList.remove('opacity-0');
-          backdrop.classList.add('opacity-100');
-        });
-      }
-      function close() {
-        if (!isOpen) return; isOpen = false;
-        panel.classList.add('-translate-x-full');
-        backdrop.classList.add('opacity-0');
-        backdrop.classList.remove('opacity-100');
-        setTimeout(function () {
-          drawer.classList.add('hidden');
-          document.body.style.overflow = '';
-        }, 280);
-      }
-      if (openBtn) openBtn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); open(); });
-      if (closeBtn) closeBtn.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); close(); });
-      if (backdrop) backdrop.addEventListener('click', function (e) { e.preventDefault(); close(); });
+      function open() { if (isOpen) return; isOpen = true; drawer.classList.remove('hidden'); document.body.style.overflow = 'hidden'; requestAnimationFrame(function () { panel.classList.remove('-translate-x-full'); backdrop.classList.remove('opacity-0'); backdrop.classList.add('opacity-100'); }); }
+      function close() { if (!isOpen) return; isOpen = false; panel.classList.add('-translate-x-full'); backdrop.classList.add('opacity-0'); backdrop.classList.remove('opacity-100'); setTimeout(function () { drawer.classList.add('hidden'); document.body.style.overflow = ''; }, 280); }
+      if (openBtn) openBtn.addEventListener('click', function (e) { e.preventDefault(); open(); });
+      if (closeBtn) closeBtn.addEventListener('click', function (e) { e.preventDefault(); close(); });
+      if (backdrop) backdrop.addEventListener('click', close);
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
     })();
   </script>

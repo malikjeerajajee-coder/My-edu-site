@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Icon from '../../../../components/Icon.astro';
+import { url } from '../../../../lib/url';
+import { BOARDS } from '../../../../lib/boards';
+import { getSubjectContent, getAllSubjectPaths } from '../../../../lib/boardContent';
+
+export async function getStaticPaths() {
+  const paths = await getAllSubjectPaths();
+  return paths.map(p => ({ params: { board: p.board, class: `class-${p.class}`, subject: p.subject } }));
+}
+
+const { board: boardSlug, class: classParam, subject: subjectSlug } = Astro.params;
+const cls = String(classParam).replace(/^class-/, '');
+const data = await getSubjectContent(boardSlug!, cls, subjectSlug!);
+if (!data) return Astro.redirect('/boards');
+const { board, subject, notes, quizzes, books, pastPapers, guessPapers } = data;
+
+const sections = [
+  { label: 'Notes',        icon: 'file-text',   items: notes,       base: '/notes' },
+  { label: 'Past Papers',  icon: 'scroll-text', items: pastPapers,  base: '/past-papers' },
+  { label: 'Guess Papers', icon: 'sparkles',    items: guessPapers, base: '/guess-papers' },
+  { label: 'Quizzes',      icon: 'circle-help', items: quizzes,     base: '/quizzes' },
+  { label: 'Books',        icon: 'book-marked', items: books,       base: '/books' },
+].filter(s => s.items.length > 0);
+---
+<BaseLayout title={`${board.name} Class ${cls} ${subject} | TaleemHub`} description={`All ${subject} material for ${board.full} Class ${cls}: notes, past papers, guess papers, quizzes and books.`}>
+  <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+    <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-neutral-400">
+      <a href={url('/boards')} class="hover:text-[#0620ed]">Boards</a>
+      <span>/</span>
+      <a href={url(`/board/${boardSlug}`)} class="hover:text-[#0620ed]">{board.name}</a>
+      <span>/</span>
+      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#0620ed]">Class {cls}</a>
+      <span>/</span>
+      <span class="text-neutral-500">{subject}</span>
+    </nav>
+
+    <div class="rounded-3xl border border-[#0620ed] bg-gradient-to-br from-[#110176] via-[#0620ed] to-[#265bf6] p-8 text-white sm:p-10">
+      <div class="flex flex-wrap gap-1.5">
+        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+          <Icon name="graduation-cap" size={13} strokeWidth={2.4} /> {board.name}
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider">
+          Class {cls}
+        </span>
+      </div>
+      <h1 class="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">{subject}</h1>
+    </div>
+
+    {sections.map(sec => (
+      <section class="mt-12">
+        <div class="mb-5 flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
+            <Icon name={sec.icon} size={19} strokeWidth={2.2} />
+          </span>
+          <div>
+            <h2 class="text-xl font-extrabold tracking-tight text-neutral-900">{sec.label}</h2>
+            <p class="text-sm text-neutral-500">{sec.items.length} {sec.items.length === 1 ? 'item' : 'items'}</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {sec.items.map((item: any) => (
+            <a href={url(`${sec.base}/${item.id}`)} class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#0620ed]">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
+                <Icon name={sec.icon} size={17} strokeWidth={2.2} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <h3 class="truncate text-sm font-bold text-neutral-900">{item.data.title}</h3>
+                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                  {item.data.year && <span class="rounded-md bg-neutral-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-neutral-600">{item.data.year}</span>}
+                  {item.data.class && <span class="rounded-md bg-[#eef2fe] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#0620ed]">Class {item.data.class}</span>}
+                </div>
+              </div>
+              <Icon name="chevron-right" size={15} strokeWidth={2.4} class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <div class="mt-12 pb-20">
+      <a href={url(`/board/${boardSlug}/class-${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 hover:text-[#0620ed]">
+        <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {cls}
+      </a>
+    </div>
+  </div>
+</BaseLayout>

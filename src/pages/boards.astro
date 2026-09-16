@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../lib/url';
+import { BOARDS } from '../lib/boards';
+import { getBoardCounts } from '../lib/boardContent';
+
+const counts = await getBoardCounts();
+---
+<BaseLayout title="Boards — TaleemHub" description="Choose your board: Punjab, Federal, KPK, Sindh, Balochistan or AJK.">
+  <div class="mx-auto max-w-[1320px] px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+    <div class="mb-10">
+      <h1 class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">Choose your board</h1>
+      <p class="mt-2 text-neutral-500">Notes, past papers, guess papers and more — tailored to your board.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      {BOARDS.map(b => (
+        <a href={url(`/board/${b.slug}`)} class="group rounded-2xl border border-neutral-200 bg-white p-6 transition-colors hover:border-[#0620ed]">
+          <div class="flex items-start justify-between">
+            <span class="grid h-12 w-12 place-items-center rounded-xl bg-[#eef2fe] text-[#0620ed]">
+              <Icon name="graduation-cap" size={22} strokeWidth={2.2} />
+            </span>
+            <Icon name="arrow-up-right" size={18} strokeWidth={2.4} class="text-neutral-300 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#0620ed]" />
+          </div>
+          <h3 class="mt-5 text-xl font-extrabold tracking-tight text-neutral-900">{b.name}</h3>
+          <p class="mt-1 text-sm text-neutral-500">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'item' : 'items'}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
