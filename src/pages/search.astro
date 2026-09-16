@@ -2,115 +2,330 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 ---
-<BaseLayout title="Search — TaleemHub" description="Search notes, quizzes, textbooks and gazettes.">
-  <div class="mx-auto max-w-4xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
-    <div class="mb-8">
-      <h1 class="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">Search</h1>
-      <p class="mt-2 text-neutral-500">Find anything across the library</p>
+<BaseLayout title="Search — TaleemHub" description="Search notes, past papers, guess papers, quizzes, books and result gazettes across all Pakistani boards.">
+  <body class="search-page"></body>
+  <div class="mx-auto max-w-5xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8">
+    <!-- HEADER -->
+    <div class="mb-8 max-w-2xl">
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        Search
+      </div>
+      <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+        Find anything in the library
+      </h1>
+      <p class="mt-3 text-base text-slate-500">
+        Notes, past papers, guess papers, quizzes, books and gazettes — all in one place.
+      </p>
     </div>
 
-    <div class="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-5">
-      <div class="flex items-center gap-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-1 transition-colors focus-within:border-[#1d4ed8] focus-within:bg-white">
-        <Icon name="search" size={20} strokeWidth={2.4} class="shrink-0 text-neutral-400" />
+    <!-- SEARCH BAR -->
+    <div class="relative">
+      <div class="flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-4 py-2 transition-colors focus-within:border-[#1d4ed8]">
+        <Icon name="search" size={20} strokeWidth={2.4} class="shrink-0 text-slate-400" />
         <input
-          id="search-input"
+          id="q"
           type="search"
-          placeholder="Search notes, quizzes, books, gazettes..."
+          placeholder="Search by subject, class, board or keyword…"
           aria-label="Search library"
           autocomplete="off"
-          class="min-w-0 flex-1 bg-transparent py-3.5 text-base text-neutral-900 outline-none placeholder:text-neutral-400"
+          autocapitalize="off"
+          spellcheck="false"
+          class="min-w-0 flex-1 bg-transparent py-3 text-base text-slate-900 outline-none placeholder:text-slate-400"
         />
-        <button id="clear-btn" type="button" aria-label="Clear" class="hidden h-7 w-7 shrink-0 place-items-center rounded-md text-neutral-400 transition-colors hover:bg-white hover:text-neutral-700">
+        <kbd class="hidden rounded-md border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-[11px] font-semibold text-slate-500 sm:inline-block">/</kbd>
+        <button
+          id="clear"
+          type="button"
+          aria-label="Clear search"
+          class="hidden h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+        >
           <Icon name="x" size={16} strokeWidth={2.4} />
         </button>
       </div>
-      <div id="search-status" class="mt-3.5 text-sm font-semibold text-neutral-500">Loading library...</div>
+
+      <!-- FILTER CHIPS -->
+      <div id="chips" class="mt-5 flex flex-wrap gap-2">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- STATUS -->
+      <div id="status" class="mt-5 text-sm font-semibold text-slate-500">
+        Loading library…
+      </div>
     </div>
 
-    <div id="search-results" class="mt-5 space-y-2.5"></div>
+    <!-- RESULTS -->
+    <div id="results" class="mt-6 space-y-2.5 pb-20"></div>
   </div>
 
   <script is:inline>
     (function () {
-      var input = document.getElementById('search-input');
-      var results = document.getElementById('search-results');
-      var status = document.getElementById('search-status');
-      var clearBtn = document.getElementById('clear-btn');
-      var index = [];
-      var ready = false;
+      var INDEX = [];
+      var READY = false;
+      var ACTIVE_TYPE = 'all';
 
-      var params = new URLSearchParams(window.location.search);
-      var initialQ = params.get('q') || '';
-      if (initialQ) input.value = initialQ;
+      var input     = document.getElementById('q');
+      var clearBtn  = document.getElementById('clear');
+      var chipsEl   = document.getElementById('chips');
+      var statusEl  = document.getElementById('status');
+      var resultsEl = document.getElementById('results');
+
+      var TYPE_ORDER = ['all','note','quiz','book','past-paper','guess-paper','pairing-scheme','gazette'];
+      var TYPE_LABELS = {
+        all: 'All',
+        note: 'Notes',
+        quiz: 'Quizzes',
+        book: 'Books',
+        'past-paper': 'Past Papers',
+        'guess-paper': 'Guess Papers',
+        'pairing-scheme': 'Pairing Schemes',
+        gazette: 'Result Gazettes'
+      };
+      var TYPE_CSS = {
+        note: 'type-note',
+        quiz: 'type-quiz',
+        book: 'type-book',
+        'past-paper': 'type-paper',
+        'guess-paper': 'type-guess',
+        'pairing-scheme': 'type-scheme',
+        gazette: 'type-gazette'
+      };
+      var TYPE_SHORT = {
+        note: 'Note',
+        quiz: 'Quiz',
+        book: 'Book',
+        'past-paper': 'Past Paper',
+        'guess-paper': 'Guess Paper',
+        'pairing-scheme': 'Pairing Scheme',
+        gazette: 'Gazette'
+      };
+
+      // Load index
+      function loadIndex() {
+        var url = (window.__BASE__ || '') + '/search.json';
+        return fetch(url)
+          .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+          .then(function (data) {
+            INDEX = (data || []).map(function (x) {
+              // Normalize type: convert camelCase → kebab-case to match chips
+              var t = (x.type || 'note').toLowerCase();
+              if (t === 'pastpapers' || t === 'past-paper' || t === 'pastpapers') t = 'past-paper';
+              if (t === 'guesspapers' || t === 'guess-papers' || t === 'guesspapers') t = 'guess-paper';
+              if (t === 'pairingschemes' || t === 'pairing-schemes') t = 'pairing-scheme';
+              return Object.assign({}, x, { type: t });
+            });
+            READY = true;
+          });
+      }
 
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
         });
       }
-      function typeLabel(t) {
-        return { note: 'Note', quiz: 'Quiz', book: 'Book', gazette: 'Gazette' }[t] || t;
-      }
-      function typeCls(t) {
-        return {
-          note: 'bg-[#eef2fe] text-[#1d4ed8] border-[#c7d3fd]',
-          quiz: 'bg-blue-50 text-blue-700 border-blue-200',
-          book: 'bg-amber-50 text-amber-700 border-amber-200',
-          gazette: 'bg-rose-50 text-rose-700 border-rose-200'
-        }[t] || 'bg-neutral-100 text-neutral-700 border-neutral-200';
+
+      function highlight(text, terms) {
+        if (!terms.length || !text) return esc(text);
+        var safe = esc(text);
+        terms.forEach(function (t) {
+          if (!t) return;
+          var re = new RegExp('(' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+          safe = safe.replace(re, '<mark>$1</mark>');
+        });
+        return safe;
       }
 
-      function render() {
-        var q = input.value.trim().toLowerCase();
-        if (clearBtn) {
-          if (input.value) { clearBtn.classList.remove('hidden'); clearBtn.classList.add('grid'); }
-          else { clearBtn.classList.add('hidden'); clearBtn.classList.remove('grid'); }
-        }
-        if (!ready) { status.textContent = 'Loading library...'; results.innerHTML = ''; return; }
-        if (!q) { status.textContent = index.length + ' items in library'; results.innerHTML = ''; return; }
+      function countByType() {
+        var counts = { all: INDEX.length };
+        INDEX.forEach(function (it) {
+          counts[it.type] = (counts[it.type] || 0) + 1;
+        });
+        return counts;
+      }
 
-        var matches = index.filter(function (it) {
-          var t = (it.title || '').toLowerCase();
+      function renderChips() {
+        var counts = countByType();
+        var html = TYPE_ORDER.map(function (t) {
+          var n = counts[t] || 0;
+          if (t !== 'all' && n === 0) return '';
+          return '<button type="button" class="chip" data-type="' + t + '" data-active="' + (t === ACTIVE_TYPE) + '">' +
+            esc(TYPE_LABELS[t]) +
+            (n ? ' <span class="chip-count">' + n + '</span>' : '') +
+          '</button>';
+        }).join('');
+        chipsEl.innerHTML = html;
+        Array.prototype.forEach.call(chipsEl.querySelectorAll('.chip'), function (btn) {
+          btn.addEventListener('click', function () {
+            ACTIVE_TYPE = btn.getAttribute('data-type');
+            render();
+          });
+        });
+      }
+
+      function filterAndScore(query) {
+        var q = query.trim().toLowerCase();
+        var terms = q ? q.split(/\s+/).filter(Boolean) : [];
+        var pool = ACTIVE_TYPE === 'all'
+          ? INDEX
+          : INDEX.filter(function (it) { return it.type === ACTIVE_TYPE; });
+
+        if (!terms.length) return pool.slice(0, 60);
+
+        var scored = [];
+        pool.forEach(function (it) {
+          var t = (it.title   || '').toLowerCase();
           var s = (it.subject || '').toLowerCase();
           var c = String(it.class || '').toLowerCase();
-          var ty = (it.type || '').toLowerCase();
-          return t.indexOf(q) !== -1 || s.indexOf(q) !== -1 || c.indexOf(q) !== -1 || ty.indexOf(q) !== -1;
+          var ty = (it.type   || '').toLowerCase();
+          var score = 0;
+          var allMatch = true;
+          terms.forEach(function (term) {
+            var m = 0;
+            if (t.indexOf(term) === 0) m += 20;
+            else if (t.indexOf(term) !== -1) m += 12;
+            if (s.indexOf(term) !== -1) m += 6;
+            if (c === term) m += 8;
+            else if (c.indexOf(term) !== -1) m += 4;
+            if (ty.indexOf(term) !== -1) m += 3;
+            if (!m) { allMatch = false; }
+            score += m;
+          });
+          if (allMatch) scored.push({ score: score, item: it });
         });
+        scored.sort(function (a, b) { return b.score - a.score; });
+        return scored.map(function (x) { return x.item; }).slice(0, 60);
+      }
 
-        status.textContent = matches.length + ' result' + (matches.length === 1 ? '' : 's');
+      var lastSelected = -1;
+      var lastResults = [];
 
-        if (!matches.length) {
-          results.innerHTML = '<div class="rounded-2xl border border-dashed border-neutral-300 bg-white p-12 text-center"><div class="text-base font-bold text-neutral-900">No results found</div><div class="mt-1 text-sm text-neutral-500">Try a different keyword, class number, or subject.</div></div>';
+      function render() {
+        var query = input.value;
+
+        // Clear button visibility
+        if (query) {
+          clearBtn.classList.remove('hidden');
+          clearBtn.classList.add('grid');
+        } else {
+          clearBtn.classList.add('hidden');
+          clearBtn.classList.remove('grid');
+        }
+
+        if (!READY) {
+          statusEl.textContent = 'Loading library…';
+          resultsEl.innerHTML = '';
           return;
         }
 
-        results.innerHTML = matches.map(function (m) {
-          var badges = '';
-          if (m.subject) badges += '<span class="rounded-md bg-[#eef2fe] px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#1d4ed8]">' + esc(m.subject) + '</span>';
-          if (m.class) badges += '<span class="rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-neutral-600">Class ' + esc(m.class) + '</span>';
-          var href = '../' + String(m.url || '').replace(/^\//, '');
-          return '<a href="' + esc(href) + '" class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-4 transition-colors hover:border-[#1d4ed8]">' +
-            '<span class="rounded-md border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider ' + typeCls(m.type) + '">' + esc(typeLabel(m.type)) + '</span>' +
+        var list = filterAndScore(query);
+        lastResults = list;
+        lastSelected = -1;
+
+        var label = ACTIVE_TYPE === 'all'
+          ? (query ? (list.length + ' result' + (list.length === 1 ? '' : 's') + ' for "' + query + '"') : (INDEX.length + ' items in library'))
+          : (list.length + ' ' + TYPE_LABELS[ACTIVE_TYPE].toLowerCase() + (query ? ' matching "' + query + '"' : ''));
+        statusEl.textContent = label;
+
+        if (!list.length) {
+          resultsEl.innerHTML =
+            '<div class="empty">' +
+              '<div class="text-base font-bold text-slate-900">No results found</div>' +
+              '<div class="mt-2 text-sm text-slate-500">Try a shorter keyword, check the spelling, or browse by board and class.</div>' +
+              '<div class="mt-5 flex flex-wrap justify-center gap-2">' +
+                '<a href="' + (window.__BASE__ || '') + '/boards" class="btn-outline text-xs">Browse boards</a>' +
+                '<a href="' + (window.__BASE__ || '') + '/notes" class="btn-outline text-xs">All notes</a>' +
+                '<a href="' + (window.__BASE__ || '') + '/past-papers" class="btn-outline text-xs">Past papers</a>' +
+              '</div>' +
+            '</div>';
+          return;
+        }
+
+        var terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        resultsEl.innerHTML = list.map(function (it, i) {
+          var typeTag = TYPE_SHORT[it.type] || it.type;
+          var typeCls = TYPE_CSS[it.type] || '';
+          var badges = [];
+          if (it.subject) badges.push('<span class="badge badge-muted">' + esc(it.subject) + '</span>');
+          if (it.class) badges.push('<span class="badge">Class ' + esc(it.class) + '</span>');
+          return '<a href="' + esc(it.url) + '" class="result" data-index="' + i + '" style="animation-delay:' + Math.min(i * 15, 220) + 'ms">' +
+            '<span class="type-tag ' + typeCls + '">' + esc(typeTag) + '</span>' +
             '<div class="min-w-0 flex-1">' +
-              '<h3 class="truncate text-[0.925rem] font-bold tracking-tight text-neutral-900">' + esc(m.title) + '</h3>' +
-              '<div class="mt-1.5 flex flex-wrap gap-1.5">' + badges + '</div>' +
+              '<h3 class="truncate text-sm font-bold tracking-tight text-slate-900">' + highlight(it.title, terms) + '</h3>' +
+              (badges.length ? '<div class="mt-1.5 flex flex-wrap gap-1.5">' + badges.join('') + '</div>' : '') +
             '</div>' +
-            '<svg class="shrink-0 text-neutral-300 transition-transform group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' +
+            '<svg class="shrink-0 text-slate-300" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>' +
           '</a>';
         }).join('');
       }
 
-      if (clearBtn) clearBtn.addEventListener('click', function () { input.value = ''; input.focus(); render(); });
-      input.addEventListener('input', render);
-
-      fetch('../search.json')
-        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(function (data) { index = data; ready = true; render(); })
-        .catch(function (err) {
-          console.error('Search index failed:', err);
-          status.textContent = 'Could not load library.';
-          results.innerHTML = '<div class="rounded-2xl border border-dashed border-neutral-300 bg-white p-12 text-center"><div class="text-base font-bold text-neutral-900">Search unavailable</div><div class="mt-1 text-sm text-neutral-500">Please refresh the page.</div></div>';
+      function moveSelection(dir) {
+        if (!lastResults.length) return;
+        lastSelected = Math.max(0, Math.min(lastResults.length - 1, lastSelected + dir));
+        var nodes = resultsEl.querySelectorAll('.result');
+        Array.prototype.forEach.call(nodes, function (n, i) {
+          n.classList.toggle('selected', i === lastSelected);
         });
+        var sel = nodes[lastSelected];
+        if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+
+      // Keyboard
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); moveSelection(1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); moveSelection(-1); }
+        else if (e.key === 'Enter' && lastSelected >= 0 && lastResults[lastSelected]) {
+          window.location.href = lastResults[lastSelected].url;
+        } else if (e.key === 'Escape') {
+          if (input.value) { input.value = ''; render(); }
+        }
+      });
+
+      // Shortcut
+      document.addEventListener('keydown', function (e) {
+        if (e.key === '/' && document.activeElement !== input && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) {
+          e.preventDefault(); input.focus(); input.select();
+        }
+      });
+
+      clearBtn.addEventListener('click', function () {
+        input.value = ''; input.focus(); render();
+      });
+
+      var t;
+      input.addEventListener('input', function () {
+        clearTimeout(t);
+        t = setTimeout(render, 60);
+      });
+
+      // URL param
+      var params = new URLSearchParams(window.location.search);
+      var initial = params.get('q') || '';
+      if (initial) input.value = initial;
+
+      // Load then render
+      loadIndex().then(function () {
+        renderChips();
+        render();
+      }).catch(function (err) {
+        console.error('Search index failed:', err);
+        statusEl.textContent = 'Could not load library.';
+        resultsEl.innerHTML = '<div class="empty"><div class="text-base font-bold text-slate-900">Search unavailable</div><div class="mt-2 text-sm text-slate-500">Please refresh the page.</div></div>';
+      });
+    })();
+  </script>
+
+  <script is:inline>
+    window.__BASE__ = (function () {
+      var base = document.querySelector('link[rel="sitemap"]');
+      if (base) {
+        var href = base.getAttribute('href') || '';
+        var idx = href.indexOf('/sitemap-index.xml');
+        if (idx > 0) return href.slice(0, idx);
+      }
+      var path = window.location.pathname;
+      var parts = path.split('/').filter(Boolean);
+      return parts.length ? '/' + parts[0] : '';
     })();
   </script>
 </BaseLayout>
