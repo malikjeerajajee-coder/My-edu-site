@@ -8,6 +8,7 @@ const notes = defineCollection({
     subject: z.string(),
     class: z.string(),
     board: z.string().optional(),
+    boards: z.array(z.string()).optional(),
     pdfUrl: z.string().optional(),
     date: z.date().optional(),
   }),
@@ -19,6 +20,8 @@ const quizzes = defineCollection({
     title: z.string(),
     subject: z.string(),
     class: z.string(),
+    board: z.string().optional(),
+    boards: z.array(z.string()).optional(),
     questions: z.array(z.object({
       question: z.string(),
       options: z.array(z.string()),
@@ -34,6 +37,8 @@ const books = defineCollection({
     author: z.string().optional(),
     class: z.string(),
     subject: z.string(),
+    board: z.string().optional(),
+    boards: z.array(z.string()).optional(),
     pdfUrl: z.string(),
   }),
 });
@@ -44,9 +49,51 @@ const gazettes = defineCollection({
     title: z.string(),
     year: z.number(),
     board: z.string(),
+    boards: z.array(z.string()).optional(),
     class: z.string(),
     pdfUrl: z.string(),
   }),
 });
 
-export const collections = { notes, quizzes, books, gazettes };
+const pastPapers = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/past-papers' }),
+  schema: z.object({
+    title: z.string(),
+    subject: z.string(),
+    class: z.string(),
+    year: z.number(),
+    board: z.string().optional(),
+    boards: z.array(z.string()).optional(),
+    pdfUrl: z.string(),
+  }),
+});
+
+const guessPapers = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/guess-papers' }),
+  schema: z.object({
+    title: z.string(),
+    subject: z.string(),
+    class: z.string(),
+    year: z.number(),
+    board: z.string().optional(),
+    boards: z.array(z.string()).optional(),
+    pdfUrl: z.string(),
+  }),
+});
+
+const pairingSchemes = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/pairing-schemes' }),
+  schema: z.object({
+    title: z.string(),
+    class: z.string(),
+    year: z.number(),
+    board: z.string().optional(),
+    boards: z.array(z.string()).optional(),
+    pdfUrl: z.string(),
+  }),
+});
+
+export const collections = {
+  notes, quizzes, books, gazettes,
+  pastPapers, guessPapers, pairingSchemes,
+};
