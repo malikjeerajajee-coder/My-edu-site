@@ -32,7 +32,7 @@ const { gazette } = Astro.props;
       <h1 class="mt-4 font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{gazette.data.title}</h1>
     </div>
 
-    <a href={gazette.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-rose-600 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-rose-700">
+    <a href={gazette.data.pdfUrl} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-rose-600 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-rose-700 !text-white">
       <Icon name="download" size={18} strokeWidth={2.4} /> Download gazette PDF
     </a>
   </div>

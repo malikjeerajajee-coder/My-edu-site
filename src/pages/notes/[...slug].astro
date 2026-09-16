@@ -34,7 +34,7 @@ const { Content } = await render(note);
     </div>
 
     {note.data.pdfUrl && (
-      <a href={note.data.pdfUrl} class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#110176]">
+      <a href={note.data.pdfUrl} class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0620ed] px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#110176] !text-white">
         <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
       </a>
     )}
