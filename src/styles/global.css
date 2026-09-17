@@ -292,3 +292,51 @@ input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
   .row:hover .tile { background: var(--brand-tint) !important; color: var(--brand) !important; }
   .rtile:hover .rtile-icon { background: var(--tile-tint, var(--brand-tint)) !important; color: var(--tile-color, var(--brand)) !important; }
 }
+
+/* ═══ Filter chips ═══ */
+.chip-row {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.chip-row::-webkit-scrollbar { display: none; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid #e5e9f0;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.chip:hover { border-color: #1d4ed8; color: #1d4ed8; }
+.chip.active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff !important;
+}
+.chip-count {
+  display: inline-block;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  min-width: 20px;
+  text-align: center;
+}
+.chip.active .chip-count {
+  background: rgba(255,255,255,0.25);
+  color: #ffffff;
+}

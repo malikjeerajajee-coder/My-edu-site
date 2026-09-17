@@ -77,6 +77,7 @@ const pastPapers = defineCollection({
     board: z.string().optional(),
     boards: z.array(z.string()).optional(),
     bises: z.array(z.string()).optional(),
+    bise: z.string().optional(),
     pdfUrl: z.string(),
     totalMarks: z.number().optional(),
     duration: z.string().optional(),

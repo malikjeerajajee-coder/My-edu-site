@@ -1,0 +1,396 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Adding BISE system for Punjab"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Update boards.ts with BISE helpers
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path('src/lib/boards.ts')
+s = p.read_text()
+
+if 'BISE_AWARE_BOARDS' not in s:
+    s += '''
+
+// Boards that have sub-BISEs. Only Punjab currently.
+export const BISE_AWARE_BOARDS = ['punjab'];
+
+export function hasBISEs(slug: string): boolean {
+  return BISE_AWARE_BOARDS.includes(slug);
+}
+
+// Which resource types are BISE-specific (papers, gazettes)
+// vs shared (books, notes, quizzes)
+export const BISE_SPECIFIC_TYPES = ['past-papers', 'gazettes'];
+export const SHARED_TYPES = ['notes', 'quizzes', 'books', 'guess-papers', 'pairing-schemes'];
+
+export function isBISESpecific(typeSlug: string): boolean {
+  return BISE_SPECIFIC_TYPES.includes(typeSlug);
+}
+'''
+    p.write_text(s)
+    print('  ✓ BISE helpers added to boards.ts')
+else:
+    print('  · BISE helpers already present')
+PY
+
+# ─────────────────────────────────────────────
+#  2. Update schema: add 'bise' field (single BISE)
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path('src/content.config.ts')
+s = p.read_text()
+
+# Add 'bise' as optional field to pastPapers and gazettes
+if 'bise: z.string().optional()' not in s:
+    s = s.replace(
+        "    boards: z.array(z.string()).optional(),\n    bises: z.array(z.string()).optional(),\n    pdfUrl: z.string(),\n    totalMarks:",
+        "    boards: z.array(z.string()).optional(),\n    bises: z.array(z.string()).optional(),\n    bise: z.string().optional(),\n    pdfUrl: z.string(),\n    totalMarks:"
+    )
+    # Also for gazettes
+    s = s.replace(
+        "    board: z.string(),\n    boards: z.array(z.string()).optional(),\n    class: z.string(),\n    pdfUrl: z.string(),\n  }),\n});\n\nconst pastPapers",
+        "    board: z.string(),\n    boards: z.array(z.string()).optional(),\n    bise: z.string().optional(),\n    class: z.string(),\n    pdfUrl: z.string(),\n  }),\n});\n\nconst pastPapers"
+    )
+    p.write_text(s)
+    print('  ✓ bise field added to schema')
+else:
+    print('  · bise field already present')
+PY
+
+# ─────────────────────────────────────────────
+#  3. Update Punjab board page to show all 9 BISEs prominently
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+
+p = pathlib.Path('src/pages/board/[board]/index.astro')
+s = p.read_text()
+
+# Add the BISE section after "Pick your class" and before "Boards covered"
+bise_section = '''
+    <!-- ═══ PUNJAB BISE PICKER ═══ -->
+    {slug === 'punjab' && (
+      <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14 border-t border-slate-200">
+        <div class="mb-6">
+          <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Pick your specific board</h2>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600 max-w-2xl">
+            Punjab has 9 separate Boards of Intermediate and Secondary Education (BISEs). Textbooks and syllabus are identical across all 9, but <strong class="text-slate-900">past papers and result gazettes are unique to each board</strong>. Pick your board to see the right papers.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+          {PUNJAB_BISES.map(bise => (
+            <a href={url(`/board/punjab/${bise.slug}`)} class="row group">
+              <span class="tile">
+                <Icon name="graduation-cap" size={19} strokeWidth={2.2} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="row-title">BISE {bise.name}</div>
+                <div class="row-sub">Past papers · Gazettes</div>
+              </div>
+              <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            </a>
+          ))}
+        </div>
+
+        <div class="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+          <p class="text-sm text-slate-600">
+            <strong class="text-slate-900">Not sure which BISE?</strong> The board depends on your school's city. All 9 boards follow the same curriculum, so any paper from any BISE gives you the same topic coverage and difficulty.
+          </p>
+        </div>
+      </div>
+    )}
+'''
+
+# Insert before "{info && (" - which is the boards-covered section
+marker = "{info && ("
+if 'PUNJAB BISE PICKER' not in s and marker in s:
+    s = s.replace(marker, bise_section + '\n    ' + marker, 1)
+    print('  ✓ BISE picker added to Punjab board page')
+else:
+    print('  · BISE picker already present or marker not found')
+
+# Add the import
+if 'PUNJAB_BISES' not in s:
+    s = s.replace(
+        "import { BOARDS } from '../../../lib/boards';",
+        "import { BOARDS, PUNJAB_BISES } from '../../../lib/boards';"
+    )
+    print('  ✓ PUNJAB_BISES imported')
+
+p.write_text(s)
+PY
+
+# ─────────────────────────────────────────────
+#  4. Rewrite the type-list page ([subject].astro)
+#     to support BISE filtering and BISE-specific pages
+# ─────────────────────────────────────────────
+cat > 'src/pages/board/[board]/[class]/[subject].astro' <<'ASTRO'
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Icon from '../../../../components/Icon.astro';
+import { url } from '../../../../lib/url';
+import {
+  getSubjectContent,
+  getClassTypeContent,
+  getAllSubjectPaths,
+  getAllClassPaths,
+  TYPE_SLUGS,
+} from '../../../../lib/boardContent';
+import { PUNJAB_BISES, hasBISEs, isBISESpecific } from '../../../../lib/boards';
+
+export async function getStaticPaths() {
+  const subjectPaths = await getAllSubjectPaths();
+  const classPaths = await getAllClassPaths();
+  const paths: any[] = [];
+
+  // Subject pages (e.g., /board/punjab/class-9/physics)
+  for (const p of subjectPaths) {
+    paths.push({ params: { board: p.board, class: `class-${p.class}`, subject: p.subject } });
+  }
+  // Content-type pages (e.g., /board/punjab/class-9/past-papers)
+  for (const c of classPaths) {
+    for (const t of TYPE_SLUGS) {
+      paths.push({ params: { board: c.board, class: `class-${c.class}`, subject: t } });
+    }
+  }
+  return paths;
+}
+
+const { board: boardSlug, class: classParam, subject: subjectSlug } = Astro.params;
+const cls = String(classParam).replace(/^class-/, '');
+const isType = TYPE_SLUGS.includes(subjectSlug!);
+
+const typeData = isType ? await getClassTypeContent(boardSlug!, cls, subjectSlug!) : null;
+const subjectData = !isType ? await getSubjectContent(boardSlug!, cls, subjectSlug!) : null;
+
+const board = (typeData?.board) || (subjectData?.board);
+const totalItems = (typeData?.items?.length) || 0;
+const showBISEPicker = boardSlug === 'punjab' && isType && isBISESpecific(subjectSlug!);
+---
+{board && typeData ? (
+<BaseLayout
+  title={`${board.name} Class ${cls} ${typeData.label} | TaleemHub`}
+  description={`All ${typeData.label.toLowerCase()} for ${board.full} Class ${cls}. ${showBISEPicker ? 'Choose your specific BISE to see papers for your board.' : 'Free downloads, organized by subject and year.'}`}
+>
+  <div class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
+        <span>/</span>
+        <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{board.name}</a>
+        <span>/</span>
+        <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
+        <span>/</span>
+        <span class="text-slate-500">{typeData.label}</span>
+      </nav>
+      <div class="max-w-2xl">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">{typeData.label}</h1>
+        <p class="mt-3 text-base text-slate-600">{totalItems} {totalItems === 1 ? 'item' : 'items'}</p>
+      </div>
+    </div>
+  </div>
+
+  {showBISEPicker ? (
+    <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+      <div class="mb-6">
+        <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Pick your specific board</h2>
+        <p class="mt-2 text-sm text-slate-600 max-w-2xl">
+          Punjab has 9 BISEs, and each one sets its own {typeData.label.toLowerCase()} for Class {cls}. Pick your board to see the right ones.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+        {PUNJAB_BISES.map(bise => (
+          <a href={url(`/board/punjab/${bise.slug}/class-${cls}/${subjectSlug}`)} class="row group">
+            <span class="tile">
+              <Icon name="graduation-cap" size={19} strokeWidth={2.2} />
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="row-title">BISE {bise.name}</div>
+            </div>
+            <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+          </a>
+        ))}
+      </div>
+    </div>
+  ) : (
+    <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+      {totalItems === 0 ? (
+        <div class="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <p class="text-sm font-bold text-slate-900">Nothing here yet</p>
+          <p class="mt-1 text-xs text-slate-500">{typeData.label} for Class {cls} {board.name} are coming soon.</p>
+          <a href={url(`/board/${boardSlug}/class-${cls}`)} class="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1e3a8a]">
+            Back to Class {cls}
+          </a>
+        </div>
+      ) : typeData.groups ? (
+        <>
+          {typeData.groups.map(group => (
+            <section class="mb-12">
+              <div class="mb-4 flex items-end justify-between gap-4">
+                <h2 class="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{group.subject}</h2>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  {group.items.length} {group.items.length === 1 ? 'item' : 'items'}
+                </span>
+              </div>
+              <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                {group.items.map((item: any) => (
+                  <a href={url(`${typeData.base}/${item.id}`)} class="row group">
+                    <span class="tile">
+                      <Icon name={typeData.icon} size={18} strokeWidth={2.2} />
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <div class="row-title">{item.data.title}</div>
+                      <div class="mt-1 flex flex-wrap gap-1.5">
+                        {item.data.year && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{item.data.year}</span>}
+                        {(item.data.bises || []).slice(0, 3).map((bs: string) => (
+                          <span class="inline-flex items-center rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">{bs}</span>
+                        ))}
+                        {(item.data.bises || []).length > 3 && (
+                          <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-500">+{(item.data.bises || []).length - 3}</span>
+                        )}
+                      </div>
+                    </div>
+                    <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+                  </a>
+                ))}
+              </div>
+            </section>
+          ))}
+        </>
+      ) : (
+        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          {typeData.items.map((item: any) => (
+            <a href={url(`${typeData.base}/${item.id}`)} class="row group">
+              <span class="tile">
+                <Icon name={typeData.icon} size={18} strokeWidth={2.2} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="row-title">{item.data.title}</div>
+                <div class="mt-1 flex flex-wrap gap-1.5">
+                  {item.data.year && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{item.data.year}</span>}
+                </div>
+              </div>
+              <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            </a>
+          ))}
+        </div>
+      )}
+
+      <div class="mt-10">
+        <a href={url(`/board/${boardSlug}/class-${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-[#1d4ed8]">
+          <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {cls}
+        </a>
+      </div>
+    </div>
+  )}
+</BaseLayout>
+) : subjectData && subjectData.subject ? (
+<BaseLayout
+  title={`${subjectData.board.name} Class ${cls} ${subjectData.subject} | TaleemHub`}
+  description={`All ${subjectData.subject} material for ${subjectData.board.full} Class ${cls}: notes, past papers, guess papers, quizzes and books.`}
+>
+  <div class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
+        <span>/</span>
+        <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{subjectData.board.name}</a>
+        <span>/</span>
+        <a href={url(`/board/${boardSlug}/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
+        <span>/</span>
+        <span class="text-slate-500">{subjectData.subject}</span>
+      </nav>
+      <div class="max-w-2xl">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">{subjectData.subject}</h1>
+        <p class="mt-3 text-base text-slate-600">All {subjectData.subject} resources for Class {cls} · {subjectData.board.name}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+    {[
+      { label: 'Notes',        icon: 'file-text',   items: subjectData.notes,       base: '/notes' },
+      { label: 'Past Papers',  icon: 'scroll-text', items: subjectData.pastPapers,  base: '/past-papers' },
+      { label: 'Guess Papers', icon: 'sparkles',    items: subjectData.guessPapers, base: '/guess-papers' },
+      { label: 'Quizzes',      icon: 'circle-help', items: subjectData.quizzes,     base: '/quizzes' },
+      { label: 'Books',        icon: 'book-marked', items: subjectData.books,       base: '/books' },
+    ].filter(s => s.items.length > 0).map(sec => (
+      <section class="mb-12">
+        <div class="mb-4 flex items-end justify-between gap-4">
+          <h2 class="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{sec.label}</h2>
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            {sec.items.length} {sec.items.length === 1 ? 'item' : 'items'}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          {sec.items.map((item: any) => (
+            <a href={url(`${sec.base}/${item.id}`)} class="row group">
+              <span class="tile">
+                <Icon name={sec.icon} size={18} strokeWidth={2.2} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="row-title">{item.data.title}</div>
+                {item.data.year && (
+                  <div class="mt-1">
+                    <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{item.data.year}</span>
+                  </div>
+                )}
+              </div>
+              <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+) : (
+<BaseLayout title="Not found — TaleemHub">
+  <div class="mx-auto max-w-3xl px-4 pt-20 pb-20 text-center">
+    <h1 class="text-2xl font-extrabold text-slate-900">Not found</h1>
+    <a href={url('/boards')} class="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1e3a8a]">
+      Browse all boards
+    </a>
+  </div>
+</BaseLayout>
+)}
+ASTRO
+
+echo "  ✓ type-list page supports BISE picker"
+
+# ─────────────────────────────────────────────
+#  5. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Preview:"
+echo ""
+echo "    pkill -f 'astro dev' || true"
+echo "    npm run dev"
+echo ""
+echo "  Test flow:"
+echo "    1. /board/punjab"
+echo "       → see 9 BISE cards"
+echo "    2. /board/punjab/class-10"
+echo "       → class hub"
+echo "    3. /board/punjab/class-10/past-papers"
+echo "       → BISE picker (9 options)"
+echo "    4. /board/punjab/lahore/class-10/past-papers"
+echo "       → (route to be built next)"
+echo ""
+echo "  Note: Books, Notes, Quizzes still show shared content"
+echo "  (no BISE picker) since they're the same for all Punjab."
+echo "════════════════════════════════════════════"

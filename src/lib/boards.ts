@@ -70,3 +70,25 @@ export const PUNJAB_BISE_NAMES = PUNJAB_BISES.map(b => b.name);
 export function biseBySlug(slug: string) {
   return PUNJAB_BISES.find(b => b.slug === slug);
 }
+
+
+// Boards that have sub-BISEs. Only Punjab currently.
+export const BISE_AWARE_BOARDS = ['punjab'];
+
+export function hasBISEs(slug: string): boolean {
+  return BISE_AWARE_BOARDS.includes(slug);
+}
+
+// Which resource types are BISE-specific (papers, gazettes)
+// vs shared (books, notes, quizzes)
+export const BISE_SPECIFIC_TYPES = ['past-papers', 'gazettes'];
+export const SHARED_TYPES = ['notes', 'quizzes', 'books', 'guess-papers', 'pairing-schemes'];
+
+export function isBISESpecific(typeSlug: string): boolean {
+  return BISE_SPECIFIC_TYPES.includes(typeSlug);
+}
+
+
+export function getBiseByName(name: string) {
+  return PUNJAB_BISES.find(b => b.name.toLowerCase() === name.toLowerCase());
+}
