@@ -303,3 +303,23 @@ input:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-vis
     color: var(--brand) !important;
   }
 }
+
+/* ═══ Unified badge (matches note-card "CLASS 9" pill) ═══ */
+.badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #eff4ff;
+  color: #1d4ed8;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.badge-soft-muted {
+  background: #f1f5f9;
+  color: #475569;
+}
