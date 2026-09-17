@@ -46,10 +46,12 @@ const resources = [
           Real expertise. Real results. Everything organised for your exact board and class.
         </p>
 
-        <form action={url('/search')} method="get" role="search" class="mx-auto mt-9 flex max-w-xl items-center gap-2 rounded-lg border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
-          <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-slate-400" />
-          <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
-          <button type="submit" class="btn btn-primary">Search</button>
+        <form action={url('/search')} method="get" role="search" class="mx-auto mt-9 flex max-w-xl items-stretch overflow-hidden rounded-xl border border-slate-300 bg-white transition-colors focus-within:border-[#1d4ed8]">
+          <span class="grid w-12 shrink-0 place-items-center text-slate-400">
+            <Icon name="search" size={18} strokeWidth={2.4} />
+          </span>
+          <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3.5 pr-3 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
+          <button type="submit" class="m-1.5 rounded-lg bg-[#1d4ed8] px-5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">Search</button>
         </form>
       </div>
     </div>

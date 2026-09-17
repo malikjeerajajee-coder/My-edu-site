@@ -248,7 +248,22 @@ button[class*="bg-[#1d4ed8]"] svg {
 }
 
 /* ═══ Focus rings ═══ */
-input:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Inputs: no outline — the wrapping form handles focus via :focus-within */
+input {
+  outline: none;
+}
+input:focus, input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Standalone input that has no wrapping form (e.g. minimal pages) */
+.input-standalone:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
 }

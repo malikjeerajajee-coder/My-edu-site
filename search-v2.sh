@@ -1,3 +1,84 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Fixing search input + rebuilding search page"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Fix the double focus ring
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path('src/styles/global.css')
+s = p.read_text()
+
+old = '''input:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}'''
+
+new = '''button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Inputs: no outline — the wrapping form handles focus via :focus-within */
+input {
+  outline: none;
+}
+input:focus, input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Standalone input that has no wrapping form (e.g. minimal pages) */
+.input-standalone:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}'''
+
+if old in s:
+    s = s.replace(old, new)
+    print('  ✓ focus ring — input no longer doubles up')
+
+p.write_text(s)
+PY
+
+# ─────────────────────────────────────────────
+#  2. Fix the homepage search form
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+p = pathlib.Path('src/pages/index.astro')
+s = p.read_text()
+
+old_form = re.compile(
+    r'<form action=\{url\(.\/search.\)\} method="get" role="search"[^>]*?>[\s\S]*?</form>',
+    re.DOTALL
+)
+
+new_form = '''<form action={url('/search')} method="get" role="search" class="mx-auto mt-9 flex max-w-xl items-stretch overflow-hidden rounded-xl border border-slate-300 bg-white transition-colors focus-within:border-[#1d4ed8]">
+          <span class="grid w-12 shrink-0 place-items-center text-slate-400">
+            <Icon name="search" size={18} strokeWidth={2.4} />
+          </span>
+          <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3.5 pr-3 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
+          <button type="submit" class="m-1.5 rounded-lg bg-[#1d4ed8] px-5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">Search</button>
+        </form>'''
+
+if old_form.search(s):
+    s = old_form.sub(new_form, s, count=1)
+    p.write_text(s)
+    print('  ✓ homepage search form — cleaner, no inner ring')
+else:
+    print('  · homepage search form pattern not found')
+PY
+
+# ─────────────────────────────────────────────
+#  3. Rebuild the search page — clean, SME-style
+# ─────────────────────────────────────────────
+cat > src/pages/search.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -307,3 +388,36 @@ import { url } from '../lib/url';
     })();
   </script>
 </BaseLayout>
+ASTRO
+
+echo "  ✓ search page rebuilt"
+
+# ─────────────────────────────────────────────
+#  4. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Clean search input + rebuilt search page'"
+echo "    git push"
+echo ""
+echo "  Then CLEAR CACHE and open in Incognito."
+echo ""
+echo "  Fixes:"
+echo "    · Search input no longer has double blue ring"
+echo "    · Only the wrapping form shows the blue border on focus"
+echo "    · Homepage search form redesigned (unified input+button)"
+echo "    · Search page rebuilt with:"
+echo "        - Header band (breadcrumbs + title + clean search bar)"
+echo "        - Filter chips with live counts"
+echo "        - Colored type tags per result"
+echo "        - Query terms highlighted in titles"
+echo "        - Keyboard nav (↓ ↑ Enter Esc, / shortcut)"
+echo "        - Better empty state"
+echo "════════════════════════════════════════════"
