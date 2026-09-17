@@ -338,3 +338,64 @@ input:focus, input:focus-visible {
   background: #f1f5f9;
   color: #475569;
 }
+
+/* ═══ Resource card — homepage grid tile ═══ */
+.res-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid #e8ebf1;
+  border-radius: 14px;
+  transition: border-color .15s ease, background-color .15s ease;
+  min-height: 8.5rem;
+}
+.res-card:hover {
+  border-color: var(--brand);
+}
+.res-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.res-card-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 11px;
+  background: var(--brand-tint);
+  color: var(--brand);
+  flex-shrink: 0;
+  transition: background-color .15s ease, color .15s ease;
+}
+.res-card:hover .res-card-icon {
+  background: var(--brand);
+  color: #ffffff;
+}
+.res-card-count {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1;
+}
+.res-card-count-muted {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.res-card-label {
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.res-card-sub {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
