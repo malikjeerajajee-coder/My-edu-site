@@ -1,3 +1,33 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Homepage: boards + content types"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Global CSS — no shadows (reinforced)
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path('src/styles/global.css')
+s = p.read_text()
+
+# Ensure the shadow kill rule exists
+if 'box-shadow: none !important' not in s:
+    # Insert after body block
+    marker = 'a { color: inherit; text-decoration: none; }'
+    s = s.replace(marker, '*, *::before, *::after { box-shadow: none !important; }\n\n' + marker)
+
+p.write_text(s)
+print('  ✓ shadow kill enforced')
+PY
+
+# ─────────────────────────────────────────────
+#  2. Rebuild homepage with cards
+# ─────────────────────────────────────────────
+cat > src/pages/index.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -190,3 +220,51 @@ const resources = [
     </div>
   </section>
 </BaseLayout>
+ASTRO
+
+echo "  ✓ homepage rebuilt — boards + resource cards"
+
+# ─────────────────────────────────────────────
+#  3. Sweep any lingering shadow classes
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+
+pattern = re.compile(r'\b(shadow-sm|shadow-md|shadow-lg|shadow-xl|shadow-2xl|shadow-inner|shadow-none)\b')
+count = 0
+for astro in pathlib.Path('src').rglob('*.astro'):
+    s = astro.read_text()
+    orig = s
+    s = pattern.sub('', s)
+    s = re.sub(r'\s+', ' ', s) if s != orig else s
+    if s != orig:
+        astro.write_text(s)
+        count += 1
+print(f'  ✓ {count} files — shadow classes stripped')
+PY
+
+# ─────────────────────────────────────────────
+#  4. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Homepage: boards + resource cards, no shadows'"
+echo "    git push"
+echo ""
+echo "  Homepage sections (top → bottom):"
+echo "    1. Hero (centered, pill badge, search)"
+echo "    2. Why it works (3 numbered steps)"
+echo "    3. Choose your board (6 card tiles)"
+echo "    4. Browse by resource (8 cards: 7 resource types + All Boards)"
+echo "    5. Trust strip (4 stats)"
+echo "    6. What is TaleemHub? (FAQ content)"
+echo ""
+echo "  Cards use 1px borders only — zero shadows anywhere."
+echo "════════════════════════════════════════════"
