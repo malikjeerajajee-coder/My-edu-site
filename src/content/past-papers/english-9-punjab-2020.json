@@ -6,5 +6,16 @@
   "boards": [
     "Punjab"
   ],
-  "pdfUrl": "/pdfs/past-papers/english-9-punjab-2020.pdf"
+  "pdfUrl": "/pdfs/past-papers/english-9-punjab-2020.pdf",
+  "bises": [
+    "Lahore",
+    "Gujranwala",
+    "Multan",
+    "Faisalabad",
+    "Rawalpindi",
+    "Sargodha",
+    "Bahawalpur",
+    "DG Khan",
+    "Sahiwal"
+  ]
 }

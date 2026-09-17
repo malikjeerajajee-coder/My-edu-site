@@ -48,3 +48,25 @@ export const CONTENT_TYPES = [
   { slug: 'pairing-schemes',  label: 'Pairing Schemes',  icon: 'list',          plural: 'pairing schemes' },
   { slug: 'gazettes',         label: 'Result Gazettes',  icon: 'newspaper',     plural: 'gazettes' },
 ];
+
+
+// The 9 Punjab Boards of Intermediate and Secondary Education (BISEs)
+// All operate under the Punjab Boards Committee of Chairpersons (PBCC)
+// — same syllabus, same paper pattern, different questions each year.
+export const PUNJAB_BISES = [
+  { slug: 'lahore',      name: 'Lahore',      short: 'LHR' },
+  { slug: 'gujranwala',  name: 'Gujranwala',  short: 'GUJ' },
+  { slug: 'multan',      name: 'Multan',      short: 'MTN' },
+  { slug: 'faisalabad',  name: 'Faisalabad',  short: 'FBD' },
+  { slug: 'rawalpindi',  name: 'Rawalpindi',  short: 'RWP' },
+  { slug: 'sargodha',    name: 'Sargodha',    short: 'SGD' },
+  { slug: 'bahawalpur',  name: 'Bahawalpur',  short: 'BWP' },
+  { slug: 'dg-khan',     name: 'DG Khan',     short: 'DGK' },
+  { slug: 'sahiwal',     name: 'Sahiwal',     short: 'SWL' },
+];
+
+export const PUNJAB_BISE_NAMES = PUNJAB_BISES.map(b => b.name);
+
+export function biseBySlug(slug: string) {
+  return PUNJAB_BISES.find(b => b.slug === slug);
+}

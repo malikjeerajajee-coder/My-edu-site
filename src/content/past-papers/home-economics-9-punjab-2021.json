@@ -6,5 +6,16 @@
   "boards": [
     "Punjab"
   ],
-  "pdfUrl": "/pdfs/past-papers/home-economics-9-punjab-2021.pdf"
+  "pdfUrl": "/pdfs/past-papers/home-economics-9-punjab-2021.pdf",
+  "bises": [
+    "Lahore",
+    "Gujranwala",
+    "Multan",
+    "Faisalabad",
+    "Rawalpindi",
+    "Sargodha",
+    "Bahawalpur",
+    "DG Khan",
+    "Sahiwal"
+  ]
 }

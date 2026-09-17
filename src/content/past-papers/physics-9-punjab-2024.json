@@ -3,22 +3,76 @@
   "subject": "Physics",
   "class": "9",
   "year": 2024,
-  "boards": ["Punjab"],
+  "boards": [
+    "Punjab"
+  ],
   "pdfUrl": "/pdfs/past-papers/physics-9-punjab-2024.pdf",
   "totalMarks": 65,
   "duration": "2 hours 40 minutes",
-  "objective": { "mcqs": 12, "marks": 12 },
-  "subjective": { "short": 15, "long": 3, "marks": 53 },
+  "objective": {
+    "mcqs": 12,
+    "marks": 12
+  },
+  "subjective": {
+    "short": 15,
+    "long": 3,
+    "marks": 53
+  },
   "topics": [
-    { "chapter": "Chapter 1 — Physical Quantities and Measurement", "mcqs": 2, "short": 2, "long": 1 },
-    { "chapter": "Chapter 2 — Kinematics",                          "mcqs": 2, "short": 2, "long": 1 },
-    { "chapter": "Chapter 3 — Dynamics",                            "mcqs": 2, "short": 2, "long": 1 },
-    { "chapter": "Chapter 4 — Turning Effect of Forces",            "mcqs": 2, "short": 2, "long": 0 },
-    { "chapter": "Chapter 5 — Gravitation",                         "mcqs": 2, "short": 2, "long": 0 },
-    { "chapter": "Chapter 6 — Work and Energy",                     "mcqs": 1, "short": 2, "long": 0 },
-    { "chapter": "Chapter 7 — Properties of Matter",                "mcqs": 1, "short": 1, "long": 0 },
-    { "chapter": "Chapter 8 — Thermal Properties of Matter",        "mcqs": 0, "short": 1, "long": 0 },
-    { "chapter": "Chapter 9 — Transfer of Heat",                    "mcqs": 0, "short": 1, "long": 0 }
+    {
+      "chapter": "Chapter 1 \u2014 Physical Quantities and Measurement",
+      "mcqs": 2,
+      "short": 2,
+      "long": 1
+    },
+    {
+      "chapter": "Chapter 2 \u2014 Kinematics",
+      "mcqs": 2,
+      "short": 2,
+      "long": 1
+    },
+    {
+      "chapter": "Chapter 3 \u2014 Dynamics",
+      "mcqs": 2,
+      "short": 2,
+      "long": 1
+    },
+    {
+      "chapter": "Chapter 4 \u2014 Turning Effect of Forces",
+      "mcqs": 2,
+      "short": 2,
+      "long": 0
+    },
+    {
+      "chapter": "Chapter 5 \u2014 Gravitation",
+      "mcqs": 2,
+      "short": 2,
+      "long": 0
+    },
+    {
+      "chapter": "Chapter 6 \u2014 Work and Energy",
+      "mcqs": 1,
+      "short": 2,
+      "long": 0
+    },
+    {
+      "chapter": "Chapter 7 \u2014 Properties of Matter",
+      "mcqs": 1,
+      "short": 1,
+      "long": 0
+    },
+    {
+      "chapter": "Chapter 8 \u2014 Thermal Properties of Matter",
+      "mcqs": 0,
+      "short": 1,
+      "long": 0
+    },
+    {
+      "chapter": "Chapter 9 \u2014 Transfer of Heat",
+      "mcqs": 0,
+      "short": 1,
+      "long": 0
+    }
   ],
   "faq": [
     {
@@ -35,11 +89,22 @@
     },
     {
       "q": "Which chapters carry the most weight?",
-      "a": "Chapters 1 through 5 (Measurement, Kinematics, Dynamics, Forces, Gravitation) are the highest-yield — together they account for over 60% of every 9th class Physics paper across the last five years."
+      "a": "Chapters 1 through 5 (Measurement, Kinematics, Dynamics, Forces, Gravitation) are the highest-yield \u2014 together they account for over 60% of every 9th class Physics paper across the last five years."
     },
     {
       "q": "Are numericals asked in the paper?",
-      "a": "Yes. Every year, 3–5 numerical questions appear — mostly from Kinematics, Dynamics and Work & Energy. They carry 2–3 marks each and are among the easiest marks to secure with practice."
+      "a": "Yes. Every year, 3\u20135 numerical questions appear \u2014 mostly from Kinematics, Dynamics and Work & Energy. They carry 2\u20133 marks each and are among the easiest marks to secure with practice."
     }
+  ],
+  "bises": [
+    "Lahore",
+    "Gujranwala",
+    "Multan",
+    "Faisalabad",
+    "Rawalpindi",
+    "Sargodha",
+    "Bahawalpur",
+    "DG Khan",
+    "Sahiwal"
   ]
 }
