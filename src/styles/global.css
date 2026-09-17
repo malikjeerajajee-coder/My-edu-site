@@ -340,62 +340,93 @@ input:focus, input:focus-visible {
 }
 
 /* ═══ Resource card — homepage grid tile ═══ */
-.res-card {
+
+/* ═══ Compact resource card — 2-col mobile grid ═══ */
+/* ═══ Compact resource card — 2-col mobile grid ═══ */
+.sq-card {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding: 1.5rem;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem;
   background: var(--surface);
   border: 1px solid #e8ebf1;
   border-radius: 14px;
-  transition: border-color .15s ease, background-color .15s ease;
-  min-height: 8.5rem;
+  min-height: 5rem;
+  transition: border-color .15s ease;
 }
-.res-card:hover {
-  border-color: var(--brand);
+@media (hover: hover) {
+  .sq-card:hover { border-color: var(--brand); }
 }
-.res-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-.res-card-icon {
+
+.sq-card-icon {
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 11px;
   background: var(--brand-tint);
   color: var(--brand);
   flex-shrink: 0;
   transition: background-color .15s ease, color .15s ease;
 }
-.res-card:hover .res-card-icon {
-  background: var(--brand);
-  color: #ffffff;
+@media (hover: hover) {
+  .sq-card:hover .sq-card-icon {
+    background: var(--brand);
+    color: #ffffff;
+  }
 }
-.res-card-count {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-  line-height: 1;
+
+.sq-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
 }
-.res-card-count-muted {
+.sq-card-label {
   font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--muted);
-}
-.res-card-label {
-  font-size: 0.875rem;
   font-weight: 800;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  line-height: 1.25;
+  line-height: 1.2;
 }
-.res-card-sub {
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
+.sq-card-sub {
+  font-size: 0.6875rem;
+  font-weight: 600;
   color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
+
+/* Blue tint variant — All Boards */
+.sq-card-tint {
+  background: var(--brand-tint);
+  border-color: var(--brand-line);
+}
+.sq-card-tint .sq-card-icon {
+  background: #ffffff;
+}
+.sq-card-tint .sq-card-label { color: var(--brand-deep); }
+.sq-card-tint .sq-card-sub   { color: var(--brand); }
+
+/* Blue tint variant — All Boards */
+.sq-card-tint {
+  background: var(--brand-tint);
+  border-color: var(--brand-line);
+}
+.sq-card-tint .sq-card-icon {
+  background: #ffffff;
+}
+.sq-card-tint .sq-card-label { color: var(--brand-deep); }
+.sq-card-tint .sq-card-sub   { color: var(--brand); }
+
+/* Square card — alternate neutral/blue variant */
+.sq-card-tint {
+  background: var(--brand-tint);
+  border-color: var(--brand-line);
+}
+.sq-card-tint .sq-card-icon {
+  background: #ffffff;
+}
+.sq-card-tint .sq-card-count { color: var(--brand-deep); }
+.sq-card-tint .sq-card-label { color: var(--brand-deep); }
+.sq-card-tint .sq-card-sub   { color: var(--brand); }

@@ -1,3 +1,15 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Removing resource counts from cards"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Homepage — remove counts from square cards
+# ─────────────────────────────────────────────
+cat > src/pages/index.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -167,3 +179,148 @@ const resources = [
     </div>
   </section>
 </BaseLayout>
+ASTRO
+echo "  ✓ homepage — counts removed"
+
+# ─────────────────────────────────────────────
+#  2. /boards — remove counts
+# ─────────────────────────────────────────────
+cat > src/pages/boards.astro <<'ASTRO'
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../lib/url';
+import { BOARDS } from '../lib/boards';
+---
+<BaseLayout title="All Boards — TaleemHub" description="Browse notes, past papers, guess papers and result gazettes for all Pakistani boards: Punjab, Federal, KPK, Sindh, Balochistan, AJK.">
+  <div class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+      <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <span class="text-slate-500">Boards</span>
+      </nav>
+      <div class="max-w-2xl">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">All boards</h1>
+        <p class="mt-3 text-base leading-relaxed text-slate-600">
+          Pick your board to find every note, past paper, guess paper and result gazette tailored to your syllabus.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-16">
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {BOARDS.map(b => (
+        <a href={url(`/board/${b.slug}`)} class="sq-card group">
+          <span class="sq-card-icon">
+            <Icon name="graduation-cap" size={20} strokeWidth={2.2} />
+          </span>
+          <div class="sq-card-body">
+            <span class="sq-card-label">{b.name}</span>
+            <span class="sq-card-sub">Board</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+ASTRO
+echo "  ✓ /boards — counts removed"
+
+# ─────────────────────────────────────────────
+#  3. /board/[board] — remove class counts
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+
+p = pathlib.Path('src/pages/board/[board]/index.astro')
+s = p.read_text()
+
+# Remove the count calculation + display in class rows
+old = re.compile(
+    r'\{classes\.map\(c => \{[\s\S]*?<div class="row-title">Class \{c\}</div>[\s\S]*?<div class="row-sub">\{count\} \{count === 1 \? \'item\' : \'items\'\}</div>[\s\S]*?\}\)\(\)\}',
+    re.DOTALL
+)
+
+# Simpler: replace the whole mapped section with a simpler version
+new_section = '''{classes.map(c => (
+          <a href={url(`/board/${slug}/class-${c}`)} class="row group">
+            <span class="tile"><Icon name="graduation-cap" size={20} strokeWidth={2.2} /></span>
+            <div class="min-w-0 flex-1">
+              <div class="row-title">Class {c}</div>
+            </div>
+            <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+          </a>
+        ))}'''
+
+# Find the entire grid block for classes
+grid_pattern = re.compile(
+    r'<div class="grid grid-cols-1 gap-2\.5 sm:grid-cols-2 lg:grid-cols-4">[\s\S]*?(?=</div>\s*</div>\s*\{info)',
+    re.DOTALL
+)
+
+if grid_pattern.search(s):
+    s = grid_pattern.sub('<div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">\n        ' + new_section + '\n      ', s, count=1)
+    p.write_text(s)
+    print('  ✓ /board/[board] — class counts removed')
+else:
+    print('  · /board/[board] — pattern not found, trying simpler approach')
+
+    # Fallback: just strip the row-sub div with item counts
+    s = re.sub(r'<div class="row-sub">\{count\} \{count === 1 \? .item. : .items.\}</div>\s*', '', s)
+    p.write_text(s)
+    print('  ✓ /board/[board] — counts stripped (fallback)')
+PY
+
+# ─────────────────────────────────────────────
+#  4. /board/[board]/[class] — remove item counts from rows
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+
+p = pathlib.Path('src/pages/board/[board]/[class]/index.astro')
+s = p.read_text()
+
+# Remove counts from resource-type rows
+s = re.sub(
+    r'<div class="row-sub">\{s\.count\} \{s\.count === 1 \? .item. : .items.\}</div>\s*',
+    '',
+    s
+)
+
+# Remove subject count pills block
+pills_pattern = re.compile(
+    r'<div class="mt-1 flex flex-wrap items-center gap-1\.5">[\s\S]*?</div>\s*</div>\s*<Icon name="arrow-right"',
+    re.DOTALL
+)
+if pills_pattern.search(s):
+    s = pills_pattern.sub('<Icon name="arrow-right"', s)
+
+p.write_text(s)
+print('  ✓ /board/[board]/[class] — item counts removed')
+PY
+
+# ─────────────────────────────────────────────
+#  5. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Remove resource counts from all cards'"
+echo "    git push"
+echo ""
+echo "  Cards now show:"
+echo "    · Board rows  → board name only"
+echo "    · Class rows  → 'Class 9' only"
+echo "    · Subject rows → subject name only"
+echo "    · Square cards → label only"
+echo ""
+echo "  Cleaner, less noise, same navigation."
+echo "════════════════════════════════════════════"

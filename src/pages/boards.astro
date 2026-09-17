@@ -3,12 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
 import { BOARDS } from '../lib/boards';
-import { getBoardCounts } from '../lib/boardContent';
-
-const counts = await getBoardCounts();
 ---
 <BaseLayout title="All Boards — TaleemHub" description="Browse notes, past papers, guess papers and result gazettes for all Pakistani boards: Punjab, Federal, KPK, Sindh, Balochistan, AJK.">
-  <!-- Page header -->
   <div class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
       <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
@@ -25,19 +21,16 @@ const counts = await getBoardCounts();
     </div>
   </div>
 
-  <!-- Content -->
   <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-16">
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {BOARDS.map(b => (
-        <a href={url(`/board/${b.slug}`)} class="row group">
-          <span class="tile">
+        <a href={url(`/board/${b.slug}`)} class="sq-card group">
+          <span class="sq-card-icon">
             <Icon name="graduation-cap" size={20} strokeWidth={2.2} />
           </span>
-          <div class="min-w-0 flex-1">
-            <div class="row-title font-bold">{b.name}</div>
-            <div class="row-sub">{counts[b.slug] || 0} {counts[b.slug] === 1 ? 'resource' : 'resources'}</div>
+          <div class="sq-card-body">
+            <span class="sq-card-label">{b.name}</span>
           </div>
-          <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
         </a>
       ))}
     </div>
