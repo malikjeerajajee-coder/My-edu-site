@@ -1,3 +1,15 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Compacting homepage cards"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  Rebuild homepage with compact card style
+# ─────────────────────────────────────────────
+cat > src/pages/index.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -181,3 +193,86 @@ const resources = [
     </div>
   </section>
 </BaseLayout>
+ASTRO
+
+echo "  ✓ homepage rebuilt — compact rows + tighter resource cards"
+
+# ─────────────────────────────────────────────
+#  Tighten the .tile size for compact cards
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib
+p = pathlib.Path('src/styles/global.css')
+s = p.read_text()
+
+old_tile = '''.tile {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  background: var(--brand-tint);
+  color: var(--brand);
+  flex-shrink: 0;
+  transition: background-color .15s ease, color .15s ease;
+}'''
+
+new_tile = '''.tile {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  background: var(--brand-tint);
+  color: var(--brand);
+  flex-shrink: 0;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+/* Compact tile inside resource cards */
+.group > .tile, .group > div > .tile {
+  transition: background-color .15s ease, color .15s ease;
+}
+.group:hover .tile {
+  background: var(--brand);
+  color: #ffffff;
+}'''
+
+if old_tile in s:
+    s = s.replace(old_tile, new_tile)
+    print('  ✓ tile hover behavior confirmed')
+else:
+    print('  · tile pattern not found, skipping')
+
+p.write_text(s)
+PY
+
+# ─────────────────────────────────────────────
+#  Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Compact homepage cards'"
+echo "    git push"
+echo ""
+echo "  What changed:"
+echo ""
+echo "  Board cards →"
+echo "    Before: vertical card, icon + name + count stacked"
+echo "            (~180px tall on mobile, wasteful)"
+echo "    After:  compact horizontal row (icon + name + count + arrow)"
+echo "            (~66px tall, matches SME pattern)"
+echo ""
+echo "  Resource cards →"
+echo "    Before: p-5 padding, mt-4 gap, 20px tile, 15px label"
+echo "    After:  p-4 padding, mt-3 gap, 18px tile, 13px label"
+echo ""
+echo "  No shadows. 1px borders only."
+echo "════════════════════════════════════════════"
