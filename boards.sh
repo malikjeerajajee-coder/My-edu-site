@@ -1,0 +1,65 @@
+#!/bin/bash
+set -e
+
+echo "Fixing /boards page only..."
+
+cat > src/pages/boards.astro <<'ASTRO'
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../lib/url';
+import { BOARDS } from '../lib/boards';
+---
+<BaseLayout title="All Boards — TaleemHub" description="Browse notes, past papers, guess papers and result gazettes for all Pakistani boards: Punjab, Federal, KPK, Sindh, Balochistan, AJK.">
+  <!-- Header -->
+  <div class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+      <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <span class="text-slate-500">Boards</span>
+      </nav>
+      <div class="max-w-2xl">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">All boards</h1>
+        <p class="mt-3 text-base leading-relaxed text-slate-600">
+          Pick your board to find every note, past paper, guess paper and result gazette tailored to your syllabus.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Board list -->
+  <div class="mx-auto max-w-[1200px] px-5 py-10 sm:px-7 lg:px-10 lg:py-14">
+    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+      {BOARDS.map(b => (
+        <a href={url(`/board/${b.slug}`)} class="row group">
+          <span class="tile">
+            <Icon name="graduation-cap" size={19} strokeWidth={2.2} />
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="row-title">{b.name}</div>
+          </div>
+          <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+ASTRO
+
+echo "  ✓ /boards rewritten using .row cards"
+
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -5
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done. Push:"
+echo ""
+echo "    git add ."
+echo "    git commit -m 'Fix /boards page cards'"
+echo "    git push"
+echo ""
+echo "  Then clear cache and open /boards"
+echo "════════════════════════════════════════════"

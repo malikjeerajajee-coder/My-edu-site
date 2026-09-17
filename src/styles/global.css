@@ -5,24 +5,33 @@
 }
 
 :root {
+  /* ── Primary ── */
   --brand: #1d4ed8;
-  --brand-dark: #1e3a8a;
-  --brand-deep: #172554;
+  --brand-deep: #1e3a8a;
   --brand-tint: #eff4ff;
   --brand-line: #c7d7fe;
 
-  --ink: #0f172a;
+  /* ── Neutrals ── */
+  --ink: #0b1220;
   --body: #334155;
   --muted: #64748b;
   --subtle: #94a3b8;
 
   --surface: #ffffff;
   --surface-2: #f8fafc;
-  --surface-3: #f1f5f9;
   --bg: #ffffff;
 
   --line: #e5e9f0;
   --line-2: #cbd5e1;
+
+  /* ── Resource accents (7 colors) ── */
+  --c-notes: #1d4ed8;      --c-notes-tint: #eff4ff;      --c-notes-line: #c7d7fe;      --c-notes-deep: #1e3a8a;
+  --c-papers: #7c3aed;     --c-papers-tint: #f5f3ff;     --c-papers-line: #ddd6fe;     --c-papers-deep: #5b21b6;
+  --c-guess: #c026d3;      --c-guess-tint: #fdf4ff;      --c-guess-line: #f5d0fe;      --c-guess-deep: #86198f;
+  --c-pairing: #059669;    --c-pairing-tint: #ecfdf5;    --c-pairing-line: #a7f3d0;    --c-pairing-deep: #065f46;
+  --c-quizzes: #0284c7;    --c-quizzes-tint: #f0f9ff;    --c-quizzes-line: #bae6fd;    --c-quizzes-deep: #075985;
+  --c-books: #d97706;      --c-books-tint: #fffbeb;      --c-books-line: #fde68a;      --c-books-deep: #92400e;
+  --c-gazettes: #e11d48;   --c-gazettes-tint: #fff1f2;   --c-gazettes-line: #fecdd3;   --c-gazettes-deep: #9f1239;
 }
 
 html {
@@ -30,25 +39,6 @@ html {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
 }
-
-/* Kill iOS/Android default tap highlight on links & buttons */
-a, button, [role="button"], input, label {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
-/* Kill default browser focus outline on tap (keep visible on keyboard focus) */
-a:focus, button:focus { outline: none; }
-a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-
-/* Kill Chrome's active state tint on mobile */
-a:active, button:active {
-  -webkit-tap-highlight-color: transparent;
-}
-
 
 body {
   font-family: var(--font-sans);
@@ -58,8 +48,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   font-feature-settings: "ss01", "cv11";
+  font-size: 16px;
 }
 
+* { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 input, select, textarea { font-family: inherit; }
@@ -71,32 +63,27 @@ h1, h2, h3, h4 {
   line-height: 1.1;
 }
 
-/* Row titles — bold but not heavy */
-.row-title {
-  font-weight: 700 !important;
-  color: var(--ink);
-  letter-spacing: -0.015em;
-}
-
-/* Section headings */
-.section-heading {
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--ink);
-  line-height: 1.2;
-}
-
-
-/* ═══ FLAT — zero shadows anywhere ═══ */
+/* ── Zero shadows ── */
 *, *::before, *::after { box-shadow: none !important; }
 
-/* ═══ SME-style pill badge ═══ */
+/* ═══ Section rhythm ═══ */
+.section { padding: 4rem 0; }
+@media (min-width: 768px) { .section { padding: 5.5rem 0; } }
+
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+@media (min-width: 640px) { .section-inner { padding: 0 1.75rem; } }
+@media (min-width: 1024px) { .section-inner { padding: 0 2.5rem; } }
+
+/* ═══ Pill badge (hero eyebrow) ═══ */
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.4rem 0.9rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--surface);
@@ -112,31 +99,48 @@ h1, h2, h3, h4 {
   background: var(--brand);
 }
 
-/* ═══ Card row — SME-style horizontal list ═══ */
+/* ═══ Row card — horizontal list item ═══ */
 .row {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 1.25rem;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  transition: border-color .15s ease, background-color .15s ease;
+  border-radius: 14px;
+  transition: border-color .15s ease;
+  min-width: 0;
 }
 @media (hover: hover) {
-  .row:hover {
-    border-color: var(--brand);
-    background: var(--brand-tint);
-  }
+  .row:hover { border-color: var(--brand); }
 }
 
-/* ═══ Icon tile ═══ */
+.row > * { min-width: 0; }
+.row .row-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+.row .row-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ═══ Tile — icon container inside row cards ═══ */
 .tile {
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 8px;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 11px;
   background: var(--brand-tint);
   color: var(--brand);
   flex-shrink: 0;
@@ -149,6 +153,49 @@ h1, h2, h3, h4 {
   }
 }
 
+/* ═══ Resource tile — compact grid card ═══ */
+.rtile {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  min-height: 4.5rem;
+  transition: border-color .15s ease, background-color .15s ease;
+  min-width: 0;
+}
+@media (hover: hover) {
+  .rtile:hover { border-color: var(--tile-color, var(--brand)); }
+}
+
+.rtile-icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 11px;
+  background: var(--tile-tint, var(--brand-tint));
+  color: var(--tile-color, var(--brand));
+  flex-shrink: 0;
+  transition: background-color .15s ease, color .15s ease;
+}
+@media (hover: hover) {
+  .rtile:hover .rtile-icon {
+    background: var(--tile-color, var(--brand));
+    color: #ffffff;
+  }
+}
+
+.rtile-label {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
 /* ═══ Buttons ═══ */
 .btn {
   display: inline-flex;
@@ -156,7 +203,7 @@ h1, h2, h3, h4 {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 700;
   font-size: 0.875rem;
   letter-spacing: -0.005em;
@@ -168,8 +215,8 @@ h1, h2, h3, h4 {
   border: 1px solid var(--brand);
 }
 .btn-primary:hover {
-  background: var(--brand-dark);
-  border-color: var(--brand-dark);
+  background: var(--brand-deep);
+  border-color: var(--brand-deep);
 }
 .btn-outline {
   background: var(--surface);
@@ -181,32 +228,13 @@ h1, h2, h3, h4 {
   color: var(--brand);
 }
 
-/* ═══ Force white text on colored buttons ═══ */
+/* Force white text on colored buttons */
 a[class*="bg-[#1d4ed8]"],
-a[class*="bg-[#1e3a8a]"],
-button[class*="bg-[#1d4ed8]"] {
-  color: #ffffff !important;
-}
+button[class*="bg-[#1d4ed8]"] { color: #ffffff !important; }
 a[class*="bg-[#1d4ed8]"] svg,
-a[class*="bg-[#1e3a8a]"] svg,
-button[class*="bg-[#1d4ed8]"] svg {
-  color: #ffffff !important;
-  stroke: #ffffff !important;
-}
+button[class*="bg-[#1d4ed8]"] svg { color: #ffffff !important; stroke: #ffffff !important; }
 
-/* ═══ Section rhythm ═══ */
-.section { padding: 4rem 0; }
-@media (min-width: 768px) { .section { padding: 5.5rem 0; } }
-
-.section-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
-}
-@media (min-width: 640px) { .section-inner { padding: 0 1.75rem; } }
-@media (min-width: 1024px) { .section-inner { padding: 0 2.5rem; } }
-
-/* ═══ SME numbered step — circular blue badge ═══ */
+/* ═══ Numbered step ═══ */
 .step-num {
   display: inline-grid;
   place-items: center;
@@ -220,53 +248,12 @@ button[class*="bg-[#1d4ed8]"] svg {
   flex-shrink: 0;
 }
 
-/* ═══ SME feature list — checkmark bullets ═══ */
-.feature-list {
-  display: grid;
-  gap: 0.75rem;
-}
-.feature-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  font-size: 0.9375rem;
-  color: var(--body);
-}
-.feature-list li::before {
-  content: "";
-  flex-shrink: 0;
-  margin-top: 0.35rem;
-  width: 1rem;
-  height: 1rem;
-  background: var(--brand);
-  color: #ffffff;
-  border-radius: 50%;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");
-  background-size: 60%;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* ═══ Focus rings ═══ */
-button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+/* ═══ Focus ═══ */
+button:focus-visible, a:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
-
-/* Inputs: no outline — the wrapping form handles focus via :focus-within */
-input {
-  outline: none;
-}
-input:focus, input:focus-visible {
-  outline: none;
-  box-shadow: none;
-}
-
-/* Standalone input that has no wrapping form (e.g. minimal pages) */
-.input-standalone:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
+input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
 
 /* ═══ Prose ═══ */
 .prose { font-size: 1rem; line-height: 1.75; color: var(--body); }
@@ -299,134 +286,9 @@ input:focus, input:focus-visible {
   }
 }
 
-
-/* ═══ Touch safety — kill hover styles on touch devices ═══ */
+/* ═══ Touch safety ═══ */
 @media (hover: none) {
-  .row,
-  .card,
-  .group > * {
-    transition: none;
-  }
-  .row:hover,
-  .card:hover,
-  [class*="hover\:border-"]:hover {
-    border-color: var(--line) !important;
-    background-color: inherit !important;
-  }
-  .group:hover .tile {
-    background: var(--brand-tint) !important;
-    color: var(--brand) !important;
-  }
+  .row:hover, .rtile:hover { border-color: var(--line) !important; background: inherit !important; }
+  .row:hover .tile { background: var(--brand-tint) !important; color: var(--brand) !important; }
+  .rtile:hover .rtile-icon { background: var(--tile-tint, var(--brand-tint)) !important; color: var(--tile-color, var(--brand)) !important; }
 }
-
-/* ═══ Unified badge (matches note-card "CLASS 9" pill) ═══ */
-.badge-soft {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  background: #eff4ff;
-  color: #1d4ed8;
-  font-size: 0.6875rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1;
-}
-.badge-soft-muted {
-  background: #f1f5f9;
-  color: #475569;
-}
-
-/* ═══ Resource card — homepage grid tile ═══ */
-
-/* ═══ Compact resource card — 2-col mobile grid ═══ */
-/* ═══ Compact resource card — 2-col mobile grid ═══ */
-.sq-card {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  padding: 1rem;
-  background: var(--surface);
-  border: 1px solid #e8ebf1;
-  border-radius: 14px;
-  min-height: 5rem;
-  transition: border-color .15s ease;
-}
-@media (hover: hover) {
-  .sq-card:hover { border-color: var(--brand); }
-}
-
-.sq-card-icon {
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 11px;
-  background: var(--brand-tint);
-  color: var(--brand);
-  flex-shrink: 0;
-  transition: background-color .15s ease, color .15s ease;
-}
-@media (hover: hover) {
-  .sq-card:hover .sq-card-icon {
-    background: var(--brand);
-    color: #ffffff;
-  }
-}
-
-.sq-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  min-width: 0;
-}
-.sq-card-label {
-  font-size: 0.9375rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  line-height: 1.2;
-}
-.sq-card-sub {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* Blue tint variant — All Boards */
-.sq-card-tint {
-  background: var(--brand-tint);
-  border-color: var(--brand-line);
-}
-.sq-card-tint .sq-card-icon {
-  background: #ffffff;
-}
-.sq-card-tint .sq-card-label { color: var(--brand-deep); }
-.sq-card-tint .sq-card-sub   { color: var(--brand); }
-
-/* Blue tint variant — All Boards */
-.sq-card-tint {
-  background: var(--brand-tint);
-  border-color: var(--brand-line);
-}
-.sq-card-tint .sq-card-icon {
-  background: #ffffff;
-}
-.sq-card-tint .sq-card-label { color: var(--brand-deep); }
-.sq-card-tint .sq-card-sub   { color: var(--brand); }
-
-/* Square card — alternate neutral/blue variant */
-.sq-card-tint {
-  background: var(--brand-tint);
-  border-color: var(--brand-line);
-}
-.sq-card-tint .sq-card-icon {
-  background: #ffffff;
-}
-.sq-card-tint .sq-card-count { color: var(--brand-deep); }
-.sq-card-tint .sq-card-label { color: var(--brand-deep); }
-.sq-card-tint .sq-card-sub   { color: var(--brand); }

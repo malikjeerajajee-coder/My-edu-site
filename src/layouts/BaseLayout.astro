@@ -11,6 +11,10 @@ const {
 
 const path = Astro.url.pathname;
 
+const navBrowse = [
+  { href: '/',       label: 'Home',    icon: 'home' },
+  { href: '/boards', label: 'Boards',  icon: 'graduation-cap' },
+];
 const navStudy = [
   { href: '/notes',   label: 'Notes',   icon: 'file-text' },
   { href: '/quizzes', label: 'Quizzes', icon: 'circle-help' },
@@ -51,59 +55,52 @@ const isActive = (href: string) => {
   <!-- ═══ DESKTOP SIDEBAR ═══ -->
   <aside class="fixed inset-y-0 left-0 z-40 hidden w-[250px] flex-col border-r border-slate-200 bg-white lg:flex">
     <a href={url('/')} class="flex h-16 shrink-0 items-center gap-2.5 border-b border-slate-200 px-5">
-      <span class="grid h-8 w-8 place-items-center rounded-md bg-[#1d4ed8] text-white">
+      <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
         <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
       </span>
       <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
     </a>
 
-    <nav class="flex-1 overflow-y-auto px-3 py-4">
-      <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Browse</div>
-      <ul class="space-y-px">
-        <li>
-          <a href={url('/')} class:list={[
-            "flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors",
-            isActive('/') ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-          ]}>
-            <Icon name="home" size={17} strokeWidth={2.1} class="shrink-0" />
-            <span>Home</span>
-          </a>
-        </li>
-        <li>
-          <a href={url('/boards')} class:list={[
-            "flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors",
-            isActive('/boards') ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-          ]}>
-            <Icon name="graduation-cap" size={17} strokeWidth={2.1} class="shrink-0" />
-            <span>Boards</span>
-          </a>
-        </li>
-      </ul>
-
-      <div class="mt-5 mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Study Material</div>
-      <ul class="space-y-px">
-        {navStudy.map(item => (
+    <nav class="flex-1 overflow-y-auto px-3 py-5">
+      <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Browse</div>
+      <ul class="space-y-0.5">
+        {navBrowse.map(item => (
           <li>
             <a href={url(item.href)} class:list={[
-              "flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors",
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-bold transition-colors",
               isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
             ]}>
-              <Icon name={item.icon} size={17} strokeWidth={2.1} class="shrink-0" />
+              <Icon name={item.icon} size={17} strokeWidth={2.2} class="shrink-0" />
               <span>{item.label}</span>
             </a>
           </li>
         ))}
       </ul>
 
-      <div class="mt-5 mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Exams</div>
-      <ul class="space-y-px">
+      <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Study Material</div>
+      <ul class="space-y-0.5">
+        {navStudy.map(item => (
+          <li>
+            <a href={url(item.href)} class:list={[
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-bold transition-colors",
+              isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+            ]}>
+              <Icon name={item.icon} size={17} strokeWidth={2.2} class="shrink-0" />
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Exams</div>
+      <ul class="space-y-0.5">
         {navExam.map(item => (
           <li>
             <a href={url(item.href)} class:list={[
-              "flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors",
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-bold transition-colors",
               isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
             ]}>
-              <Icon name={item.icon} size={17} strokeWidth={2.1} class="shrink-0" />
+              <Icon name={item.icon} size={17} strokeWidth={2.2} class="shrink-0" />
               <span>{item.label}</span>
             </a>
           </li>
@@ -112,16 +109,16 @@ const isActive = (href: string) => {
     </nav>
 
     <div class="border-t border-slate-200 p-3">
-      <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 focus-within:border-[#1d4ed8] focus-within:bg-white">
+      <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 transition-colors focus-within:border-[#1d4ed8] focus-within:bg-white">
         <Icon name="search" size={14} strokeWidth={2.3} class="shrink-0 text-slate-400" />
-        <input type="search" name="q" placeholder="Search library" class="min-w-0 flex-1 bg-transparent text-[13px] font-medium text-slate-900 outline-none placeholder:text-slate-400" />
+        <input type="search" name="q" placeholder="Search library" class="min-w-0 flex-1 bg-transparent text-[13px] font-semibold text-slate-900 outline-none placeholder:text-slate-400" />
       </form>
     </div>
   </aside>
 
   <!-- ═══ MOBILE TOP BAR ═══ -->
-  <header class="sticky top-0 z-30 flex h-14 w-full items-center gap-3 border-b border-slate-200 bg-white px-4 lg:hidden">
-    <button id="open-drawer" type="button" aria-label="Open menu" class="grid h-9 w-9 place-items-center rounded-md text-slate-700 active:bg-slate-100">
+  <header class="sticky top-0 z-30 flex h-14 w-full items-center gap-3 border-b border-slate-200 bg-white/95 px-4 backdrop-blur-lg lg:hidden">
+    <button id="open-drawer" type="button" aria-label="Open menu" class="grid h-9 w-9 place-items-center rounded-lg text-slate-700 active:bg-slate-100">
       <Icon name="menu" size={20} strokeWidth={2.4} />
     </button>
     <a href={url('/')} class="flex items-center gap-2">
@@ -130,7 +127,7 @@ const isActive = (href: string) => {
       </span>
       <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
     </a>
-    <a href={url('/search')} class="ml-auto grid h-9 w-9 place-items-center rounded-md text-slate-700 active:bg-slate-100" aria-label="Search">
+    <a href={url('/search')} class="ml-auto grid h-9 w-9 place-items-center rounded-lg text-slate-700 active:bg-slate-100" aria-label="Search">
       <Icon name="search" size={19} strokeWidth={2.4} />
     </a>
   </header>
@@ -141,38 +138,39 @@ const isActive = (href: string) => {
     <aside id="drawer-panel" class="absolute inset-y-0 left-0 flex w-[270px] -translate-x-full flex-col border-r border-slate-200 bg-white transition-transform duration-300 ease-out">
       <div class="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4">
         <a href={url('/')} class="flex items-center gap-2.5">
-          <span class="grid h-8 w-8 place-items-center rounded-md bg-[#1d4ed8] text-white">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
             <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
           </span>
           <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
         </a>
-        <button id="close-drawer" type="button" aria-label="Close" class="grid h-8 w-8 place-items-center rounded-md text-slate-500 active:bg-slate-100">
+        <button id="close-drawer" type="button" aria-label="Close" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 active:bg-slate-100">
           <Icon name="x" size={17} strokeWidth={2.4} />
         </button>
       </div>
-      <nav class="flex-1 overflow-y-auto px-3 py-4">
-        <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Browse</div>
-        <ul class="space-y-px">
-          <li><a href={url('/')} class:list={["flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors", isActive('/') ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name="home" size={17} strokeWidth={2.1} /><span>Home</span></a></li>
-          <li><a href={url('/boards')} class:list={["flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors", isActive('/boards') ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name="graduation-cap" size={17} strokeWidth={2.1} /><span>Boards</span></a></li>
-        </ul>
-        <div class="mt-5 mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Study Material</div>
-        <ul class="space-y-px">
-          {navStudy.map(item => (
-            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name={item.icon} size={17} strokeWidth={2.1} /><span>{item.label}</span></a></li>
+      <nav class="flex-1 overflow-y-auto px-3 py-5">
+        <div class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Browse</div>
+        <ul class="space-y-0.5">
+          {navBrowse.map(item => (
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-bold transition-colors", isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name={item.icon} size={17} strokeWidth={2.2} /><span>{item.label}</span></a></li>
           ))}
         </ul>
-        <div class="mt-5 mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Exams</div>
-        <ul class="space-y-px">
+        <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Study Material</div>
+        <ul class="space-y-0.5">
+          {navStudy.map(item => (
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-bold transition-colors", isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name={item.icon} size={17} strokeWidth={2.2} /><span>{item.label}</span></a></li>
+          ))}
+        </ul>
+        <div class="mt-6 mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Exams</div>
+        <ul class="space-y-0.5">
           {navExam.map(item => (
-            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-md px-3 py-2 text-[13.5px] font-semibold transition-colors", isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name={item.icon} size={17} strokeWidth={2.1} /><span>{item.label}</span></a></li>
+            <li><a href={url(item.href)} class:list={["flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-bold transition-colors", isActive(item.href) ? "bg-[#eff4ff] text-[#1d4ed8]" : "text-slate-600 hover:bg-slate-100"]}><Icon name={item.icon} size={17} strokeWidth={2.2} /><span>{item.label}</span></a></li>
           ))}
         </ul>
       </nav>
       <div class="border-t border-slate-200 p-3">
-        <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2">
+        <form action={url('/search')} method="get" role="search" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
           <Icon name="search" size={14} strokeWidth={2.3} class="shrink-0 text-slate-400" />
-          <input type="search" name="q" placeholder="Search library" class="min-w-0 flex-1 bg-transparent text-[13px] font-medium text-slate-900 outline-none placeholder:text-slate-400" />
+          <input type="search" name="q" placeholder="Search library" class="min-w-0 flex-1 bg-transparent text-[13px] font-semibold text-slate-900 outline-none placeholder:text-slate-400" />
         </form>
       </div>
     </aside>
@@ -187,7 +185,7 @@ const isActive = (href: string) => {
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div class="sm:col-span-2">
             <div class="flex items-center gap-2.5">
-              <span class="grid h-8 w-8 place-items-center rounded-md bg-[#1d4ed8] text-white">
+              <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
                 <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
               </span>
               <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
@@ -197,7 +195,7 @@ const isActive = (href: string) => {
             </p>
           </div>
           <div>
-            <h4 class="text-[13px] font-bold text-slate-900">Study</h4>
+            <h4 class="text-[13px] font-extrabold text-slate-900">Study</h4>
             <ul class="mt-3.5 space-y-2 text-sm text-slate-500">
               <li><a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a></li>
               <li><a href={url('/notes')} class="hover:text-[#1d4ed8]">Notes</a></li>
@@ -206,7 +204,7 @@ const isActive = (href: string) => {
             </ul>
           </div>
           <div>
-            <h4 class="text-[13px] font-bold text-slate-900">Exams</h4>
+            <h4 class="text-[13px] font-extrabold text-slate-900">Exams</h4>
             <ul class="mt-3.5 space-y-2 text-sm text-slate-500">
               <li><a href={url('/past-papers')} class="hover:text-[#1d4ed8]">Past Papers</a></li>
               <li><a href={url('/guess-papers')} class="hover:text-[#1d4ed8]">Guess Papers</a></li>
