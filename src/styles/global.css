@@ -123,9 +123,11 @@ h1, h2, h3, h4 {
   border-radius: 10px;
   transition: border-color .15s ease, background-color .15s ease;
 }
-.row:hover {
-  border-color: var(--brand);
-  background: var(--brand-tint);
+@media (hover: hover) {
+  .row:hover {
+    border-color: var(--brand);
+    background: var(--brand-tint);
+  }
 }
 
 /* ═══ Icon tile ═══ */
@@ -140,9 +142,11 @@ h1, h2, h3, h4 {
   flex-shrink: 0;
   transition: background-color .15s ease, color .15s ease;
 }
-.row:hover .tile {
-  background: var(--brand);
-  color: #ffffff;
+@media (hover: hover) {
+  .row:hover .tile {
+    background: var(--brand);
+    color: #ffffff;
+  }
 }
 
 /* ═══ Buttons ═══ */
@@ -277,5 +281,25 @@ input:focus-visible, button:focus-visible, a:focus-visible, [tabindex]:focus-vis
   *, *::before, *::after {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
+  }
+}
+
+
+/* ═══ Touch safety — kill hover styles on touch devices ═══ */
+@media (hover: none) {
+  .row,
+  .card,
+  .group > * {
+    transition: none;
+  }
+  .row:hover,
+  .card:hover,
+  [class*="hover\:border-"]:hover {
+    border-color: var(--line) !important;
+    background-color: inherit !important;
+  }
+  .group:hover .tile {
+    background: var(--brand-tint) !important;
+    color: var(--brand) !important;
   }
 }
