@@ -1,11 +1,13 @@
 ---
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
+import SeoHead from '../components/SeoHead.astro';
 import { url } from '../lib/url';
 
-interface Props { title: string; description?: string; }
+interface Props { title: string; description?: string; jsonLd?: any; }
 const {
   title,
+  jsonLd,
   description = 'Free notes, past papers, guess papers, pairing schemes, quizzes and result gazettes for Pakistani students.',
 } = Astro.props;
 
@@ -41,14 +43,11 @@ const isActive = (href: string) => {
   <meta name="theme-color" content="#1d4ed8" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
-  <link rel="sitemap" href={url('/sitemap-index.xml')} />
+  <SeoHead title={title} description={description} jsonLd={jsonLd} />
 </head>
 <body class="min-h-screen bg-white">
 
@@ -58,7 +57,7 @@ const isActive = (href: string) => {
       <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
         <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
       </span>
-      <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
+      <span class="text-[15px] font-extrabold tracking-tight text-slate-900">Parhayi</span>
     </a>
 
     <nav class="flex-1 overflow-y-auto px-3 py-5">
@@ -125,7 +124,7 @@ const isActive = (href: string) => {
       <span class="grid h-7 w-7 place-items-center rounded-md bg-[#1d4ed8] text-white">
         <Icon name="graduation-cap" size={15} strokeWidth={2.4} />
       </span>
-      <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
+      <span class="text-[15px] font-extrabold tracking-tight text-slate-900">Parhayi</span>
     </a>
     <a href={url('/search')} class="ml-auto grid h-9 w-9 place-items-center rounded-lg text-slate-700 active:bg-slate-100" aria-label="Search">
       <Icon name="search" size={19} strokeWidth={2.4} />
@@ -141,7 +140,7 @@ const isActive = (href: string) => {
           <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
             <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
           </span>
-          <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
+          <span class="text-[15px] font-extrabold tracking-tight text-slate-900">Parhayi</span>
         </a>
         <button id="close-drawer" type="button" aria-label="Close" class="grid h-8 w-8 place-items-center rounded-lg text-slate-500 active:bg-slate-100">
           <Icon name="x" size={17} strokeWidth={2.4} />
@@ -188,7 +187,7 @@ const isActive = (href: string) => {
               <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#1d4ed8] text-white">
                 <Icon name="graduation-cap" size={17} strokeWidth={2.4} />
               </span>
-              <span class="text-[15px] font-extrabold tracking-tight text-slate-900">TaleemHub</span>
+              <span class="text-[15px] font-extrabold tracking-tight text-slate-900">Parhayi</span>
             </div>
             <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-500">
               Free notes, past papers, guess papers, and result gazettes for Pakistani students — organised by board and class.
@@ -214,7 +213,7 @@ const isActive = (href: string) => {
           </div>
         </div>
         <div class="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} TaleemHub. Built for students, forever free.</p>
+          <p>© {new Date().getFullYear()} Parhayi. Built for students, forever free.</p>
         </div>
       </div>
     </footer>

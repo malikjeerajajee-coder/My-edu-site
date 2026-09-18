@@ -1,0 +1,102 @@
+---
+import Icon from './Icon.astro';
+import { url } from '../lib/url';
+
+interface Props {
+  paper: any;
+  allPapers: any[];
+}
+const { paper, allPapers } = Astro.props;
+const d = paper.data;
+
+// Same subject, same BISE/board, other years
+const sameBoardSameSubject = allPapers
+  .filter((p: any) =>
+    p.id !== paper.id &&
+    p.data.subject === d.subject &&
+    p.data.class === d.class &&
+    ((d.bise && p.data.bise === d.bise) || (!d.bise && p.data.boards?.[0] === d.boards?.[0]))
+  )
+  .sort((a: any, b: any) => (b.data.year || 0) - (a.data.year || 0))
+  .slice(0, 6);
+
+// Same BISE/board, same class, same year, other subjects
+const sameBoardSameYear = allPapers
+  .filter((p: any) =>
+    p.id !== paper.id &&
+    p.data.year === d.year &&
+    p.data.class === d.class &&
+    p.data.subject !== d.subject &&
+    ((d.bise && p.data.bise === d.bise) || (!d.bise && p.data.boards?.[0] === d.boards?.[0]))
+  )
+  .slice(0, 6);
+
+// Same subject, same year, other BISEs (shows how paper varies)
+const sameYearSameSubjectOtherBoards = allPapers
+  .filter((p: any) =>
+    p.id !== paper.id &&
+    p.data.subject === d.subject &&
+    p.data.year === d.year &&
+    p.data.class === d.class &&
+    p.data.bise &&
+    p.data.bise !== d.bise
+  )
+  .slice(0, 6);
+---
+{sameBoardSameSubject.length > 0 && (
+  <section class="mt-12">
+    <div class="flex items-end justify-between gap-4 mb-5">
+      <div>
+        <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{d.subject} — other years</h2>
+        <p class="mt-1 text-sm text-slate-500">Same board, {d.bise ? `BISE ${d.bise}` : (d.boards?.[0] || 'Punjab')}, Class {d.class}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      {sameBoardSameSubject.map((p: any) => (
+        <a href={url(`/past-papers/${p.id}`)} class="row group">
+          <span class="tile"><Icon name="scroll-text" size={18} strokeWidth={2.2} /></span>
+          <div class="min-w-0 flex-1">
+            <div class="row-title">{d.subject} — {p.data.year}</div>
+          </div>
+          <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+{sameBoardSameYear.length > 0 && (
+  <section class="mt-12">
+    <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{d.year} papers from the same board</h2>
+    <p class="mt-1 text-sm text-slate-500 mb-5">Other subjects at Class {d.class}</p>
+    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      {sameBoardSameYear.map((p: any) => (
+        <a href={url(`/past-papers/${p.id}`)} class="row group">
+          <span class="tile"><Icon name="scroll-text" size={18} strokeWidth={2.2} /></span>
+          <div class="min-w-0 flex-1">
+            <div class="row-title">{p.data.subject} — {p.data.year}</div>
+          </div>
+          <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+{sameYearSameSubjectOtherBoards.length > 0 && (
+  <section class="mt-12">
+    <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">{d.subject} {d.year} — other BISEs</h2>
+    <p class="mt-1 text-sm text-slate-500 mb-5">Compare how other Punjab boards set the same paper</p>
+    <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      {sameYearSameSubjectOtherBoards.map((p: any) => (
+        <a href={url(`/past-papers/${p.id}`)} class="row group">
+          <span class="tile"><Icon name="scroll-text" size={18} strokeWidth={2.2} /></span>
+          <div class="min-w-0 flex-1">
+            <div class="row-title">BISE {p.data.bise} — {p.data.year}</div>
+          </div>
+          <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+        </a>
+      ))}
+    </div>
+  </section>
+)}

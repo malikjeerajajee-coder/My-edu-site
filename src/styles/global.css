@@ -340,3 +340,18 @@ input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
   background: rgba(255,255,255,0.25);
   color: #ffffff;
 }
+
+.badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #eff4ff;
+  color: #1d4ed8;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}

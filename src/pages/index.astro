@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
-import { BOARDS } from '../lib/boards';
+import { BOARDS, CLASSES } from '../lib/boards';
 
 const resources = [
   { href: '/notes',           icon: 'file-text',      label: 'Notes',           color: 'notes' },
@@ -74,6 +74,27 @@ const faqs = [
             <Icon name="check" size={14} strokeWidth={3} class="text-[#1d4ed8]" /> 100% free
           </span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CHOOSE YOUR CLASS ═══ -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="mb-8">
+        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Choose your class</h2>
+        <p class="mt-2 text-sm text-slate-500">Or start here if you know your class — everything for that year in one place.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
+        {CLASSES.map(c => (
+          <a href={url(`/class/${c}`)} class="rtile group" style="--tile-color: #1d4ed8; --tile-tint: #eff4ff;">
+            <span class="rtile-icon" style="font-size: 1rem; font-weight: 800;">{c}</span>
+            <div class="min-w-0 flex-1">
+              <div class="rtile-label">Class {c}</div>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   </section>

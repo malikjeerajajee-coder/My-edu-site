@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Icon from '../../../components/Icon.astro';
 import { url } from '../../../lib/url';
-import { BOARDS, PUNJAB_BISES } from '../../../lib/boards';
+import { BOARDS, getBISEsForProvince, hasBISEs } from '../../../lib/boards';
 import { getBoardContent } from '../../../lib/boardContent';
 import { getBoardInfo } from '../../../lib/boardInfo';
 
@@ -78,7 +78,7 @@ const info = getBoardInfo(slug!);
 
   
     <!-- ═══ PUNJAB BISE PICKER ═══ -->
-    {slug === 'punjab' && (
+    {hasBISEs(String(slug)) && (
       <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14 border-t border-slate-200">
         <div class="mb-6">
           <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Pick your specific board</h2>
@@ -88,8 +88,8 @@ const info = getBoardInfo(slug!);
         </div>
 
         <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-          {PUNJAB_BISES.map(bise => (
-            <a href={url(`/board/punjab/${bise.slug}`)} class="row group">
+          {getBISEsForProvince(String(slug)).map(bise => (
+            <a href={url(`/board/${slug}/${bise.slug}`)} class="row group">
               <span class="tile">
                 <Icon name="graduation-cap" size={19} strokeWidth={2.2} />
               </span>

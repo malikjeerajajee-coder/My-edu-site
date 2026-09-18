@@ -1,70 +1,83 @@
 ---
 interface Props {
   title: string;
-  description?: string;
+  description: string;
   type?: 'website' | 'article';
   noindex?: boolean;
+  jsonLd?: object | object[];
 }
 
 const {
   title,
-  description = 'Free notes, interactive quizzes, textbooks and result gazettes for Pakistani students.',
+  description,
   type = 'website',
   noindex = false,
+  jsonLd,
 } = Astro.props;
 
-const siteOrigin = 'https://malikjeerajajee-coder.github.io';
-const basePath = '/My-edu-site';
+const SITE = 'https://malikjeerajajee-coder.github.io';
+const BASE = '/My-edu-site';
 
 let pathname = Astro.url.pathname;
-if (!pathname.startsWith(basePath)) pathname = basePath + pathname;
-
-let canonical = siteOrigin + pathname;
+if (!pathname.startsWith(BASE)) pathname = BASE + pathname;
+let canonical = SITE + pathname;
+canonical = canonical.replace(new RegExp(SITE + BASE + BASE, 'g'), SITE + BASE);
 if (!canonical.endsWith('/') && !canonical.match(/\.[a-z0-9]+$/i)) canonical += '/';
-canonical = canonical.replace(new RegExp(siteOrigin + basePath + basePath, 'g'), siteOrigin + basePath);
 
-const siteUrl = siteOrigin + basePath + '/';
+const schemas: object[] = [];
 
-const orgJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'EducationalOrganization',
-  name: 'TaleemHub',
-  url: siteUrl,
-  description: description,
-  areaServed: 'PK',
-  inLanguage: 'en',
-};
+// WebSite + Organization — only on homepage
+if (pathname === BASE + '/' || pathname === BASE) {
+  schemas.push({
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Parhayi',
+    alternateName: 'parhayi.com',
+    url: SITE + BASE + '/',
+    description,
+    inLanguage: 'en',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: SITE + BASE + '/search/?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  });
+  schemas.push({
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
+    name: 'Parhayi',
+    url: SITE + BASE + '/',
+    description,
+    areaServed: { '@type': 'Country', name: 'Pakistan' },
+  });
+}
 
-const siteJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'TaleemHub',
-  url: siteUrl,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: siteUrl + 'search/?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
-};
+// Any passed JSON-LD
+if (jsonLd) {
+  if (Array.isArray(jsonLd)) schemas.push(...jsonLd);
+  else schemas.push(jsonLd);
+}
 ---
 <link rel="canonical" href={canonical} />
-<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
-<meta name="author" content="TaleemHub" />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1' } />
+<meta name="author" content="Parhayi" />
 <meta name="language" content="English" />
 <meta name="geo.region" content="PK" />
+<meta name="geo.placename" content="Pakistan" />
 
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonical} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:site_name" content="TaleemHub" />
+<meta property="og:site_name" content="Parhayi" />
 <meta property="og:locale" content="en_PK" />
 
-<meta name="twitter:card" content="summary" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 
-<link rel="sitemap" type="application/xml" href={siteUrl + 'sitemap-index.xml'} />
+<link rel="sitemap" type="application/xml" href={SITE + BASE + '/sitemap-index.xml'} />
 
-<script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
-<script type="application/ld+json" set:html={JSON.stringify(siteJsonLd)} />
+{schemas.map(s => (
+  <script type="application/ld+json" set:html={JSON.stringify(s)} />
+))}

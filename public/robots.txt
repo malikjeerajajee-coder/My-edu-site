@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Crawl-friendly hints
 Sitemap: https://malikjeerajajee-coder.github.io/My-edu-site/sitemap-index.xml
+
+# Block nothing — we want everything indexed
+Disallow:
