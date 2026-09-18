@@ -1,3 +1,9 @@
+#!/bin/bash
+set -e
+
+echo "Fixing temporal dead zone in [type].astro..."
+
+cat > 'src/pages/board/[board]/[bise]/[class]/[type].astro' <<'ASTRO'
 ---
 import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import Icon from '../../../../../components/Icon.astro';
@@ -5,13 +11,15 @@ import { url } from '../../../../../lib/url';
 import { BOARDS, boardBySlug } from '../../../../../lib/boards';
 import { getCollection } from 'astro:content';
 
+const TYPES = ['past-papers', 'gazettes'];
+
 export async function getStaticPaths() {
   const paths: any[] = [];
   for (const board of BOARDS) {
     if (!board.biseAware) continue;
     for (const bise of board.bises) {
       for (const cls of ['9', '10']) {
-        for (const t of ['past-papers', 'gazettes']) {
+        for (const t of TYPES) {
           paths.push({
             params: { board: board.slug, bise: bise.slug, class: `class-${cls}`, type: t },
           });
@@ -26,7 +34,7 @@ const { board: boardSlug, bise: biseSlug, class: classParam, type: typeSlug } = 
 const cls = String(classParam).replace(/^class-/, '');
 const board = boardBySlug(boardSlug!);
 const bise = board?.bises.find(b => b.slug === biseSlug);
-const valid = !!(board && bise && (typeSlug === 'past-papers' || typeSlug === 'gazettes'));
+const valid = !!(board && bise && TYPES.includes(typeSlug!));
 
 const isGazette = typeSlug === 'gazettes';
 const typeLabel = isGazette ? 'Result Gazettes' : 'Past Papers';
@@ -156,3 +164,18 @@ if (valid) {
   </div>
 </BaseLayout>
 )}
+ASTRO
+
+echo "  ✓ [type].astro rewritten with TYPES before getStaticPaths"
+
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "  Then restart dev:"
+echo "    pkill -f 'astro dev' || true"
+echo "    npm run dev"
+echo ""
+echo "  Test:"
+echo "    http://localhost:4321/My-edu-site/board/punjab/faisalabad/class-10/past-papers"

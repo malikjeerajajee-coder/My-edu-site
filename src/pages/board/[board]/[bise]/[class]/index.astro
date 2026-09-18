@@ -22,7 +22,7 @@ const { board: boardSlug, bise: biseSlug, class: classParam } = Astro.params;
 const cls = String(classParam).replace(/^class-/, '');
 const board = boardBySlug(boardSlug!);
 const bise = board?.bises.find(b => b.slug === biseSlug);
-if (!board || !bise) return Astro.redirect('/boards');
+const valid = !!(board && bise);
 
 const allPapers = await getCollection('pastPapers');
 const allGazettes = await getCollection('gazettes');
