@@ -1,3 +1,15 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Fixing filter UI + empty state bug"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Rebuild PageFilter component — clean
+# ─────────────────────────────────────────────
+cat > src/components/PageFilter.astro <<'ASTRO'
 ---
 interface Props {
   placeholder?: string;
@@ -165,3 +177,192 @@ const uid = Math.random().toString(36).slice(2, 8);
     apply();
   })();
 </script>
+ASTRO
+
+# ─────────────────────────────────────────────
+#  2. Add cleaner filter CSS
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+p = pathlib.Path('src/styles/global.css')
+s = p.read_text()
+
+# Remove old filter CSS block
+s = re.sub(r'/\* ═══ On-page search \+ filter bar ═══ \*/[\s\S]*?(?=/\* ═══|\Z)', '', s, count=1)
+
+# Add new, cleaner CSS
+s = s.rstrip() + '''
+
+/* ═══ Page filter component ═══ */
+.pf-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.125rem;
+  border: 1px solid #e5e9f0;
+  border-radius: 14px;
+  background: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+.pf-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 0.5rem 0 0.875rem;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.pf-search:focus-within {
+  border-color: #1d4ed8;
+  background: #ffffff;
+}
+.pf-search-icon {
+  display: inline-flex;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+.pf-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #0b1220;
+}
+.pf-input::placeholder { color: #94a3b8; font-weight: 500; }
+.pf-clear {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.pf-clear:hover { background: #e5e9f0; }
+.pf-clear.is-visible { display: inline-flex; }
+
+.pf-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.pf-label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+.pf-chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  margin: 0 -1.125rem;
+  padding: 0 1.125rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.pf-chips::-webkit-scrollbar { display: none; }
+
+/* Fade hint on the right so users know there's more to scroll */
+.pf-group { position: relative; }
+.pf-group::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  bottom: 0;
+  width: 2.5rem;
+  height: 2.25rem;
+  pointer-events: none;
+  background: linear-gradient(to left, #ffffff 30%, transparent);
+}
+@media (min-width: 640px) {
+  .pf-group::after { display: none; }
+}
+
+.pf-chip {
+  flex-shrink: 0;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid #e5e9f0;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.pf-chip:hover { border-color: #1d4ed8; color: #1d4ed8; }
+.pf-chip.is-active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff !important;
+}
+
+.pf-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.02em;
+  min-height: 1rem;
+}
+
+.pf-empty {
+  display: none;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  background: #ffffff;
+  margin-bottom: 1.5rem;
+}
+.pf-empty-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #0b1220;
+}
+.pf-empty-sub {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+'''
+p.write_text(s)
+print('  ✓ filter CSS rewritten')
+PY
+
+# ─────────────────────────────────────────────
+#  3. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done."
+echo ""
+echo "  Restart dev:"
+echo "    pkill -f 'astro dev' || true"
+echo "    npm run dev"
+echo ""
+echo "  What changed:"
+echo "    · Empty state — hidden by default with inline style,"
+echo "      only shows when a filter is active AND no results match"
+echo "    · Search input — cleaner flex layout, no hacked margin"
+echo "    · Chips — full-width scroll with fade hint on mobile"
+echo "    · Chip row now scrolls edge-to-edge for better UX"
+echo "    · Result count styled and shows only when filtering"
+echo "    · Clear button positioned properly"
+echo "════════════════════════════════════════════"

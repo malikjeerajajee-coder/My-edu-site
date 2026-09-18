@@ -356,120 +356,146 @@ input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
   line-height: 1;
 }
 
-/* ═══ On-page search + filter bar ═══ */
-.filter-bar {
+/* ═══ Page filter component ═══ */
+.pf-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  gap: 1rem;
   padding: 1.125rem;
   border: 1px solid #e5e9f0;
   border-radius: 14px;
   background: #ffffff;
   margin-bottom: 1.5rem;
 }
-.filter-search {
+
+.pf-search {
+  position: relative;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: 0.5rem;
+  height: 3rem;
+  padding: 0 0.5rem 0 0.875rem;
   border: 1px solid #e5e9f0;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #f8fafc;
-  padding: 0.25rem 0.25rem 0.25rem 0.875rem;
-  transition: border-color .15s ease;
+  transition: border-color .15s ease, background-color .15s ease;
 }
-.filter-search:focus-within {
+.pf-search:focus-within {
   border-color: #1d4ed8;
   background: #ffffff;
 }
-.filter-search svg { color: #94a3b8; }
-.filter-search input {
+.pf-search-icon {
+  display: inline-flex;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+.pf-input {
   flex: 1;
   min-width: 0;
-  padding: 0.6rem 0.25rem;
-  background: transparent;
+  height: 100%;
   border: 0;
   outline: none;
+  background: transparent;
   font-size: 0.9375rem;
   font-weight: 500;
   color: #0b1220;
 }
-.filter-search input::placeholder { color: #94a3b8; font-weight: 500; }
-.filter-search-clear {
+.pf-input::placeholder { color: #94a3b8; font-weight: 500; }
+.pf-clear {
   display: none;
   align-items: center;
   justify-content: center;
   width: 2rem;
+  height: 2rem;
   border: 0;
   border-radius: 8px;
   background: transparent;
   color: #64748b;
   cursor: pointer;
-}
-.filter-search-clear:hover { background: #e5e9f0; }
-.filter-search-clear.visible { display: inline-flex; }
-
-.filter-chips-row {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.25rem;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.filter-chips-row::-webkit-scrollbar { display: none; }
-
-.filter-chip {
   flex-shrink: 0;
-  padding: 0.375rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid #e5e9f0;
-  background: #ffffff;
-  color: #334155;
-  font-size: 0.75rem;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all .15s ease;
 }
-.filter-chip:hover { border-color: #1d4ed8; color: #1d4ed8; }
-.filter-chip.active {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
-  color: #ffffff !important;
-}
-.filter-label {
-  display: block;
+.pf-clear:hover { background: #e5e9f0; }
+.pf-clear.is-visible { display: inline-flex; }
+
+.pf-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.pf-label {
   font-size: 0.6875rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #94a3b8;
-  margin-bottom: 0.5rem;
+}
+.pf-chips {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  margin: 0 -1.125rem;
+  padding: 0 1.125rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.pf-chips::-webkit-scrollbar { display: none; }
+
+/* Fade hint on the right so users know there's more to scroll */
+.pf-group { position: relative; }
+.pf-group::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  bottom: 0;
+  width: 2.5rem;
+  height: 2.25rem;
+  pointer-events: none;
+  background: linear-gradient(to left, #ffffff 30%, transparent);
+}
+@media (min-width: 640px) {
+  .pf-group::after { display: none; }
 }
 
-.filter-results-count {
+.pf-chip {
+  flex-shrink: 0;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 999px;
+  border: 1px solid #e5e9f0;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+}
+.pf-chip:hover { border-color: #1d4ed8; color: #1d4ed8; }
+.pf-chip.is-active {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff !important;
+}
+
+.pf-count {
   font-size: 0.75rem;
   font-weight: 700;
   color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
+  min-height: 1rem;
 }
 
-.filter-empty {
+.pf-empty {
   display: none;
-  padding: 3rem 1rem;
+  padding: 3rem 1.5rem;
   text-align: center;
   border: 1px dashed #cbd5e1;
   border-radius: 14px;
   background: #ffffff;
+  margin-bottom: 1.5rem;
 }
-.filter-empty.visible { display: block; }
-.filter-empty-title {
+.pf-empty-title {
   font-size: 0.9375rem;
   font-weight: 800;
   color: #0b1220;
 }
-.filter-empty-sub {
+.pf-empty-sub {
   margin-top: 0.5rem;
   font-size: 0.8125rem;
   color: #64748b;
