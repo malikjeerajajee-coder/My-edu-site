@@ -44,17 +44,7 @@ sortedClasses.forEach(cls => {
   </div>
 
   <div class="mx-auto max-w-[1200px] px-5 py-8 sm:px-7 lg:px-10 lg:py-10">
-    <div class="mb-6">
-      <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Class</div>
-      <div class="chip-row" id="class-chips">
-        <button type="button" class="chip active" data-class="all">All classes</button>
-        {sortedClasses.map(c => (
-          <button type="button" class="chip" data-class={c}>Class {c}</button>
-        ))}
-      </div>
-    </div>
-
-    <PageFilter placeholder="Search quizzes — subject, class or keyword…" filters={[{ label: 'Class', key: 'class', options: sortedClasses }]} />
+<PageFilter placeholder="Search quizzes — subject, class or keyword…" filters={[{ label: 'Class', key: 'class', options: sortedClasses }]} />
 
     <div id="quiz-list" class="space-y-10">
       {sortedClasses.map(cls => {
@@ -90,20 +80,4 @@ sortedClasses.forEach(cls => {
     </div>
   </div>
 
-  <script is:inline>
-    (function () {
-      var chips = document.querySelectorAll('#class-chips .chip');
-      var sections = document.querySelectorAll('#quiz-list section');
-      chips.forEach(function (c) {
-        c.addEventListener('click', function () {
-          chips.forEach(function (x) { x.classList.remove('active'); });
-          c.classList.add('active');
-          var target = c.getAttribute('data-class');
-          sections.forEach(function (sec) {
-            sec.style.display = (target === 'all' || sec.getAttribute('data-class') === target) ? '' : 'none';
-          });
-        });
-      });
-    })();
-  </script>
-</BaseLayout>
+  </BaseLayout>
