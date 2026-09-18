@@ -1,3 +1,9 @@
+#!/bin/bash
+set -e
+
+echo "Rewriting [subject].astro with correct imports..."
+
+cat > 'src/pages/board/[board]/[class]/[subject].astro' <<'ASTRO'
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import Icon from '../../../../components/Icon.astro';
@@ -230,3 +236,20 @@ const bises = getBISEsForProvince(String(boardSlug));
   </div>
 </BaseLayout>
 )}
+ASTRO
+
+echo "  ✓ [subject].astro rewritten with correct imports"
+
+# Verify imports look right
+echo ""
+echo "  Imports in the file:"
+grep -n "^import" 'src/pages/board/[board]/[class]/[subject].astro'
+
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -8
+
+echo ""
+echo "  Then restart dev:"
+echo "    pkill -f 'astro dev' || true"
+echo "    npm run dev"
