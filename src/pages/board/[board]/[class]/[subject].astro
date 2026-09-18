@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import Icon from '../../../../components/Icon.astro';
+import PageFilter from '../../../../components/PageFilter.astro';
 import { url } from '../../../../lib/url';
 import { getBISEsForProvince, hasBISEs } from '../../../../lib/boards';
 import {
@@ -110,7 +111,7 @@ const bises = getBISEsForProvince(String(boardSlug));
               </div>
               <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 {group.items.map((item: any) => (
-                  <a href={url(`${typeData.base}/${item.id}`)} class="row group">
+                  <a href={url(`${typeData.base}/${item.id}`)} class="row group" data-filterable data-search={`${item.data.title} ${item.data.year || ""}`} data-year={item.data.year}>
                     <span class="tile">
                       <Icon name={typeData.icon} size={18} strokeWidth={2.2} />
                     </span>
@@ -136,7 +137,7 @@ const bises = getBISEsForProvince(String(boardSlug));
       ) : (
         <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {typeData.items.map((item: any) => (
-            <a href={url(`${typeData.base}/${item.id}`)} class="row group">
+            <a href={url(`${typeData.base}/${item.id}`)} class="row group" data-filterable data-search={`${item.data.title} ${item.data.year || ""}`} data-year={item.data.year}>
               <span class="tile">
                 <Icon name={typeData.icon} size={18} strokeWidth={2.2} />
               </span>

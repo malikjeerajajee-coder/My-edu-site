@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../../../layouts/BaseLayout.astro';
 import Icon from '../../../../../components/Icon.astro';
+import PageFilter from '../../../../../components/PageFilter.astro';
 import { url } from '../../../../../lib/url';
 import { BOARDS, boardBySlug } from '../../../../../lib/boards';
 import { getCollection } from 'astro:content';
@@ -34,9 +35,6 @@ const iconName = isGazette ? 'newspaper' : 'scroll-text';
 const basePath = isGazette ? 'gazettes' : 'past-papers';
 
 let items: any[] = [];
-const bySubject = new Map<string, any[]>();
-let subjects: string[] = [];
-
 if (valid) {
   const collection = isGazette ? await getCollection('gazettes') : await getCollection('pastPapers');
   items = collection
@@ -45,26 +43,26 @@ if (valid) {
       i.data.class === cls &&
       (i.data.boards || []).includes(board!.name)
     )
-    .sort((a: any, b: any) => {
-      if (isGazette) return (b.data.year || 0) - (a.data.year || 0);
-      if (a.data.subject !== b.data.subject) return a.data.subject.localeCompare(b.data.subject);
-      return (b.data.year || 0) - (a.data.year || 0);
-    });
-
-  if (!isGazette) {
-    items.forEach((i: any) => {
-      const k = i.data.subject;
-      if (!bySubject.has(k)) bySubject.set(k, []);
-      bySubject.get(k)!.push(i);
-    });
-    subjects = [...bySubject.keys()].sort();
-  }
+    .sort((a: any, b: any) => (b.data.year || 0) - (a.data.year || 0));
 }
+
+// Build filter option lists from data
+const years = [...new Set(items.map((i: any) => String(i.data.year || '')))]
+  .filter(Boolean)
+  .sort((a, b) => Number(b) - Number(a));
+const subjects = [...new Set(items.map((i: any) => i.data.subject).filter(Boolean))].sort();
+
+const filterDefs = isGazette
+  ? [{ label: 'Year', key: 'year', options: years }]
+  : [
+      { label: 'Subject', key: 'subject', options: subjects },
+      { label: 'Year', key: 'year', options: years },
+    ];
 ---
 {valid ? (
 <BaseLayout
   title={`${bise!.name} Board Class ${cls} ${typeLabel} — 2018 to 2026 | Parhayi`}
-  description={`All Class ${cls} ${typeLabel.toLowerCase()} for ${bise!.name} Board (${board!.full}). Free PDF downloads, 2018 to 2026.`}
+  description={`All Class ${cls} ${typeLabel.toLowerCase()} for ${bise!.name} Board (${board!.full}). Filter by subject and year. Free PDF downloads.`}
 >
   <div class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
@@ -88,7 +86,7 @@ if (valid) {
     </div>
   </div>
 
-  <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+  <div class="mx-auto max-w-[1200px] px-5 py-10 sm:px-7 lg:px-10 lg:py-12">
     {items.length === 0 ? (
       <div class="rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center">
         <p class="text-sm font-bold text-slate-900">Nothing here yet</p>
@@ -97,44 +95,41 @@ if (valid) {
           Back to Class {cls}
         </a>
       </div>
-    ) : isGazette ? (
-      <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-        {items.map((item: any) => (
-          <a href={url(`/${basePath}/${item.id}`)} class="row group">
-            <span class="tile"><Icon name={iconName} size={18} strokeWidth={2.2} /></span>
-            <div class="min-w-0 flex-1">
-              <div class="row-title">{item.data.title}</div>
-              <div class="mt-1 flex flex-wrap gap-1.5">
-                {item.data.year && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{item.data.year}</span>}
-              </div>
-            </div>
-            <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-          </a>
-        ))}
-      </div>
     ) : (
       <>
-        {subjects.map(subject => (
-          <section class="mb-12">
-            <div class="mb-4 flex items-end justify-between gap-4">
-              <h2 class="text-lg font-extrabold tracking-tight text-slate-900 sm:text-xl">{subject}</h2>
-              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                {bySubject.get(subject)!.length} {bySubject.get(subject)!.length === 1 ? 'paper' : 'papers'}
+        <PageFilter
+          placeholder={`Search ${typeLabel.toLowerCase()} — type subject, year or keyword…`}
+          filters={filterDefs}
+        />
+
+        <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+          {items.map((item: any) => (
+            <a
+              href={url(`/${basePath}/${item.id}`)}
+              class="row group"
+              data-filterable
+              data-search={`${item.data.title} ${item.data.subject || ''} ${item.data.year || ''} ${bise!.name}`}
+              data-year={item.data.year}
+              data-subject={item.data.subject || ''}
+            >
+              <span class="tile">
+                <Icon name={iconName} size={18} strokeWidth={2.2} />
               </span>
-            </div>
-            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {bySubject.get(subject)!.map((item: any) => (
-                <a href={url(`/${basePath}/${item.id}`)} class="row group">
-                  <span class="tile"><Icon name={iconName} size={18} strokeWidth={2.2} /></span>
-                  <div class="min-w-0 flex-1">
-                    <div class="row-title">{subject} — {item.data.year}</div>
-                  </div>
-                  <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-                </a>
-              ))}
-            </div>
-          </section>
-        ))}
+              <div class="min-w-0 flex-1">
+                <div class="row-title">{item.data.title}</div>
+                <div class="mt-1 flex flex-wrap gap-1.5">
+                  {item.data.subject && (
+                    <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{item.data.subject}</span>
+                  )}
+                  {item.data.year && (
+                    <span class="inline-flex items-center rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">{item.data.year}</span>
+                  )}
+                </div>
+              </div>
+              <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            </a>
+          ))}
+        </div>
       </>
     )}
 

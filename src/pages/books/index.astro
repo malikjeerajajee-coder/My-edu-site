@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
+import PageFilter from '../../components/PageFilter.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
 
@@ -77,11 +78,13 @@ const totalBooks = books.length;
     </div>
 
     <!-- Book list grouped by class -->
+    <PageFilter placeholder="Search textbooks — subject, class or board…" filters={[{ label: 'Class', key: 'class', options: sortedClasses }, { label: 'Board', key: 'board', options: boards }]} />
+
     <div id="book-list" class="space-y-10">
       {sortedClasses.map(cls => {
         const items = byClass.get(cls)!;
         return (
-          <section data-class={cls}>
+          <section data-class={cls} data-filter-section>
             <div class="mb-4 flex items-end justify-between gap-4">
               <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
                 Class {cls}
@@ -92,8 +95,7 @@ const totalBooks = books.length;
             </div>
             <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {items.map((b: any) => (
-                <a href={url(`/books/${b.id}`)} class="row group"
-                   data-board={(b.data.boards || []).join('|')}>
+                <a href={url(`/books/${b.id}`)} class="row group" data-filterable data-search={`${b.data.title} ${b.data.subject} ${b.data.boards?.join(" ")}`} data-class={cls} data-board={(b.data.boards || [])[0]}>
                   <span class="tile">
                     <Icon name="book-marked" size={18} strokeWidth={2.2} />
                   </span>

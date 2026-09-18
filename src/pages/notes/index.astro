@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
+import PageFilter from '../../components/PageFilter.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
 
@@ -53,11 +54,13 @@ sortedClasses.forEach(cls => {
       </div>
     </div>
 
+    <PageFilter placeholder="Search notes — subject, chapter or class…" filters={[{ label: 'Class', key: 'class', options: sortedClasses }]} />
+
     <div id="note-list" class="space-y-10">
       {sortedClasses.map(cls => {
         const items = byClass.get(cls)!;
         return (
-          <section data-class={cls}>
+          <section data-class={cls} data-filter-section>
             <div class="mb-4 flex items-end justify-between gap-4">
               <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Class {cls}</h2>
               <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -66,7 +69,7 @@ sortedClasses.forEach(cls => {
             </div>
             <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {items.map((n: any) => (
-                <a href={url(`/notes/${n.id}`)} class="row group">
+                <a href={url(`/notes/${n.id}`)} class="row group" data-filterable data-search={`${n.data.title} ${n.data.subject} ${cls}`} data-class={cls}>
                   <span class="tile">
                     <Icon name="file-text" size={18} strokeWidth={2.2} />
                   </span>
