@@ -8,8 +8,9 @@ const d = paper.data;
 const intro = paperIntro(d);
 const faq = paperFAQ(d);
 const chapters = chaptersFor(d.subject, d.class);
-const marks = marksFor(d.subject, d.class);
-const duration = durationFor(d.subject, d.class);
+const province = (d.boards || [])[0] || 'Punjab';
+const marks = marksFor(d.subject, d.class, province);
+const duration = durationFor(d.subject, d.class, province);
 const boardName = d.bise ? `BISE ${d.bise}` : (d.boards?.[0] || 'Punjab Board');
 ---
 <!-- Intro -->
@@ -33,7 +34,7 @@ const boardName = d.bise ? `BISE ${d.bise}` : (d.boards?.[0] || 'Punjab Board');
       ))}
     </ul>
   ) : (
-    <p class="mt-3 text-sm text-slate-600">The full Class {d.class} {d.subject} curriculum prescribed by the Punjab Curriculum and Textbook Board (PCTB) / Federal Board.</p>
+    <p class="mt-3 text-sm text-slate-600">The full Class {d.class} {d.subject} curriculum prescribed by the relevant provincial textbook board.</p>
   )}
 </section>
 

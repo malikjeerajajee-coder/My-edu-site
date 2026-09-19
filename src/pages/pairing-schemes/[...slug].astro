@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 const { scheme } = Astro.props;
 const d = scheme.data;
 ---
-<BaseLayout title={`${d.title} | TaleemHub`} description={`Download ${d.title}. Official paper structure for Pakistani students.`}>
+<BaseLayout title={`${d.title} | Parhayi`} description={`Download ${d.title}. Official paper structure for Pakistani students.`}>
   <div class="mx-auto max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
     <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-neutral-400">
       <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
@@ -32,7 +32,7 @@ const d = scheme.data;
       <h1 class="mt-4 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{d.title}</h1>
     </div>
 
-    <a href="#" target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1d4ed8] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
+    <a href={url(d.pdfUrl)} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1d4ed8] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
 
     <div class="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8">
       <h2 class="text-lg font-extrabold tracking-tight text-neutral-900">About this pairing scheme</h2>

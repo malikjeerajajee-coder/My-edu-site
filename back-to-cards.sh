@@ -1,3 +1,21 @@
+#!/bin/bash
+set -e
+
+echo "════════════════════════════════════════════"
+echo "  Reverting books pages to card layout"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Delete the BookCover component
+# ─────────────────────────────────────────────
+rm -f src/components/BookCover.astro
+echo "  ✓ Removed BookCover.astro"
+
+# ─────────────────────────────────────────────
+#  2. Restore /books index — row cards
+# ─────────────────────────────────────────────
+cat > src/pages/books/index.astro <<'ASTRO'
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
@@ -75,7 +93,7 @@ const boards = [...allBoards].sort();
                   data-filterable
                   data-search={`${b.data.title} ${b.data.subject} ${(b.data.boards || []).join(' ')} ${cls}`}
                   data-class={cls}
-                  data-board={(b.data.boards || []).join(' ')}
+                  data-board={(b.data.boards || [])[0]}
                 >
                   <span class="tile">
                     <Icon name="book-marked" size={18} strokeWidth={2.2} />
@@ -97,3 +115,77 @@ const boards = [...allBoards].sort();
     </div>
   </div>
 </BaseLayout>
+ASTRO
+
+echo "  ✓ /books — row cards restored"
+
+# ─────────────────────────────────────────────
+#  3. Restore /books/[slug] detail page — remove cover
+# ─────────────────────────────────────────────
+python3 - <<'PY'
+import pathlib, re
+
+p = pathlib.Path('src/pages/books/[...slug].astro')
+if not p.exists():
+    print('  · books detail page not found')
+    raise SystemExit(0)
+
+s = p.read_text()
+
+# Remove BookCover import
+s = re.sub(r"^import BookCover[^\n]*\n", "", s, flags=re.MULTILINE)
+
+# Remove the cover block that was inserted
+cover_block_pattern = re.compile(
+    r'\n\s*<!-- Book cover -->\s*<div class="mb-8 grid[\s\S]*?</div>\s*<div class="min-w-0">',
+    re.DOTALL
+)
+s = cover_block_pattern.sub('\n', s)
+
+# Remove the two extra closing divs we added
+# Find "      </div>\n    </div>" that came right before final content close
+s = s.replace('\n      </div>\n    </div>\n  </div>', '\n  </div>')
+
+# Remove the book-cover-detail CSS block
+css_pattern = re.compile(
+    r'\n\s*<style is:global>\s*\.book-cover-detail[\s\S]*?</style>',
+    re.DOTALL
+)
+s = css_pattern.sub('', s)
+
+p.write_text(s)
+print('  ✓ /books/[slug] — cover removed')
+PY
+
+# ─────────────────────────────────────────────
+#  4. Also remove the restore.sh script (no longer needed)
+# ─────────────────────────────────────────────
+rm -f restore.sh
+echo "  ✓ Cleaned up restore.sh"
+
+# ─────────────────────────────────────────────
+#  5. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding..."
+npm run build 2>&1 | tail -6
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  Done."
+echo ""
+echo "  Preview:"
+echo "    pkill -f 'astro dev' || true"
+echo "    npm run dev"
+echo ""
+echo "  Test:"
+echo "    /books                    → row cards, one per book"
+echo "    /books/physics-9-punjab   → detail page (no cover)"
+echo ""
+echo "  What's back:"
+echo "    · Books in 1 or 2 column row cards"
+echo "    · .tile icon + subject + board badge + arrow"
+echo "    · Search + filter bar still active"
+echo "    · BookCover.astro deleted"
+echo "    · All cover CSS removed"
+echo "════════════════════════════════════════════"

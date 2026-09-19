@@ -1,4 +1,4 @@
-// Curriculum chapters per subject+class — used to give each paper page unique value
+// Curriculum chapters per subject+class
 export const CURRICULUM: Record<string, string[]> = {
   'Physics|9': ['Physical Quantities & Measurement','Kinematics','Dynamics','Turning Effect of Forces','Gravitation','Work & Energy','Properties of Matter','Thermal Properties','Transfer of Heat'],
   'Physics|10': ['Simple Harmonic Motion & Waves','Sound','Geometrical Optics','Electrostatics','Current Electricity','Electromagnetism','Basic Electronics','Information & Communication Technology','Radioactivity'],
@@ -38,54 +38,107 @@ export function chaptersFor(subject: string, cls: string): string[] | null {
   return CURRICULUM[`${subject}|${cls}`] || null;
 }
 
-export function marksFor(subject: string, cls: string): number {
+// ── Board-aware helpers ──
+function provinceOf(data: any): string {
+  return (data.boards || [])[0] || 'Punjab';
+}
+function boardLabel(data: any): string {
+  const province = provinceOf(data);
+  if (data.bise) return `BISE ${data.bise}`;
+  return province === 'Federal' ? 'Federal Board (FBISE)' : `${province} Board`;
+}
+
+// ── Marks: board-aware ──
+export function marksFor(subject: string, cls: string, province?: string): number {
+  const isFederal = province === 'Federal';
+  const isHSSC = ['11','12'].includes(cls);
+
+  if (isFederal) {
+    if (isHSSC) return 100;
+    return subject === 'Islamiat' ? 50 : subject === 'Pakistan Studies' ? 50 : 75;
+  }
+
+  // Punjab (PCTB) default
+  if (isHSSC) {
+    if (['Physics','Chemistry','Biology'].includes(subject)) return 85;
+    return 100;
+  }
+  // SSC
   const m: Record<string, number> = {
-    Physics: 65, Chemistry: 65, Biology: 65,
+    Physics: 60, Chemistry: 60, Biology: 60,
     'Computer Science': 60,
     English: 75, Urdu: 75,
-    Islamiat: 50, 'Pakistan Studies': 50,
+    Islamiat: 100, 'Pakistan Studies': 50,
     Mathematics: 75,
+    'General Mathematics': 75, 'General Science': 60,
   };
-  if (['11','12'].includes(cls)) {
-    if (['Physics','Chemistry','Biology'].includes(subject)) return 85;
-    if (['Mathematics','English','Urdu'].includes(subject)) return 100;
-  }
   return m[subject] || 75;
 }
 
-export function durationFor(subject: string, cls: string): string {
+export function durationFor(subject: string, cls: string, province?: string): string {
+  if (province === 'Federal') {
+    return ['11','12'].includes(cls) ? '3 hours' : '2 hours 40 minutes';
+  }
   if (['Physics','Chemistry','Biology'].includes(subject) && ['9','10'].includes(cls)) return '2 hours 10 minutes';
   if (subject === 'Islamiat') return '3 hours';
   return '2 hours 30 minutes';
 }
 
+// ── Intro: board-aware ──
 export function paperIntro(data: any): string {
-  const boardName = data.bise ? `BISE ${data.bise}` : (data.boards?.[0] ? `${data.boards[0]} Board` : 'Punjab Board');
+  const board = boardLabel(data);
+  const province = provinceOf(data);
   const exam = ['9','10'].includes(data.class) ? 'SSC' : 'HSSC';
   const part = ['9','11'].includes(data.class) ? 'Part-I' : 'Part-II';
 
-  return `${data.subject} is a core subject in the Class ${data.class} curriculum under ${boardName}. ` +
+  let provinceContext = '';
+  if (province === 'Federal') {
+    provinceContext = 'The Federal Board of Intermediate and Secondary Education (FBISE) sets a single unified paper for all its affiliated institutions across Pakistan.';
+  } else if (province === 'Punjab') {
+    provinceContext = `${board} follows the PBCC (Punjab Boards Committee of Chairpersons) syllabus and paper pattern shared across all 9 Punjab BISEs, but sets its own question paper.`;
+  } else if (province === 'Sindh') {
+    provinceContext = `Sindh has 5 separate BISEs and this paper is specifically from ${board}.`;
+  } else if (province === 'KPK') {
+    provinceContext = `Khyber Pakhtunkhwa has 8 separate BISEs; this paper is specifically from ${board}.`;
+  } else if (province === 'Balochistan') {
+    provinceContext = `Balochistan has 7 separate BISEs; this paper is specifically from ${board}.`;
+  } else if (province === 'AJK') {
+    provinceContext = `Azad Jammu & Kashmir has 3 separate BISEs; this paper is specifically from ${board}.`;
+  }
+
+  return `${data.subject} is a core subject in the Class ${data.class} curriculum under ${board}. ` +
     `This is the official paper set for the ${data.year} ${exam} ${part} annual examination — ` +
-    `the paper thousands of Pakistani students actually sat that year. Studying it gives you the single clearest ` +
-    `picture of the difficulty, the question distribution, and the paper pattern used by ${boardName}.`;
+    `the paper thousands of Pakistani students actually sat that year. ` +
+    `${provinceContext} Studying it gives you the single clearest picture of the difficulty, ` +
+    `the question distribution, and the paper pattern used by ${board}.`;
 }
 
+// ── FAQ: board-aware ──
 export function paperFAQ(data: any): { q: string; a: string }[] {
-  const boardName = data.bise ? `BISE ${data.bise}` : (data.boards?.[0] ? `${data.boards[0]} Board` : 'Punjab Board');
-  const marks = marksFor(data.subject, data.class);
-  const dur = durationFor(data.subject, data.class);
+  const board = boardLabel(data);
+  const province = provinceOf(data);
+  const marks = marksFor(data.subject, data.class, province);
+  const dur = durationFor(data.subject, data.class, province);
 
-  const faq = [
-    {
-      q: `Is this paper the same across all Punjab boards?`,
-      a: data.bise
-        ? `No. Each of the 9 Punjab BISEs — Lahore, Gujranwala, Multan, Faisalabad, Rawalpindi, Sargodha, Bahawalpur, DG Khan and Sahiwal — sets its own questions from the same PBCC syllabus. This is specifically the ${data.year} paper from BISE ${data.bise}.`
-        : `This paper is from the ${boardName} and is used across all its examination centres.`,
-    },
+  const sameAcrossQuestion = province === 'Punjab'
+    ? `Is this paper the same across all Punjab boards?`
+    : province === 'Federal'
+    ? `Does FBISE set one paper for the whole country?`
+    : `Is this paper the same across all ${province} boards?`;
+
+  const sameAcrossAnswer = province === 'Punjab'
+    ? (data.bise
+        ? `No. Each BISE in ${data.boards?.[0] || 'Punjab'} sets its own questions from the same shared syllabus. This is specifically the ${data.year} paper from BISE ${data.bise}.`
+        : `This paper is from ${board}.`)
+    : province === 'Federal'
+    ? `Yes. FBISE sets a single unified paper for every affiliated school and college across Pakistan, whether in Islamabad, cantonments, or overseas. This is the ${data.year} paper.`
+    : `No. ${province} has multiple separate BISEs, each setting its own paper from the shared provincial syllabus. This is specifically the ${data.year} paper from ${board}.`;
+
+  return [
+    { q: sameAcrossQuestion, a: sameAcrossAnswer },
     { q: `What is the total marks for ${data.subject} Class ${data.class}?`, a: `${marks} marks.` },
     { q: `How long do students get to complete the paper?`, a: `${dur}.` },
-    { q: `Where can I find papers from other years?`, a: `All ${data.subject} papers for ${boardName} are available on this site — scroll to the related papers section below.` },
-    { q: `Does this download include answers?`, a: `No, this is the question paper as it was originally printed. For detailed explanations and worked answers, browse the ${data.subject} Class ${data.class} notes on this site.` },
+    { q: `Where can I find papers from other years?`, a: `All ${data.subject} papers for ${board} are available on this site — see the related papers section below.` },
+    { q: `Does this download include answers?`, a: `No, this is the question paper as it was originally printed. For detailed explanations, browse the ${data.subject} Class ${data.class} notes on this site.` },
   ];
-  return faq;
 }

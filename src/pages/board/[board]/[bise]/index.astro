@@ -43,6 +43,7 @@ const countFor = (c: string) =>
 <BaseLayout
   title={`${bise.name} Board — Class 9 & 10 Past Papers & Gazettes | Parhayi`}
   description={`Download past papers and result gazettes for ${bise.name} Board (${board.full}). Class 9 and Class 10, 2018 to 2026. Free PDFs.`}
+  noindex={papers.length + gazettes.length === 0}
 >
   <div class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">

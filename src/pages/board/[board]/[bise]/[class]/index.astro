@@ -47,6 +47,7 @@ const section = [
 <BaseLayout
   title={`${bise.name} Board Class ${cls} — Past Papers & Result Gazettes | Parhayi`}
   description={`All Class ${cls} past papers and result gazettes for ${bise.name} Board (${board.full}). Download free PDFs, 2018 to 2026.`}
+  noindex={papers.length + gazettes.length === 0}
 >
   <div class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
@@ -92,7 +93,7 @@ const section = [
           {subjects.map(s => {
             const sSlug = s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             return (
-              <a href={url(`/board/${board.slug}/${bise.slug}/class-${cls}/past-papers`)} class="row group">
+              <a href={url(`/board/${board.slug}/${bise.slug}/class-${cls}/past-papers?subject=${encodeURIComponent(s)}`)} class="row group">
                 <span class="tile"><Icon name="scroll-text" size={18} strokeWidth={2.2} /></span>
                 <div class="min-w-0 flex-1">
                   <div class="row-title">{s}</div>

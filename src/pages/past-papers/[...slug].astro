@@ -4,6 +4,8 @@ import Icon from '../../components/Icon.astro';
 import PaperEnrichment from '../../components/PaperEnrichment.astro';
 import RelatedPapers from '../../components/RelatedPapers.astro';
 import { url } from '../../lib/url';
+import { boardByName } from '../../lib/boards';
+import { boardBySlug } from '../../lib/boards';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -20,6 +22,9 @@ const BASE = '/My-edu-site';
 const canonical = `${SITE}${BASE}/past-papers/${paper.id}/`;
 
 const boardName = d.bise ? `BISE ${d.bise}` : (d.boards?.[0] || 'Punjab Board');
+const primaryBoard = (d.boards || [])[0] || 'Punjab';
+const boardData = boardBySlug(primaryBoard.toLowerCase());
+const boardSlug = boardData?.slug || 'punjab';
 
 const breadcrumbs = {
   '@context': 'https://schema.org',
@@ -54,7 +59,7 @@ const desc = `Download ${d.subject} Class ${d.class} ${d.year} past paper from $
         <span>/</span>
         <a href={url('/past-papers')} class="hover:text-[#1d4ed8]">Past Papers</a>
         <span>/</span>
-        <a href={url('/board/punjab')} class="hover:text-[#1d4ed8]">{d.boards?.[0] || 'Punjab'}</a>
+        <a href={url(`/board/${(boardByName(d.boards?.[0] || '') || { slug: 'punjab' }).slug}`)} class="hover:text-[#1d4ed8]">{d.boards?.[0] || 'Punjab'}</a>
         <span>/</span>
         <span class="text-slate-500">Class {d.class} · {d.subject} · {d.year}</span>
       </nav>
