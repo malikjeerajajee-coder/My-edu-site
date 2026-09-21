@@ -38,6 +38,11 @@ export default defineConfig({
       },
     }),
   ],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    server: {
+      watch: {
+        ignored: ['**/src/content/**', '**/dist/**', '**/.astro/**', '**/node_modules/**'],
+      },
+    }, plugins: [tailwindcss()] },
   prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
 });

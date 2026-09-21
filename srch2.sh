@@ -1,3 +1,17 @@
+#!/bin/bash
+set -e
+cd ~/my-edu-site 2>/dev/null || cd /public/my-edu-site
+
+echo "════════════════════════════════════════════"
+echo "  Search UI v3 — clean filter toolbar"
+echo "════════════════════════════════════════════"
+echo ""
+
+git branch -f backup-pre-srch2 2>/dev/null || true
+echo "  ✓ backup-pre-srch2 created"
+echo ""
+
+cat > src/pages/search.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/url';
@@ -1037,3 +1051,39 @@ const popularSearches = [
     .sx-sheet-apply:hover { background: #1e3a8a; border-color: #1e3a8a; }
   </style>
 </BaseLayout>
+ASTRO
+
+echo "  ✓ search.astro rebuilt"
+
+echo ""
+echo "Rebuilding (4-6 min)..."
+rm -rf dist .astro node_modules/.vite
+npm run build 2>&1 | tail -8
+
+echo ""
+echo "════════════════════════════════════════════════════"
+echo "  DONE"
+echo ""
+echo "  Preview:"
+echo "    bash start-server.sh"
+echo ""
+echo "  Open: http://localhost:4321/My-edu-site/search/"
+echo ""
+echo "  New design:"
+echo "    · Desktop: 5 compact dropdowns in a single row"
+echo "      Each dropdown shows a count badge per option"
+echo "      Active filters turn the button blue"
+echo "    · Mobile: single 'Filters' button with active count badge"
+echo "      Tapping opens a bottom sheet (slides up from bottom)"
+echo "      Sheet has all 5 filter groups with chips"
+echo "      Apply button + Clear all button at bottom"
+echo "    · Reset button appears only when filters are active"
+echo ""
+echo "  Push when happy:"
+echo "    git add ."
+echo "    git commit -m 'Search UI v3: dropdowns + mobile filter sheet'"
+echo "    git push"
+echo ""
+echo "  Revert:"
+echo "    git checkout backup-pre-srch2"
+echo "════════════════════════════════════════════════════"
