@@ -1,0 +1,348 @@
+#!/bin/bash
+set -e
+
+# Ensure we're in the site directory
+cd /public/my-edu-site 2>/dev/null || cd ~/my-edu-site 2>/dev/null || {
+  echo "✗ Could not find the site directory."
+  echo "  Please run: cd ~/my-edu-site && bash speed-seo-pack.sh"
+  exit 1
+}
+
+echo "════════════════════════════════════════════"
+echo "  SPEED + SEO PACK"
+echo "  Working directory: $(pwd)"
+echo "════════════════════════════════════════════"
+echo ""
+
+# Verify we're in the right place
+if [ ! -f "package.json" ]; then
+  echo "✗ package.json not found — wrong directory"
+  exit 1
+fi
+if [ ! -d "src" ]; then
+  echo "✗ src/ not found — wrong directory"
+  exit 1
+fi
+
+echo "  ✓ Confirmed project root"
+echo ""
+
+# ─────────────────────────────────────────────
+#  BACKUP
+# ─────────────────────────────────────────────
+git branch -f backup-pre-speed-pack 2>/dev/null || true
+git push -u origin backup-pre-speed-pack 2>&1 | tail -2 || echo "  (backup push failed — do manually)"
+echo "  ✓ backup-pre-speed-pack created"
+echo ""
+
+# ─────────────────────────────────────────────
+#  STEP 1 — Self-host Plus Jakarta Sans
+# ─────────────────────────────────────────────
+echo "▸ 1. Self-hosting Plus Jakarta Sans..."
+
+npm install @fontsource-variable/plus-jakarta-sans --silent
+echo "  ✓ @fontsource-variable/plus-jakarta-sans installed"
+
+# ─────────────────────────────────────────────
+#  STEP 2 — Fix prefetch strategy
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 2. Fixing prefetch strategy..."
+
+python3 <<'PY'
+import pathlib, re
+p = pathlib.Path('astro.config.mjs')
+s = p.read_text()
+
+# Replace prefetch config
+s = re.sub(
+    r"prefetch:\s*\{[^}]*\},",
+    "prefetch: { prefetchAll: false, defaultStrategy: 'hover' },",
+    s, count=1
+)
+
+p.write_text(s)
+print('  ✓ prefetch → hover (no more pre-downloading PDFs)')
+PY
+
+# ─────────────────────────────────────────────
+#  STEP 3 — Install Pagefind
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 3. Installing Pagefind..."
+
+npm install -D pagefind --silent
+echo "  ✓ pagefind installed"
+
+# ─────────────────────────────────────────────
+#  STEP 4 — Update BaseLayout: font import, remove Google Fonts
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 4. Updating BaseLayout..."
+
+python3 <<'PY'
+import pathlib, re
+
+p = pathlib.Path('src/layouts/BaseLayout.astro')
+s = p.read_text()
+
+# Add fontsource import at the top of frontmatter
+if '@fontsource-variable' not in s:
+    s = s.replace(
+        "import '../styles/global.css';",
+        "import '../styles/global.css';\nimport '@fontsource-variable/plus-jakarta-sans';"
+    )
+
+# Remove Google Fonts preconnect links
+s = re.sub(r'\s*<link rel="preconnect" href="https://fonts\.googleapis\.com"[^>]*>\s*', '\n  ', s)
+s = re.sub(r'\s*<link rel="preconnect" href="https://fonts\.gstatic\.com"[^>]*>\s*', '\n  ', s)
+
+# Remove Google Fonts stylesheet link
+s = re.sub(r'\s*<link[^>]*href="https://fonts\.googleapis\.com/css2[^"]*"[^>]*>\s*', '\n  ', s)
+
+p.write_text(s)
+print('  ✓ BaseLayout — Google Fonts removed, fontsource imported')
+PY
+
+# ─────────────────────────────────────────────
+#  STEP 5 — Update global.css font reference
+# ─────────────────────────────────────────────
+python3 <<'PY'
+import pathlib, re
+p = pathlib.Path('src/styles/global.css')
+s = p.read_text()
+
+# Update the --font-sans theme variable to just use the family name
+s = re.sub(
+    r'--font-sans:[^;]+;',
+    '--font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;',
+    s, count=1
+)
+
+p.write_text(s)
+print('  ✓ global.css — font family updated')
+PY
+
+# ─────────────────────────────────────────────
+#  STEP 6 — Update package.json build script
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 6. Updating build script..."
+
+python3 <<'PY'
+import pathlib, json
+
+p = pathlib.Path('package.json')
+data = json.loads(p.read_text())
+
+scripts = data.get('scripts', {})
+scripts['build'] = 'astro build && npx pagefind --site dist && node fix-links.mjs'
+
+data['scripts'] = scripts
+p.write_text(json.dumps(data, indent=2) + '\n')
+print('  ✓ package.json → build runs pagefind')
+PY
+
+# ─────────────────────────────────────────────
+#  STEP 7 — Replace search.astro with Pagefind UI
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 7. Rebuilding search page with Pagefind..."
+
+cat > src/pages/search.astro <<'ASTRO'
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../lib/url';
+---
+<BaseLayout title="Search — Parhayi" description="Search notes, past papers, guess papers, quizzes, books and result gazettes across all Pakistani boards.">
+  <link rel="stylesheet" href={url('/pagefind/pagefind-ui.css')} />
+
+  <div class="mx-auto max-w-4xl px-5 py-10 sm:px-7 lg:px-10 lg:py-14">
+    <div class="mb-8 max-w-2xl">
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        Search
+      </div>
+      <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+        Find anything in the library
+      </h1>
+      <p class="mt-3 text-base text-slate-500">
+        Notes, past papers, guess papers, quizzes, books and gazettes — 7,600+ pages.
+      </p>
+    </div>
+
+    <div id="pagefind-search" data-bundle={url('/pagefind/')}></div>
+  </div>
+
+  <script is:inline src={url('/pagefind/pagefind-ui.js')}></script>
+
+  <script is:inline>
+    (function () {
+      var el = document.getElementById('pagefind-search');
+      var bundle = el.dataset.bundle;
+
+      var params = new URLSearchParams(location.search);
+      var initialQ = params.get('q') || '';
+
+      function init() {
+        if (typeof PagefindUI === 'undefined') {
+          setTimeout(init, 50);
+          return;
+        }
+        new PagefindUI({
+          element: '#pagefind-search',
+          bundlePath: bundle,
+          showSubResults: false,
+          showImages: false,
+          translations: {
+            placeholder: 'Search notes, past papers, books…',
+            clear_search: 'Clear',
+            load_more: 'Load more results',
+            search_label: 'Search this site',
+            filters_label: 'Filters',
+            zero_results: 'No results for [SEARCH_TERM]',
+            many_results: '[COUNT] results for [SEARCH_TERM]',
+            one_result: '[COUNT] result for [SEARCH_TERM]',
+            alt_search: 'No results for [SEARCH_TERM]. Try [DIFFERENT_TERM] instead.',
+            search_suggestion: 'No results. Try one of these:',
+            searching: 'Searching for [SEARCH_TERM]…',
+          },
+        });
+
+        if (initialQ) {
+          var input = document.querySelector('.pagefind-ui__search-input');
+          if (input) {
+            input.value = initialQ;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+          }
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+
+  <style is:global>
+    .pagefind-ui {
+      --pagefind-ui-scale: 1;
+      --pagefind-ui-primary: #1d4ed8;
+      --pagefind-ui-text: #0b1220;
+      --pagefind-ui-background: #ffffff;
+      --pagefind-ui-border: #e5e9f0;
+      --pagefind-ui-tag: #eff4ff;
+      --pagefind-ui-border-width: 1px;
+      --pagefind-ui-border-radius: 12px;
+      --pagefind-ui-font: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+    .pagefind-ui .pagefind-ui__search-input {
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 1rem 1rem 1rem 3rem;
+      border-radius: 12px;
+      border-color: #e5e9f0;
+    }
+    .pagefind-ui .pagefind-ui__search-input:focus {
+      border-color: #1d4ed8;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+    }
+    .pagefind-ui .pagefind-ui__search-clear {
+      padding: 0 1rem;
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+    .pagefind-ui .pagefind-ui__result {
+      padding: 1.25rem;
+      border: 1px solid #e5e9f0;
+      border-radius: 12px;
+      margin-bottom: 0.625rem;
+      background: #ffffff;
+    }
+    .pagefind-ui .pagefind-ui__result-link {
+      color: #0b1220 !important;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .pagefind-ui .pagefind-ui__result-link:hover {
+      color: #1d4ed8 !important;
+    }
+    .pagefind-ui .pagefind-ui__result-excerpt {
+      color: #64748b;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+    .pagefind-ui mark {
+      background: #eff4ff;
+      color: #1e3a8a;
+      padding: 0 0.15em;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .pagefind-ui .pagefind-ui__message {
+      padding: 1rem 0;
+      font-size: 0.875rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .pagefind-ui .pagefind-ui__button {
+      background: #1d4ed8;
+      color: #ffffff;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 0.75rem 1.25rem;
+      border: none;
+    }
+    .pagefind-ui .pagefind-ui__button:hover {
+      background: #1e3a8a;
+    }
+  </style>
+</BaseLayout>
+ASTRO
+
+echo "  ✓ search.astro — Pagefind UI"
+
+# ─────────────────────────────────────────────
+#  STEP 8 — Remove old search.json endpoint
+# ─────────────────────────────────────────────
+rm -f src/pages/search.json.ts
+echo "  ✓ Removed old search.json endpoint"
+
+# ─────────────────────────────────────────────
+#  STEP 9 — Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding (will take 4-6 min — includes Pagefind indexing)..."
+rm -rf .astro node_modules/.vite dist
+npm run build 2>&1 | tail -20
+
+echo ""
+echo "════════════════════════════════════════════════════════"
+echo "  DONE"
+echo "════════════════════════════════════════════════════════"
+echo ""
+echo "  Preview:"
+echo "    bash start-server.sh"
+echo ""
+echo "  Test:"
+echo "    1. Homepage — no external font requests"
+echo "    2. /search/ — type 'physics' → instant fuzzy results"
+echo "    3. Try a typo: 'phisics' → still finds results"
+echo "    4. Try 'lahore 2024' → multi-term works"
+echo ""
+echo "  ── If you like it ──"
+echo "    git add ."
+echo "    git commit -m 'Self-host font, fix prefetch, add Pagefind search'"
+echo "    git push"
+echo ""
+echo "  ── If you don't ──"
+echo "    git checkout backup-pre-speed-pack"
+echo "════════════════════════════════════════════════════════"

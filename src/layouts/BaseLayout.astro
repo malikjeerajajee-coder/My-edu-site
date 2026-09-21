@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '@fontsource-variable/plus-jakarta-sans';
 import Icon from '../components/Icon.astro';
 import SeoHead from '../components/SeoHead.astro';
 import { url } from '../lib/url';
@@ -47,9 +48,6 @@ const isActive = (href: string) => {
   <link rel="apple-touch-icon" sizes="180x180" href={url('/favicon-180.png')} />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   <SeoHead title={title} description={description} noindex={noindex} jsonLd={jsonLd} />
 </head>
 <body class="min-h-screen bg-white">
