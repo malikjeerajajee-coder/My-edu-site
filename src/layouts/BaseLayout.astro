@@ -207,8 +207,14 @@ const isActive = (href: string) => {
             </ul>
           </div>
         </div>
-        <div class="mt-10 border-t border-slate-200 pt-6 text-xs text-slate-400">
+        <div class="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Parhayi. Built for students, forever free.</p>
+          <nav class="flex flex-wrap gap-4">
+            <a href={url('/about')} class="hover:text-[#1d4ed8]">About</a>
+            <a href={url('/contact')} class="hover:text-[#1d4ed8]">Contact</a>
+            <a href={url('/privacy')} class="hover:text-[#1d4ed8]">Privacy</a>
+            <a href={url('/search')} class="hover:text-[#1d4ed8]">Search</a>
+          </nav>
         </div>
       </div>
     </footer>

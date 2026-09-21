@@ -1,0 +1,13 @@
+# Pagefind configuration
+site: dist
+
+# Only index detail pages, not index/hub pages
+# This prevents "Books" index, "Notes" index etc. from cluttering results
+exclude_selectors:
+  - ".pf-exclude"
+
+# Only include content in <main>
+root_selector: "main"
+
+# Keep the index small and fast
+force_language: "en"

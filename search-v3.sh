@@ -1,3 +1,193 @@
+#!/bin/bash
+set -e
+cd ~/my-edu-site 2>/dev/null || cd /public/my-edu-site
+
+echo "════════════════════════════════════════════"
+echo "  Search v3 — MiniSearch + filters + SEO"
+echo "════════════════════════════════════════════"
+echo ""
+
+# ─────────────────────────────────────────────
+#  Backup
+# ─────────────────────────────────────────────
+git branch -f backup-pre-search-v3 2>/dev/null || true
+git push -u origin backup-pre-search-v3 2>&1 | tail -2 || echo "  (backup push failed — do manually)"
+echo "  ✓ backup-pre-search-v3 created"
+echo ""
+
+# ─────────────────────────────────────────────
+#  1. Install MiniSearch
+# ─────────────────────────────────────────────
+echo "▸ 1. Installing MiniSearch..."
+npm install minisearch --silent
+echo "  ✓ minisearch installed"
+
+# ─────────────────────────────────────────────
+#  2. Remove Pagefind from build + install
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 2. Removing Pagefind..."
+npm uninstall pagefind --silent 2>/dev/null || true
+
+python3 <<'PY'
+import json, pathlib
+p = pathlib.Path('package.json')
+data = json.loads(p.read_text())
+scripts = data.get('scripts', {})
+scripts['build'] = 'astro build'
+data['scripts'] = scripts
+p.write_text(json.dumps(data, indent=2) + '\n')
+print('  ✓ package.json — build now just astro build')
+PY
+
+# Clean pagefind output
+rm -rf public/pagefind dist/pagefind
+echo "  ✓ Cleaned Pagefind output"
+
+# ─────────────────────────────────────────────
+#  3. Update astro.config.mjs — exclude /search/ from sitemap
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 3. Updating astro.config.mjs..."
+
+python3 <<'PY'
+import pathlib, re
+p = pathlib.Path('astro.config.mjs')
+s = p.read_text()
+
+# Add search exclusion in the sitemap filter — modify the first 'if' to skip /search
+if "if (/\\/search\\//.test(u)) return undefined" not in s:
+    # Insert at the start of serialize function
+    s = s.replace(
+        "serialize(item) {\n        const u = item.url;",
+        "serialize(item) {\n        const u = item.url;\n        // Exclude search page (it's noindex)\n        if (/\\/search\\/?$/.test(u)) return undefined;"
+    )
+
+p.write_text(s)
+print('  ✓ Sitemap now excludes /search/')
+PY
+
+# ─────────────────────────────────────────────
+#  4. Build-time search index endpoint
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 4. Creating search index endpoint..."
+
+cat > src/pages/search-index.json.ts <<'TS'
+export const prerender = true;
+import { getCollection } from 'astro:content';
+
+interface Doc {
+  id: string;
+  type: 'note' | 'quiz' | 'book' | 'past-paper' | 'guess-paper' | 'pairing-scheme' | 'gazette';
+  title: string;
+  url: string;
+  subject?: string;
+  class?: string;
+  board?: string;
+  bise?: string;
+  year?: number;
+}
+
+export async function GET() {
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
+
+  const [notes, quizzes, books, gazettes, pastPapers, guessPapers, pairingSchemes] =
+    await Promise.all([
+      getCollection('notes'),
+      getCollection('quizzes'),
+      getCollection('books'),
+      getCollection('gazettes'),
+      getCollection('pastPapers'),
+      getCollection('guessPapers'),
+      getCollection('pairingSchemes'),
+    ]);
+
+  const docs: Doc[] = [
+    ...notes.map((n: any) => ({
+      id: `note:${n.id}`,
+      type: 'note' as const,
+      title: n.data.title,
+      url: `${base}/notes/${n.id}/`,
+      subject: n.data.subject,
+      class: n.data.class,
+    })),
+    ...quizzes.map((q: any) => ({
+      id: `quiz:${q.id}`,
+      type: 'quiz' as const,
+      title: q.data.title,
+      url: `${base}/quizzes/${q.id}/`,
+      subject: q.data.subject,
+      class: q.data.class,
+    })),
+    ...books.map((b: any) => ({
+      id: `book:${b.id}`,
+      type: 'book' as const,
+      title: b.data.title,
+      url: `${base}/books/${b.id}/`,
+      subject: b.data.subject,
+      class: b.data.class,
+      board: (b.data.boards || [])[0],
+    })),
+    ...gazettes.map((g: any) => ({
+      id: `gazette:${g.id}`,
+      type: 'gazette' as const,
+      title: g.data.title,
+      url: `${base}/gazettes/${g.id}/`,
+      class: g.data.class,
+      board: (g.data.boards || [])[0],
+      bise: g.data.bise,
+      year: g.data.year,
+    })),
+    ...pastPapers.map((p: any) => ({
+      id: `past-paper:${p.id}`,
+      type: 'past-paper' as const,
+      title: p.data.title,
+      url: `${base}/past-papers/${p.id}/`,
+      subject: p.data.subject,
+      class: p.data.class,
+      board: (p.data.boards || [])[0],
+      bise: p.data.bise,
+      year: p.data.year,
+    })),
+    ...guessPapers.map((p: any) => ({
+      id: `guess-paper:${p.id}`,
+      type: 'guess-paper' as const,
+      title: p.data.title,
+      url: `${base}/guess-papers/${p.id}/`,
+      subject: p.data.subject,
+      class: p.data.class,
+      board: (p.data.boards || [])[0],
+      year: p.data.year,
+    })),
+    ...pairingSchemes.map((p: any) => ({
+      id: `pairing-scheme:${p.id}`,
+      type: 'pairing-scheme' as const,
+      title: p.data.title,
+      url: `${base}/pairing-schemes/${p.id}/`,
+      class: p.data.class,
+      board: (p.data.boards || [])[0],
+      year: p.data.year,
+    })),
+  ];
+
+  return new Response(JSON.stringify(docs), {
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
+    },
+  });
+}
+TS
+echo "  ✓ search-index.json.ts"
+
+# ─────────────────────────────────────────────
+#  5. Rewrite search.astro — MiniSearch + filters
+# ─────────────────────────────────────────────
+echo ""
+echo "▸ 5. Building new search page..."
+
+cat > src/pages/search.astro <<'ASTRO'
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
@@ -647,3 +837,74 @@ const jsonLd = {
     }
   </style>
 </BaseLayout>
+ASTRO
+
+echo "  ✓ search.astro rewritten"
+
+# ─────────────────────────────────────────────
+#  6. Update BaseLayout to pass noindex through to SeoHead
+# ─────────────────────────────────────────────
+python3 <<'PY'
+import pathlib, re
+p = pathlib.Path('src/layouts/BaseLayout.astro')
+s = p.read_text()
+
+# Add noindex to Props
+if 'noindex' not in s.split('<SeoHead')[0]:
+    s = s.replace(
+        "interface Props { title: string; description?: string; jsonLd?: any; }",
+        "interface Props { title: string; description?: string; jsonLd?: any; noindex?: boolean; }"
+    )
+    s = s.replace(
+        "const {\n  title,\n  jsonLd,",
+        "const {\n  title,\n  jsonLd,\n  noindex = false,"
+    )
+    s = s.replace(
+        '<SeoHead title={title} description={description} jsonLd={jsonLd} />',
+        '<SeoHead title={title} description={description} jsonLd={jsonLd} noindex={noindex} />'
+    )
+    p.write_text(s)
+    print('  ✓ BaseLayout forwards noindex')
+else:
+    print('  · BaseLayout already forwards noindex')
+PY
+
+# Also verify SeoHead accepts noindex
+if [ -f "src/components/SeoHead.astro" ]; then
+  grep -q "noindex" src/components/SeoHead.astro && echo "  ✓ SeoHead supports noindex" || echo "  ! SeoHead may not support noindex prop"
+fi
+
+# ─────────────────────────────────────────────
+#  7. Rebuild
+# ─────────────────────────────────────────────
+echo ""
+echo "Rebuilding (4-6 min)..."
+rm -rf .astro node_modules/.vite dist
+npm run build 2>&1 | tail -12
+
+echo ""
+echo "════════════════════════════════════════════"
+echo "  DONE"
+echo ""
+echo "  Preview:"
+echo "    bash start-server.sh"
+echo ""
+echo "  Test:"
+echo "    http://localhost:4321/My-edu-site/search/"
+echo ""
+echo "  Then try:"
+echo "    · 'physics'         → all physics items"
+echo "    · 'lahore 2024'     → Lahore 2024 papers"
+echo "    · 'phisics'         → typo tolerance works"
+echo "    · Click Type chip   → filter by paper type"
+echo "    · Click Board chip  → filter by board"
+echo "    · Combine filters   → Punjab + Class 10 + Physics"
+echo ""
+echo "  Push when happy:"
+echo "    git add ."
+echo "    git commit -m 'Search v3: MiniSearch + filters + noindex'"
+echo "    git push"
+echo ""
+echo "  Revert if needed:"
+echo "    git checkout backup-pre-search-v3"
+echo "════════════════════════════════════════════"

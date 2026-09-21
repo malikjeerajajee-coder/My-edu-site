@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contact Parhayi',
+  description: 'Get in touch with the Parhayi team — corrections, contributions, and takedown requests.',
+};
+---
+<BaseLayout
+  title="Contact — Parhayi"
+  description="Get in touch with Parhayi — corrections, contributions, partnership, or removal requests."
+  jsonLd={jsonLd}
+>
+  <div class="mx-auto max-w-3xl px-5 py-12 sm:px-7 lg:px-10 lg:py-20">
+    <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+      <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+      <span>/</span>
+      <span class="text-slate-500">Contact</span>
+    </nav>
+
+    <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Contact</h1>
+    <p class="mt-5 text-lg leading-relaxed text-slate-600">
+      Corrections, contributions, takedown requests — all welcome.
+    </p>
+
+    <div class="mt-10 space-y-4">
+      <div class="row">
+        <span class="tile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </span>
+        <div class="min-w-0 flex-1">
+          <div class="row-title">Email</div>
+          <div class="row-sub">parhayi@example.com — we reply within 48 hours</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose mt-12">
+      <h2>Report an error</h2>
+      <p>
+        If a paper is missing, has the wrong year, or a link is broken, email us the page URL and what needs fixing. We correct verified errors quickly.
+      </p>
+
+      <h2>Contribute content</h2>
+      <p>
+        If you have official papers, textbooks, or notes we're missing — especially for Sindh, Balochistan, AJK, or older years — we'd love to add them. Send them as PDF attachments.
+      </p>
+
+      <h2>Takedown requests</h2>
+      <p>
+        Parhayi hosts publicly-published educational material by Pakistani examination boards and textbook boards. If you're a rights holder and believe a specific file should not be publicly available, email us with:
+      </p>
+      <ul>
+        <li>The URL of the file</li>
+        <li>A description of the copyright you hold</li>
+        <li>Your contact details</li>
+      </ul>
+      <p>
+        We respond to all legitimate takedown requests within 7 days.
+      </p>
+
+      <h2>For teachers and schools</h2>
+      <p>
+        Teachers and schools are welcome to use Parhayi resources freely in their classrooms, print them, share them, and modify them. Attribution is appreciated but not required.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

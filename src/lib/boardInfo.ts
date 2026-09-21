@@ -59,6 +59,51 @@ export const BOARD_INFO: Record<string, BoardInfo> = {
       { q: 'Which board conducts the Class 9 exam for my school?', a: 'Your board depends on your school location. The 9 Punjab boards are Lahore, Gujranwala, Rawalpindi, Multan, Faisalabad, Sahiwal, Sargodha, Bahawalpur, and DG Khan. Each covers a specific geographical region.' },
     ],
   },
+
+  federal: {
+    slug: 'federal',
+    overview: 'The Federal Board of Intermediate and Secondary Education (FBISE) is Pakistan\'s national-level board, headquartered in Islamabad. It serves students in federal government schools and colleges across Pakistan, in cantonment areas, and in Pakistani institutions overseas. Unlike provincial boards, FBISE sets a single unified paper for the entire country — every student affiliated with FBISE sits the same exam on the same day. FBISE is known for a slightly more analytical paper pattern than provincial boards, with greater emphasis on conceptual understanding over rote memorisation.',
+    boardsServed: [
+      'Federal Board (FBISE)',
+    ],
+    totalMarks: 550,
+    passingMarks: 182,
+    examMonths: 'February to April (annual), October (supplementary)',
+    groups: [
+      { name: 'Science Group', subjects: ['English', 'Urdu', 'Islamiat', 'Pakistan Studies', 'Mathematics', 'Physics', 'Chemistry', 'Biology / Computer Science'] },
+      { name: 'Arts Group', subjects: ['English', 'Urdu', 'Islamiat', 'Pakistan Studies', 'General Mathematics', 'General Science', 'Two electives of choice'] },
+    ],
+    subjects: [
+      { name: 'English',              marks: 75,  type: 'compulsory' },
+      { name: 'Urdu',                 marks: 75,  type: 'compulsory' },
+      { name: 'Islamiat',             marks: 50,  type: 'compulsory' },
+      { name: 'Pakistan Studies',     marks: 50,  type: 'compulsory' },
+      { name: 'Mathematics',          marks: 75,  type: 'elective' },
+      { name: 'Physics',              marks: 60,  type: 'elective' },
+      { name: 'Chemistry',            marks: 60,  type: 'elective' },
+      { name: 'Biology',              marks: 60,  type: 'elective' },
+      { name: 'Computer Science',     marks: 60,  type: 'elective' },
+    ],
+    paperPatterns: [
+      { subject: 'English',      totalMarks: 75, objective: '15 MCQs + short', subjective: '60 marks — short & long questions, grammar, composition', duration: '2 hr 40 min' },
+      { subject: 'Urdu',         totalMarks: 75, objective: '15 MCQs + short', subjective: '60 marks — short & long questions, grammar', duration: '2 hr 40 min' },
+      { subject: 'Mathematics',  totalMarks: 75, objective: '12 MCQs + short', subjective: '52 marks — short & long questions', duration: '2 hr 40 min' },
+      { subject: 'Physics',      totalMarks: 60, objective: '12 MCQs + short', subjective: '48 marks — including numericals', duration: '2 hr 10 min' },
+      { subject: 'Chemistry',    totalMarks: 60, objective: '12 MCQs + short', subjective: '48 marks — short & long', duration: '2 hr 10 min' },
+      { subject: 'Biology',      totalMarks: 60, objective: '12 MCQs + short', subjective: '48 marks — short & long', duration: '2 hr 10 min' },
+      { subject: 'Islamiat',     totalMarks: 50, objective: 'MCQs + short',    subjective: 'Short & long questions', duration: '2 hr' },
+    ],
+    faq: [
+      { q: 'What is FBISE?', a: 'FBISE stands for Federal Board of Intermediate and Secondary Education. It\'s the national examination board of Pakistan, headquartered in Islamabad, and sets one unified paper for all affiliated institutions across the country.' },
+      { q: 'Does FBISE set one paper for the whole country?', a: 'Yes. Unlike provincial boards which have 5–9 separate BISEs, FBISE sets a single paper for every affiliated school — whether in Islamabad, Karachi, Lahore, or overseas. Every student sits the same exam.' },
+      { q: 'What is the total marks for FBISE Class 9?', a: 'FBISE Class 9 is worth 550 marks across 8 subjects. Passing requires at least 182 marks (33%).' },
+      { q: 'When are FBISE Class 9 exams held?', a: 'FBISE typically holds the annual SSC Part-I (Class 9) exams in February to April. Supplementary exams are held in October.' },
+      { q: 'How is FBISE different from provincial boards?', a: 'FBISE papers are known for a slightly more analytical pattern, with more emphasis on conceptual understanding and application. The syllabus is similar but the question style rewards deeper reasoning.' },
+      { q: 'Which schools come under FBISE?', a: 'Federal government schools and colleges (FGEIs), Pakistan Army and Air Force schools, cadet colleges, and Pakistani schools in embassies and missions abroad.' },
+      { q: 'Are FBISE past papers accepted by other boards?', a: 'No — FBISE sets a completely different paper from provincial boards. If you\'re sitting FBISE, you must study FBISE past papers specifically.' },
+      { q: 'What is the passing marks for FBISE 9th class?', a: 'Passing marks are 182 out of 550, which is 33%. Students must pass each subject individually as well as overall.' },
+    ],
+  },
 };
 
 export function getBoardInfo(slug: string): BoardInfo | null {

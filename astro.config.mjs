@@ -10,6 +10,8 @@ export default defineConfig({
     sitemap({
       serialize(item) {
         const u = item.url;
+        // Exclude search page (it's noindex)
+        if (/\/search\/?$/.test(u)) return undefined;
         // Homepage — highest priority
         if (u.match(/My-edu-site\/?$/)) return { ...item, priority: 1.0, changefreq: 'weekly' };
         // Board hubs (Punjab, Federal, KPK...)

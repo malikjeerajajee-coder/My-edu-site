@@ -19,6 +19,16 @@ export async function getStaticPaths() {
 const { board: boardSlug, bise: biseSlug } = Astro.params;
 const board = boardBySlug(boardSlug!);
 const bise = board?.bises.find(b => b.slug === biseSlug);
+const biseBreadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/' },
+    { '@type': 'ListItem', position: 2, name: 'Boards', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/boards/' },
+    { '@type': 'ListItem', position: 3, name: board?.name || 'Board', item: `https://malikjeerajajee-coder.github.io/My-edu-site/board/${boardSlug}/` },
+    { '@type': 'ListItem', position: 4, name: bise?.name || 'BISE' },
+  ],
+};
 const valid = !!(board && bise);
 
 const allPapers = await getCollection('pastPapers');
@@ -40,11 +50,8 @@ const countFor = (c: string) =>
   papers.filter((p: any) => p.data.class === c).length +
   gazettes.filter((g: any) => g.data.class === c).length;
 ---
-<BaseLayout
-  title={`${bise.name} Board — Class 9 & 10 Past Papers & Gazettes | Parhayi`}
-  description={`Download past papers and result gazettes for ${bise.name} Board (${board.full}). Class 9 and Class 10, 2018 to 2026. Free PDFs.`}
-  noindex={papers.length + gazettes.length === 0}
->
+<BaseLayout title={`${bise.name} Board — Class 9 & 10 Past Papers & Gazettes | Parhayi`} description={`Download past papers and result gazettes for ${bise.name} Board (${board.full}). Class 9 and Class 10, 2018 to 2026. Free PDFs.`}
+  noindex={papers.length + gazettes.length === 0} jsonLd={biseBreadcrumbJsonLd}>
   <div class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
       <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">

@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About Parhayi',
+  description: 'Parhayi is a free study platform for Pakistani students — notes, past papers, textbooks and result gazettes organised by board and class.',
+  publisher: { '@type': 'Organization', name: 'Parhayi' },
+};
+---
+<BaseLayout
+  title="About — Parhayi"
+  description="Parhayi is a free study platform for Pakistani students — notes, past papers, guess papers, textbooks and result gazettes, all organised by board and class."
+  jsonLd={jsonLd}
+>
+  <div class="mx-auto max-w-3xl px-5 py-12 sm:px-7 lg:px-10 lg:py-20">
+    <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+      <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+      <span>/</span>
+      <span class="text-slate-500">About</span>
+    </nav>
+
+    <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">About Parhayi</h1>
+    <p class="mt-5 text-lg leading-relaxed text-slate-600">
+      Parhayi is a free study platform built for Pakistani students. We bring every resource a student actually needs — notes, past papers, guess papers, textbooks and result gazettes — into one place, organised by board and class.
+    </p>
+
+    <div class="prose mt-10">
+      <h2>Why we built this</h2>
+      <p>
+        Pakistani students waste hours looking for the right paper. Google returns outdated links, WhatsApp groups share inconsistent PDFs, and most study sites are either paywalled, ad-choked, or cover just one or two boards.
+      </p>
+      <p>
+        Parhayi fixes that. We've collected and organised:
+      </p>
+      <ul>
+        <li><strong>6,000+ past papers</strong> — Class 9–12, all 6 provinces (Punjab, Federal, Sindh, KPK, Balochistan, AJK), all 33 BISEs, from 2018 to 2026</li>
+        <li><strong>180+ textbooks</strong> — full PDFs of the Punjab Curriculum and Textbook Board (PTB) and Federal Board (FBISE) books for Class 1 to 12</li>
+        <li><strong>Notes and chapter breakdowns</strong> — subject-wise, with exam-relevant focus</li>
+        <li><strong>Result gazettes</strong> — Class 9 and 10, all BISEs</li>
+        <li><strong>Guess papers and pairing schemes</strong> — updated each year</li>
+      </ul>
+
+      <h2>How it's organised</h2>
+      <p>
+        Most study sites force you to browse everything at once. Parhayi is built around two simple ideas:
+      </p>
+      <ol>
+        <li><strong>Your board comes first.</strong> Punjab has 9 separate BISEs, Sindh has 5, KPK has 8. Each sets its own papers. We let you pick your exact board before showing you anything.</li>
+        <li><strong>Your class second.</strong> A Class 9 student never needs to see Class 12 content — and vice versa.</li>
+      </ol>
+
+      <h2>Free, forever</h2>
+      <p>
+        No sign-up. No subscription. No ads. No paywall. Every resource on Parhayi is free to download and use.
+      </p>
+      <p>
+        This is a public good. Education shouldn't be gated by income, and we intend to keep it that way.
+      </p>
+
+      <h2>Where our content comes from</h2>
+      <p>
+        Our papers, textbooks and gazettes come from publicly-published material by the Boards of Intermediate and Secondary Education (BISEs) across Pakistan and the Punjab Curriculum and Textbook Board. We organise and cross-reference these sources; we do not claim ownership of the underlying exam papers.
+      </p>
+      <p>
+        If you're a rights holder and would like a specific file removed, see our <a href={url('/contact')}>Contact page</a>.
+      </p>
+
+      <h2>Get in touch</h2>
+      <p>
+        Have a question, a correction, or a request? <a href={url('/contact')}>Contact us</a>.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
