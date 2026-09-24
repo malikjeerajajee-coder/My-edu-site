@@ -39,6 +39,9 @@ const books = defineCollection({
     subject: z.string(),
     board: z.string().optional(),
     boards: z.array(z.string()).optional(),
+    medium: z.enum(['english', 'urdu']).optional(),
+    scheme: z.enum(['new', 'snc', 'previous']).optional(),
+    year: z.string().optional(),
     pdfUrl: z.string(),
   }),
 });

@@ -73,9 +73,9 @@ const boards = [...allBoards].sort();
                   href={url(`/books/${b.id}`)}
                   class="row group"
                   data-filterable
-                  data-search={`${b.data.title} ${b.data.subject} ${(b.data.boards || []).join(' ')} ${cls}`}
+                  data-search={`${b.data.title} ${b.data.subject} ${(b.data.boards || []).join(' ')} ${cls} ${b.data.year || ''}`}
                   data-class={cls}
-                  data-board={(b.data.boards || []).join(' ')}
+                  data-board={(b.data.boards || [])[0]}
                 >
                   <span class="tile">
                     <Icon name="book-marked" size={18} strokeWidth={2.2} />
@@ -83,8 +83,12 @@ const boards = [...allBoards].sort();
                   <div class="min-w-0 flex-1">
                     <div class="row-title">{b.data.title}</div>
                     <div class="mt-1 flex flex-wrap gap-1.5">
-                      <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{b.data.subject}</span>
-                      <span class="inline-flex items-center rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">{b.data.boards?.[0] || 'Punjab'}</span>
+                      <span class="inline-flex items-center rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">{(b.data.boards || [])[0] || 'Punjab'}</span>
+                      {b.data.medium === 'english' && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">English</span>}
+                      {b.data.medium === 'urdu' && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">Urdu</span>}
+                      {b.data.scheme === 'new' && <span class="inline-flex items-center rounded bg-[#ecfdf5] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#047857]">New {b.data.year}</span>}
+                      {b.data.scheme === 'snc' && <span class="inline-flex items-center rounded bg-[#fffbeb] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#b45309]">SNC {b.data.year}</span>}
+                      {b.data.scheme === 'previous' && <span class="inline-flex items-center rounded bg-[#f1f5f9] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#64748b]">Previous {b.data.year}</span>}
                     </div>
                   </div>
                   <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
