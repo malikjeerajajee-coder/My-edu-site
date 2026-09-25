@@ -1,103 +1,118 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import PageFilter from '../../components/PageFilter.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
 
 const books = await getCollection('books');
-const CLASS_ORDER = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
-const byClass = new Map<string, any[]>();
+const counts = new Map<string, number>();
 books.forEach((b: any) => {
-  const cls = b.data.class;
-  if (!byClass.has(cls)) byClass.set(cls, []);
-  byClass.get(cls)!.push(b);
+  const board = (b.data.boards || [])[0];
+  if (board) counts.set(board, (counts.get(board) || 0) + 1);
 });
 
-const sortedClasses = [...byClass.keys()].sort((a, b) => {
-  const ai = CLASS_ORDER.indexOf(a), bi = CLASS_ORDER.indexOf(b);
-  if (ai === -1 && bi === -1) return Number(a) - Number(b);
-  if (ai === -1) return 1;
-  if (bi === -1) return -1;
-  return ai - bi;
-});
-sortedClasses.forEach(cls => {
-  byClass.get(cls)!.sort((a: any, b: any) => a.data.subject.localeCompare(b.data.subject));
+const ORDER = ['Punjab', 'Federal', 'Sindh', 'KPK', 'Balochistan', 'AJK'];
+const boards = [...counts.keys()].sort((a, b) => {
+  const ai = ORDER.indexOf(a), bi = ORDER.indexOf(b);
+  if (ai === -1 && bi === -1) return a.localeCompare(b);
+  return (ai === -1 ? 1 : bi === -1 ? -1 : ai - bi);
 });
 
-const allBoards = new Set<string>();
-books.forEach((b: any) => (b.data.boards || []).forEach((x: string) => allBoards.add(x)));
-const boards = [...allBoards].sort();
+const DESC: Record<string, string> = {
+  'Punjab':      'Punjab Curriculum and Textbook Board',
+  'Federal':     'Federal Board of Intermediate and Secondary Education',
+  'Sindh':       'Sindh Textbook Board',
+  'KPK':         'Khyber Pakhtunkhwa Textbook Board',
+  'Balochistan': 'Balochistan Textbook Board',
+  'AJK':         'Azad Jammu and Kashmir Textbook Board',
+};
+
+const total = books.length;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Pakistani Textbooks — Free PDF Library',
+  description: `Complete library of official Pakistani textbooks — ${total} books across ${boards.length} boards.`,
+};
 ---
-<BaseLayout title="Textbooks — Class 1 to 12 | Punjab & Federal Board | Parhayi" description="Free Pakistani board textbooks for Class 1 to 12. Punjab (PTB) and Federal (FBISE). Download PDFs instantly.">
-  <div class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
-      <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+<BaseLayout
+  title="Pakistani Textbooks — Free PDF Library Class 1 to 12 | Parhayi"
+  description={`Download official Pakistani textbooks free. ${total} books across Punjab, Federal, Sindh, Balochistan boards. Class 1 to 12.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-12 pb-14 sm:px-7 lg:px-10 lg:pt-16 lg:pb-20">
+      <nav class="mb-8 flex items-center gap-2 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <span class="text-slate-500">Textbooks</span>
       </nav>
-      <div class="max-w-2xl">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">Textbooks</h1>
-        <p class="mt-3 text-base leading-relaxed text-slate-600">
-          {books.length} textbooks from Punjab (PTB) and Federal (FBISE) boards — Class 1 to Class 12.
-        </p>
-      </div>
+      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Pakistan's complete textbook library.
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Official textbooks from every major Pakistani board. Free PDF downloads, no sign-up, no ads.
+      </p>
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Books</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{total}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Boards</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boards.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Classes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">1–12</dd>
+        </div>
+      </dl>
     </div>
-  </div>
+  </section>
 
-  <div class="mx-auto max-w-[1200px] px-5 py-8 sm:px-7 lg:px-10 lg:py-10">
-    <PageFilter
-      placeholder="Search textbooks — subject, class or board…"
-      filters={[
-        { label: 'Class', key: 'class', options: sortedClasses },
-        { label: 'Board', key: 'board', options: boards },
-      ]}
-    />
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your board</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Every board publishes its own set of textbooks, tailored to its province.</p>
+    </div>
 
-    <div id="book-list" class="space-y-10">
-      {sortedClasses.map(cls => {
-        const items = byClass.get(cls)!;
+    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3">
+      {boards.map(b => {
+        const count = counts.get(b) || 0;
         return (
-          <section data-class={cls} data-filter-section>
-            <div class="mb-4 flex items-end justify-between gap-4">
-              <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Class {cls}</h2>
-              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                {items.length} {items.length === 1 ? 'book' : 'books'}
-              </span>
+          <a href={url(`/books/${b.toLowerCase()}`)} class="group relative flex flex-col bg-white p-7 transition-colors hover:bg-slate-50">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b}</h3>
+              <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="mt-1 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
             </div>
-            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {items.map((b: any) => (
-                <a
-                  href={url(`/books/${b.id}`)}
-                  class="row group"
-                  data-filterable
-                  data-search={`${b.data.title} ${b.data.subject} ${(b.data.boards || []).join(' ')} ${cls} ${b.data.year || ''}`}
-                  data-class={cls}
-                  data-board={(b.data.boards || [])[0]}
-                >
-                  <span class="tile">
-                    <Icon name="book-marked" size={18} strokeWidth={2.2} />
-                  </span>
-                  <div class="min-w-0 flex-1">
-                    <div class="row-title">{b.data.title}</div>
-                    <div class="mt-1 flex flex-wrap gap-1.5">
-                      <span class="inline-flex items-center rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">{(b.data.boards || [])[0] || 'Punjab'}</span>
-                      {b.data.medium === 'english' && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">English</span>}
-                      {b.data.medium === 'urdu' && <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">Urdu</span>}
-                      {b.data.scheme === 'new' && <span class="inline-flex items-center rounded bg-[#ecfdf5] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#047857]">New {b.data.year}</span>}
-                      {b.data.scheme === 'snc' && <span class="inline-flex items-center rounded bg-[#fffbeb] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#b45309]">SNC {b.data.year}</span>}
-                      {b.data.scheme === 'previous' && <span class="inline-flex items-center rounded bg-[#f1f5f9] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#64748b]">Previous {b.data.year}</span>}
-                    </div>
-                  </div>
-                  <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-                </a>
-              ))}
+            <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{DESC[b] || `${b} Textbook Board`}</p>
+            <div class="mt-8 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+              {count} {count === 1 ? 'book' : 'books'}
             </div>
-          </section>
+          </a>
         );
       })}
     </div>
-  </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Pakistan's complete textbook library</h2>
+        <p>Textbooks are the foundation of every board exam. Whether you're in Class 1 learning your first Urdu letters or in Class 12 preparing for your HSSC exams, the right textbook is the starting point for everything else.</p>
+        <p>Parhayi hosts the official textbooks published by Pakistan's four largest education boards — the <strong>Punjab Textbook Board (PTB / PCTB)</strong>, the <strong>Federal Board (FBISE)</strong>, the <strong>Sindh Textbook Board (STBB)</strong>, and the <strong>Balochistan Textbook Board (BTBB)</strong> — plus resources from Khyber Pakhtunkhwa and Azad Jammu and Kashmir.</p>
+        <h3>What you'll find</h3>
+        <ul>
+          <li><strong>Every class from 1 to 12</strong>, from primary through intermediate</li>
+          <li><strong>Every subject</strong> — Mathematics, Physics, Chemistry, Biology, English, Urdu, Islamiat, Pakistan Studies, Computer Science, and more</li>
+          <li><strong>Every medium</strong> — English medium (EM), Urdu medium (UM), and Sindhi medium where relevant</li>
+          <li><strong>Every scheme</strong> — current SNC, previous scheme, and the newest 2025–27 editions</li>
+        </ul>
+        <h3>How to find your textbook</h3>
+        <p>Choose your board above, then your class, then your subject. Every book opens as a free PDF — no registration, no paywall, no ads.</p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

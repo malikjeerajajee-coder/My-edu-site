@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import SubjectIcon from '../../../components/SubjectIcon.astro';
+import { url } from '../../../lib/url';
+import { boardMeta, bookSubjectName } from '../../../lib/bookSeo';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books');
+  const paths: any[] = [];
+  const seen = new Set<string>();
+  books.forEach((b: any) => {
+    const board = (b.data.boards || [])[0];
+    if (!board) return;
+    const key = `${board.toLowerCase()}/class-${b.data.class}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      paths.push({ params: { board: board.toLowerCase(), class: `class-${b.data.class}` } });
+    }
+  });
+  return paths;
+}
+
+const { board: boardSlug, class: classParam } = Astro.params;
+const cls = String(classParam).replace(/^class-/, '');
+const allBooks = await getCollection('books');
+const boardName = [...new Set(allBooks.flatMap((b: any) => b.data.boards || []))]
+  .find(n => n.toLowerCase() === boardSlug);
+if (!boardName) return Astro.redirect('/books');
+
+const meta = boardMeta(boardName);
+const books = allBooks
+  .filter((b: any) => (b.data.boards || []).includes(boardName) && String(b.data.class) === cls);
+
+books.sort((a: any, b: any) => {
+  const score = (x: any) => x.data.scheme === 'new' ? 3 : x.data.scheme === 'snc' ? 2 : 1;
+  if (score(a) !== score(b)) return score(b) - score(a);
+  const ay = a.data.year || '', by = b.data.year || '';
+  if (ay !== by) return by.localeCompare(ay);
+  return a.data.subject.localeCompare(b.data.subject);
+});
+
+const subjects = [...new Set(books.map((b: any) => bookSubjectName(b.data.subject)))].sort();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Class ${cls} ${boardName} Textbooks — All Subjects`,
+  description: `Download all Class ${cls} ${boardName} textbooks free. ${subjects.length} subjects available.`,
+};
+---
+<BaseLayout
+  title={`Class ${cls} ${boardName} Textbooks — All Subjects Free PDF | ${meta.abbreviation} | Parhayi`}
+  description={`Download all Class ${cls} ${boardName} textbook PDFs. ${subjects.length} subjects including ${subjects.slice(0, 4).join(', ')}. Free, no sign-up.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-14 sm:px-7 lg:px-10 lg:pt-12 lg:pb-16">
+      <nav class="mb-8 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/books')} class="hover:text-[#1d4ed8]">Textbooks</a>
+        <span>/</span>
+        <a href={url(`/books/${boardSlug}`)} class="hover:text-[#1d4ed8]">{boardName}</a>
+        <span>/</span>
+        <span class="text-slate-500">Class {cls}</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
+        Class {cls} · {boardName}
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-relaxed text-slate-600">
+        {books.length} textbooks across {subjects.length} subjects. Every book is a free PDF download.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3">
+      {books.map(b => {
+        const subj = bookSubjectName(b.data.subject);
+        const schemeLabel = b.data.scheme === 'new' ? `New ${b.data.year || ''}`.trim()
+                          : b.data.scheme === 'snc' ? `SNC ${b.data.year || ''}`.trim()
+                          : b.data.scheme === 'previous' ? b.data.year || 'Previous'
+                          : b.data.year || '';
+        const mediumLabel = b.data.medium === 'english' ? 'English'
+                          : b.data.medium === 'urdu' ? 'Urdu'
+                          : b.data.medium === 'sindhi' ? 'Sindhi'
+                          : '';
+        const meta = [mediumLabel, schemeLabel].filter(Boolean).join(' · ');
+        return (
+          <a href={url(`/textbook/${b.id}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+            <div class="flex items-start gap-3">
+              <SubjectIcon subject={subj} size="sm" />
+              <div class="min-w-0 flex-1">
+                <h3 class="font-display text-[17px] font-extrabold leading-tight tracking-tight text-slate-900">
+                  {subj}
+                </h3>
+                {meta && <p class="mt-1 text-[12px] text-slate-500">{meta}</p>}
+              </div>
+            </div>
+            <div class="mt-6 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+              Download PDF
+              <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Class {cls} {boardName} textbooks</h2>
+        <p>
+          Class {cls} is a critical year in the {boardName} system. The {subjects.length} subjects above are the official textbooks published by the {meta.authority}. Every textbook is available as a free PDF download.
+        </p>
+        <h3>Subjects in Class {cls}</h3>
+        <ul>
+          {subjects.map(s => <li><strong>{s}</strong> — official {boardName} textbook</li>)}
+        </ul>
+        <h3>Mediums and editions</h3>
+        <p>Where the board publishes both English medium (EM) and Urdu medium (UM) editions, both are listed. If a subject has been revised under the current Single National Curriculum (SNC), the newest edition is shown first with its year clearly tagged.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

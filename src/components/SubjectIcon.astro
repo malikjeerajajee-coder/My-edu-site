@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+interface Props { subject: string; size?: 'xs' | 'sm' | 'md'; class?: string; }
+const { subject, size = 'sm', class: className = '' } = Astro.props;
+
+const key = subject.toLowerCase().replace(/\(.*?\)/g, '').replace(/[^a-z\s]/g, '').trim();
+
+const MAP: Record<string, string> = {
+  'english': 'feather', 'urdu': 'pen-tool', 'sindhi': 'pen-tool', 'punjabi': 'pen-tool',
+  'farsi': 'pen-tool', 'arabic': 'languages', 'salees urdu': 'pen-tool', 'gulzar e urdu': 'pen-tool',
+  'physics': 'atom', 'chemistry': 'flask', 'biology': 'leaf',
+  'general science': 'microscope', 'science': 'microscope', 'bio tech': 'leaf',
+  'mathematics': 'sigma', 'math': 'sigma', 'riazi': 'sigma', 'statistics': 'bar-chart',
+  'general mathematics': 'sigma', 'geography': 'map', 'history': 'scroll',
+  'islamiat': 'star', 'islamiyat': 'star', 'islamic studies': 'star',
+  'pakistan studies': 'map', 'pak study': 'map', 'mutala e pakistan': 'map',
+  'civics': 'landmark', 'economics': 'trending-up', 'psychology': 'brain', 'nafsiyat': 'brain',
+  'education': 'graduation-cap', 'ilm ul taleem': 'graduation-cap',
+  'tarjuma tul quran': 'book', 'translation quran': 'book', 'tarjuma tul quran majeed': 'book',
+  'nazra quran': 'book', 'akhlaqiat': 'heart', 'mazhabi taleemat': 'heart',
+  'religious studies': 'heart', 'buddhism': 'heart', 'sikhism': 'heart',
+  'sanatan dharam': 'heart', 'zoroastrian religion': 'heart', 'mashi taleem': 'heart',
+  'computer science': 'cpu', 'computer': 'cpu', 'computer education': 'cpu',
+  'computer ki taleem': 'cpu', 'computer ji taleem': 'cpu', 'ict': 'cpu',
+  'health physical education': 'activity', 'home economics': 'home',
+  'art drawing': 'palette', 'general knowledge': 'lightbulb',
+  'waqfiyat e aama': 'lightbulb', 'muasharti uloom': 'globe', 'social studies': 'globe',
+};
+const glyph = MAP[key] || 'book';
+
+const sizes = {
+  xs: { box: 26, icon: 13, radius: 6 },
+  sm: { box: 32, icon: 15, radius: 8 },
+  md: { box: 40, icon: 18, radius: 9 },
+}[size];
+---
+<span
+  class={className}
+  style={`display:inline-grid;place-items:center;width:${sizes.box}px;height:${sizes.box}px;border-radius:${sizes.radius}px;background:#f1f5f9;color:#475569;flex-shrink:0;`}
+  aria-hidden="true"
+>
+  <Icon name={glyph} size={sizes.icon} strokeWidth={2.1} />
+</span>

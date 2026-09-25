@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import { url } from '../../../lib/url';
+import { boardMeta, bookSubjectName } from '../../../lib/bookSeo';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const books = await getCollection('books');
+  const boards = new Set<string>();
+  books.forEach((b: any) => (b.data.boards || []).forEach((x: string) => boards.add(x)));
+  return [...boards].map(b => ({ params: { board: b.toLowerCase() } }));
+}
+
+const { board: boardSlug } = Astro.params;
+const allBooks = await getCollection('books');
+const boardName = [...new Set(allBooks.flatMap((b: any) => b.data.boards || []))]
+  .find(n => n.toLowerCase() === boardSlug);
+if (!boardName) return Astro.redirect('/books');
+
+const meta = boardMeta(boardName);
+const books = allBooks.filter((b: any) => (b.data.boards || []).includes(boardName));
+
+interface Row { cls: string; books: number; subjects: number; }
+const map = new Map<string, { books: number; subjs: Set<string> }>();
+books.forEach((b: any) => {
+  const c = String(b.data.class);
+  if (!map.has(c)) map.set(c, { books: 0, subjs: new Set() });
+  const m = map.get(c)!;
+  m.books++;
+  m.subjs.add(bookSubjectName(b.data.subject));
+});
+const classes: Row[] = [...map.entries()]
+  .map(([cls, v]) => ({ cls, books: v.books, subjects: v.subjs.size }))
+  .sort((a, b) => Number(a.cls) - Number(b.cls));
+
+const totalSubjects = new Set(books.map((b: any) => bookSubjectName(b.data.subject))).size;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${boardName} Textbooks — Class 1 to 12`,
+  description: `Complete library of ${boardName} textbooks (${meta.abbreviation}). ${books.length} books for classes 1–12.`,
+};
+---
+<BaseLayout
+  title={`${boardName} Textbooks — Class 1 to 12 Free PDF | ${meta.abbreviation} | Parhayi`}
+  description={`Download all ${boardName} textbooks free. ${books.length} books across ${classes.length} classes and ${totalSubjects} subjects.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-14 sm:px-7 lg:px-10 lg:pt-12 lg:pb-16">
+      <nav class="mb-8 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/books')} class="hover:text-[#1d4ed8]">Textbooks</a>
+        <span>/</span>
+        <span class="text-slate-500">{boardName}</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
+        {boardName} Textbooks
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-relaxed text-slate-600">
+        Every {boardName} textbook from Class 1 through Class 12 — {books.length} books across {totalSubjects} subjects.
+      </p>
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Books</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{books.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Classes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{classes.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Subjects</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalSubjects}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your class</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Each class has its own set of subject textbooks.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3 lg:grid-cols-4">
+      {classes.map(c => (
+        <a href={url(`/books/${boardSlug}/class-${c.cls}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+          <span class="font-display text-4xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
+            {c.cls.padStart(2, '0')}
+          </span>
+          <div class="mt-6 text-[13px] font-bold text-slate-900">Class {c.cls}</div>
+          <div class="mt-0.5 text-[12px] text-slate-500">
+            {c.subjects} {c.subjects === 1 ? 'subject' : 'subjects'}
+          </div>
+          <div class="mt-4 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+            Open
+            <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>About {boardName} textbooks</h2>
+        <p>{meta.description}</p>
+        <h3>What's included</h3>
+        <ul>
+          <li><strong>{classes.length} classes</strong> — every year from Class {classes[0].cls} through Class {classes[classes.length - 1].cls}</li>
+          <li><strong>{totalSubjects} subjects</strong> — Mathematics, English, Urdu, Islamiat, and every other subject published by the board</li>
+          <li><strong>Free PDF downloads</strong> — no sign-up, no paywall, no ads</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
