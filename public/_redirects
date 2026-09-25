@@ -1,0 +1,3 @@
+# Cloudflare redirects
+# Old GitHub Pages URL patterns → new root
+/My-edu-site/* /:splat 301
