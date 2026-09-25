@@ -2,6 +2,8 @@
 title: "Chemistry — Chapter 1: Chemical Equilibrium"
 subject: "Chemistry"
 class: "10"
+chapter: "Chemical Equilibrium"
+chapterNumber: 1
 board: "Punjab"
 pdfUrl: "/pdfs/chemistry-10-ch1.pdf"
 date: 2026-01-15

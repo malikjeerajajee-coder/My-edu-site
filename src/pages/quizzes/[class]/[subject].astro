@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import SubjectIcon from '../../../components/SubjectIcon.astro';
+import { url } from '../../../lib/url';
+import { getCollection } from 'astro:content';
+import { quizSubjectName, subjectSlug, estimatedMinutes } from '../../../lib/quizMeta';
+
+export async function getStaticPaths() {
+  const quizzes = await getCollection('quizzes');
+  const paths: any[] = [];
+  const seen = new Set<string>();
+  quizzes.forEach((q: any) => {
+    const cls = String(q.data.class);
+    const subj = subjectSlug(quizSubjectName(q.data.subject));
+    const key = `${cls}/${subj}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      paths.push({ params: { class: `class-${cls}`, subject: subj } });
+    }
+  });
+  return paths;
+}
+
+const { class: classParam, subject: subjectParam } = Astro.params;
+const cls = String(classParam).replace(/^class-/, '');
+const allQuizzes = await getCollection('quizzes');
+
+const quizzes = allQuizzes.filter((q: any) =>
+  String(q.data.class) === cls && subjectSlug(quizSubjectName(q.data.subject)) === subjectParam
+);
+
+if (!quizzes.length) return Astro.redirect(`/quizzes/class-${cls}`);
+
+const subjectName = quizSubjectName(quizzes[0].data.subject);
+const totalQuestions = quizzes.reduce((n: number, q: any) => n + (q.data.questions?.length || 0), 0);
+const totalMinutes = quizzes.reduce((n: number, q: any) => n + estimatedMinutes(q), 0);
+
+// Group by chapter
+const byChapter = new Map<number, { chapter: string; quizzes: typeof quizzes }>();
+quizzes.forEach((q: any) => {
+  const num = q.data.chapterNumber;
+  if (!byChapter.has(num)) byChapter.set(num, { chapter: q.data.chapter, quizzes: [] });
+  byChapter.get(num)!.quizzes.push(q);
+});
+const chapters = [...byChapter.entries()]
+  .map(([num, v]) => ({ num, chapter: v.chapter, quizzes: v.quizzes }))
+  .sort((a, b) => a.num - b.num);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Class ${cls} ${subjectName} Quizzes — Chapter-wise MCQs`,
+  description: `${quizzes.length} interactive chapter-wise quizzes for Class ${cls} ${subjectName}. ${totalQuestions} questions with instant feedback.`,
+};
+---
+<BaseLayout
+  title={`Class ${cls} ${subjectName} Quizzes — Chapter-wise MCQs | Parhayi`}
+  description={`Free ${subjectName} MCQ quizzes for Class ${cls}, organised chapter by chapter. ${quizzes.length} quizzes, ${totalQuestions} questions.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-14 sm:px-7 lg:px-10 lg:pt-12 lg:pb-16">
+      <nav class="mb-8 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/quizzes')} class="hover:text-[#1d4ed8]">Quizzes</a>
+        <span>/</span>
+        <a href={url(`/quizzes/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
+        <span>/</span>
+        <span class="text-slate-500">{subjectName}</span>
+      </nav>
+      <div class="flex items-start gap-4">
+        <SubjectIcon subject={subjectName} size="md" />
+        <div>
+          <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
+            {subjectName}
+          </h1>
+          <p class="mt-2 text-sm text-slate-500">
+            Class {cls} · {chapters.length} {chapters.length === 1 ? 'chapter' : 'chapters'} · {totalQuestions} questions · ~{totalMinutes} min total
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Quizzes by chapter</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Pick any chapter to take its quiz.</p>
+    </div>
+
+    <div class="space-y-10">
+      {chapters.map(ch => (
+        <div>
+          <div class="mb-4 flex items-baseline gap-3">
+            <span class="font-display text-sm font-extrabold uppercase tracking-[0.1em] text-slate-400">
+              Chapter {ch.num}
+            </span>
+            <h3 class="font-display text-lg font-extrabold leading-snug tracking-tight text-slate-900">
+              {ch.chapter}
+            </h3>
+          </div>
+
+          <div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2">
+            {ch.quizzes.map((q: any) => {
+              const n = q.data.questions?.length || 0;
+              const mins = estimatedMinutes(q);
+              return (
+                <a href={url(`/quiz/${q.id}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+                  <h4 class="font-display text-[16px] font-extrabold leading-snug tracking-tight text-slate-900">
+                    {q.data.title}
+                  </h4>
+                  <p class="mt-2 text-[13px] text-slate-500">
+                    {n} {n === 1 ? 'question' : 'questions'} · ~{mins} min
+                  </p>
+                  <div class="mt-5 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+                    Start quiz
+                    <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>About these {subjectName} quizzes</h2>
+        <p>Each quiz covers one specific chapter from the Class {cls} {subjectName} syllabus. They're structured to match the board exam — same topics, same difficulty, same style of questions.</p>
+        <h3>How to use them</h3>
+        <ul>
+          <li><strong>After finishing a chapter</strong> — take that chapter's quiz to check your understanding</li>
+          <li><strong>Before an exam</strong> — go through every chapter to find what still needs revision</li>
+          <li><strong>Weekly</strong> — retake the quizzes you got wrong last time</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -2,6 +2,8 @@
 title: "Physics Class 9 — Chapter 1 Quiz"
 subject: "Physics"
 class: "9"
+chapter: "Physical Quantities & Measurement"
+chapterNumber: 1
 questions:
   - question: "Which is a base quantity?"
     options: ["Speed", "Force", "Length", "Pressure"]

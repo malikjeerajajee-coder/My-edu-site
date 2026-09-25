@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import SubjectIcon from '../../components/SubjectIcon.astro';
+import { url } from '../../lib/url';
+import { getCollection, render } from 'astro:content';
+import { noteSubjectName, subjectSlug, estimatedReadMinutes, isChaptered } from '../../lib/noteMeta';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  return notes.map((note: any) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const d = note.data;
+const { Content } = await render(note);
+const subj = noteSubjectName(d.subject);
+const subjSlug = subjectSlug(subj);
+const cls = String(d.class);
+const mins = estimatedReadMinutes(note);
+
+// Related notes: same subject+class, other chapters/notes
+const allNotes = await getCollection('notes');
+const siblings = allNotes
+  .filter((n: any) =>
+    n.id !== note.id &&
+    String(n.data.class) === cls &&
+    subjectSlug(noteSubjectName(n.data.subject)) === subjSlug
+  )
+  .sort((a: any, b: any) => (a.data.chapterNumber || 999) - (b.data.chapterNumber || 999));
+
+// Related quizzes for same subject+class
+const quizzes = await getCollection('quizzes');
+const relatedQuizzes = quizzes
+  .filter((q: any) =>
+    String(q.data.class) === cls && subjectSlug(noteSubjectName(q.data.subject)) === subjSlug
+  )
+  .slice(0, 4);
+
+const pageTitle = isChaptered(note)
+  ? `${d.chapter || d.title} — Class ${cls} ${subj} Notes | Parhayi`
+  : `${d.title} — Class ${cls} ${subj} | Parhayi`;
+
+const description = isChaptered(note)
+  ? `Free chapter-wise notes for ${d.chapter || d.title} — Class ${cls} ${subj}. Key definitions, formulas and worked examples.`
+  : `Free study notes for ${d.title} — Class ${cls} ${subj}.`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/' },
+      { '@type': 'ListItem', position: 2, name: 'Notes', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/notes/' },
+      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://malikjeerajajee-coder.github.io/My-edu-site/notes/class-${cls}/` },
+      { '@type': 'ListItem', position: 4, name: subj, item: `https://malikjeerajajee-coder.github.io/My-edu-site/notes/class-${cls}/${subjSlug}/` },
+      { '@type': 'ListItem', position: 5, name: d.title },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: d.title,
+    about: d.chapter || subj,
+    educationalLevel: `Class ${cls}`,
+    inLanguage: 'en',
+    publisher: { '@type': 'Organization', name: 'Parhayi' },
+    mainEntityOfPage: `https://malikjeerajajee-coder.github.io/My-edu-site/note/${note.id}/`,
+  },
+];
+---
+<BaseLayout title={pageTitle} description={description} jsonLd={jsonLd}>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[820px] px-5 pt-8 pb-10 sm:px-7 lg:px-10 lg:pt-10 lg:pb-12">
+      <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/notes')} class="hover:text-[#1d4ed8]">Notes</a>
+        <span>/</span>
+        <a href={url(`/notes/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
+        <span>/</span>
+        <a href={url(`/notes/class-${cls}/${subjSlug}`)} class="hover:text-[#1d4ed8]">{subj}</a>
+      </nav>
+
+      <div class="flex items-start gap-4">
+        <SubjectIcon subject={subj} size="md" />
+        <div class="min-w-0 flex-1">
+          {isChaptered(note) && (
+            <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+              Class {cls} · Chapter {d.chapterNumber}
+            </div>
+          )}
+          <h1 class="mt-2 font-display text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+            {d.chapter || d.title}
+          </h1>
+          <p class="mt-2 text-sm text-slate-500">
+            {subj} · Class {cls} · {mins} min read
+          </p>
+        </div>
+      </div>
+
+      {d.pdfUrl && (
+        <a href={d.pdfUrl} target="_blank" rel="noopener"
+           class="mt-7 inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition-colors hover:border-slate-400">
+          <Icon name="download" size={16} strokeWidth={2.4} /> Download PDF version
+        </a>
+      )}
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-[820px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+
+  {relatedQuizzes.length > 0 && (
+    <section class="border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto max-w-[820px] px-5 py-14 sm:px-7 lg:px-10">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Test yourself</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Practice MCQs for the same subject and class.</p>
+        <div class="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2">
+          {relatedQuizzes.map((q: any) => {
+            const n = q.data.questions?.length || 0;
+            return (
+              <a href={url(`/quiz/${q.id}`)} class="group relative flex flex-col bg-white p-5 transition-colors hover:bg-slate-50">
+                <h3 class="font-display text-[15px] font-extrabold leading-snug tracking-tight text-slate-900">
+                  {q.data.title}
+                </h3>
+                <p class="mt-2 text-[12px] text-slate-500">
+                  {n} {n === 1 ? 'question' : 'questions'}
+                </p>
+                <div class="mt-4 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+                  Start quiz
+                  <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {siblings.length > 0 && (
+    <section class="border-t border-slate-200 bg-white">
+      <div class="mx-auto max-w-[820px] px-5 py-14 sm:px-7 lg:px-10">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">More {subj} notes</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Other chapters from Class {cls} {subj}.</p>
+        <ul class="mt-6 divide-y divide-slate-200 border-y border-slate-200">
+          {siblings.map((n: any) => (
+            <li>
+              <a href={url(`/note/${n.id}`)} class="group flex items-center gap-3 py-4 transition-colors hover:bg-slate-50">
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm font-bold text-slate-900">
+                    {n.data.chapter || n.data.title}
+                  </span>
+                  {n.data.chapterNumber && (
+                    <span class="block mt-0.5 text-[12px] text-slate-500">Chapter {n.data.chapterNumber}</span>
+                  )}
+                </span>
+                <Icon name="arrow-right" size={14} strokeWidth={2.4} class="shrink-0 text-slate-300 group-hover:text-[#1d4ed8]" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <div class="mx-auto max-w-[820px] px-5 pb-16 pt-8 sm:px-7 lg:px-10">
+    <a href={url(`/notes/class-${cls}/${subjSlug}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-[#1d4ed8]">
+      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to {subj} notes
+    </a>
+  </div>
+</BaseLayout>

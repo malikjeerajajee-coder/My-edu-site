@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import QuizPlayer from '../../components/QuizPlayer.astro';
+import SubjectIcon from '../../components/SubjectIcon.astro';
+import { url } from '../../lib/url';
+import { getCollection, render } from 'astro:content';
+import { quizSubjectName, subjectSlug, estimatedMinutes } from '../../lib/quizMeta';
+
+export async function getStaticPaths() {
+  const quizzes = await getCollection('quizzes');
+  return quizzes.map((quiz: any) => ({ params: { slug: quiz.id }, props: { quiz } }));
+}
+
+const { quiz } = Astro.props;
+const d = quiz.data;
+const { Content } = await render(quiz);
+const subj = quizSubjectName(d.subject);
+const subjSlug = subjectSlug(subj);
+const cls = String(d.class);
+const n = d.questions?.length || 0;
+const mins = estimatedMinutes(quiz);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/' },
+      { '@type': 'ListItem', position: 2, name: 'Quizzes', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/quizzes/' },
+      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://malikjeerajajee-coder.github.io/My-edu-site/quizzes/class-${cls}/` },
+      { '@type': 'ListItem', position: 4, name: subj, item: `https://malikjeerajajee-coder.github.io/My-edu-site/quizzes/class-${cls}/${subjSlug}/` },
+      { '@type': 'ListItem', position: 5, name: d.title },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Quiz',
+    name: d.title,
+    about: { '@type': 'Thing', name: d.chapter },
+    educationalLevel: `Class ${cls}`,
+    learningResourceType: 'Quiz',
+    educationalAlignment: {
+      '@type': 'AlignmentObject',
+      alignmentType: 'educationalSubject',
+      targetName: subj,
+    },
+  },
+];
+---
+<BaseLayout
+  title={`${d.title} — ${subj} Class ${cls} Chapter ${d.chapterNumber} | Parhayi`}
+  description={`Take the free ${d.title} — ${n} MCQs with instant feedback. Class ${cls} ${subj}, Chapter ${d.chapterNumber}: ${d.chapter}.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[900px] px-5 pt-8 pb-10 sm:px-7 lg:px-10 lg:pt-10 lg:pb-12">
+      <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/quizzes')} class="hover:text-[#1d4ed8]">Quizzes</a>
+        <span>/</span>
+        <a href={url(`/quizzes/class-${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
+        <span>/</span>
+        <a href={url(`/quizzes/class-${cls}/${subjSlug}`)} class="hover:text-[#1d4ed8]">{subj}</a>
+      </nav>
+
+      <div class="flex items-start gap-4">
+        <SubjectIcon subject={subj} size="md" />
+        <div class="min-w-0 flex-1">
+          <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+            Class {cls} · Chapter {d.chapterNumber}
+          </div>
+          <h1 class="mt-2 font-display text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+            {d.title}
+          </h1>
+          <p class="mt-2 text-sm text-slate-500">
+            {d.chapter} · {n} {n === 1 ? 'question' : 'questions'} · ~{mins} min
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-[900px] px-5 py-10 sm:px-7 lg:px-10 lg:py-12">
+    <QuizPlayer questions={d.questions} title={d.title} />
+  </div>
+
+  {Content && (
+    <div class="mx-auto max-w-[820px] px-5 pb-16 sm:px-7 lg:px-10">
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
+  )}
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[820px] px-5 py-14 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Tips for this quiz</h2>
+        <ul>
+          <li>Read every option before choosing — the trickiest MCQs have two similar answers</li>
+          <li>Pay attention to <em>why</em> you got a question wrong — that's where learning happens</li>
+          <li>Retake the quiz a day later — that's when the material really sticks</li>
+          <li>On desktop, use keys A/B/C/D or 1/2/3/4 to answer faster</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-[900px] px-5 pb-16 pt-8 sm:px-7 lg:px-10">
+    <a href={url(`/quizzes/class-${cls}/${subjSlug}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-[#1d4ed8]">
+      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to {subj} quizzes
+    </a>
+  </div>
+</BaseLayout>

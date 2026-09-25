@@ -7,6 +7,8 @@ const notes = defineCollection({
     title: z.string(),
     subject: z.string(),
     class: z.string(),
+    chapter: z.string().optional(),
+    chapterNumber: z.number().optional(),
     board: z.string().optional(),
     boards: z.array(z.string()).optional(),
     pdfUrl: z.string().optional(),
@@ -20,6 +22,8 @@ const quizzes = defineCollection({
     title: z.string(),
     subject: z.string(),
     class: z.string(),
+    chapter: z.string(),
+    chapterNumber: z.number(),
     board: z.string().optional(),
     boards: z.array(z.string()).optional(),
     questions: z.array(z.object({

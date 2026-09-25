@@ -153,7 +153,7 @@ const jsonLd = [
             <h3 class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Notes</h3>
             <ul class="mt-3 divide-y divide-slate-200 border-y border-slate-200 bg-white">
               {relatedNotes.map((n: any) => (
-                <li><a href={url(`/notes/${n.id}`)} class="group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-slate-50">
+                <li><a href={url(`/note/${n.id}`)} class="group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-slate-50">
                   <span class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">{n.data.title}</span>
                   <Icon name="arrow-right" size={14} strokeWidth={2.4} class="shrink-0 text-slate-300 group-hover:text-[#1d4ed8]" />
                 </a></li>
@@ -167,7 +167,7 @@ const jsonLd = [
             <h3 class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Quizzes</h3>
             <ul class="mt-3 divide-y divide-slate-200 border-y border-slate-200 bg-white">
               {relatedQuizzes.map((q: any) => (
-                <li><a href={url(`/quizzes/${q.id}`)} class="group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-slate-50">
+                <li><a href={url(`/quiz/${q.id}`)} class="group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-slate-50">
                   <span class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">{q.data.title}</span>
                   <span class="shrink-0 text-[11px] font-bold uppercase tracking-wide text-slate-400">{q.data.questions?.length || 0} MCQs</span>
                   <Icon name="arrow-right" size={14} strokeWidth={2.4} class="shrink-0 text-slate-300 group-hover:text-[#1d4ed8]" />

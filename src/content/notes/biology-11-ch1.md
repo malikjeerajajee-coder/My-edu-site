@@ -2,6 +2,8 @@
 title: "Biology — Chapter 1: Cell Biology"
 subject: "Biology"
 class: "11"
+chapter: "Cell Biology"
+chapterNumber: 1
 board: "Federal"
 pdfUrl: "/pdfs/biology-11-ch1.pdf"
 date: 2026-01-15

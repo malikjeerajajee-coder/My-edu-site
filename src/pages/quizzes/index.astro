@@ -1,83 +1,122 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import PageFilter from '../../components/PageFilter.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
+import { quizSubjectName } from '../../lib/quizMeta';
 
 const quizzes = await getCollection('quizzes');
-const CLASS_ORDER = ['9','10','11','12'];
 
-const byClass = new Map<string, any[]>();
+const byClass = new Map<string, { count: number; subjects: Set<string>; questions: number }>();
 quizzes.forEach((q: any) => {
-  const cls = q.data.class;
-  if (!byClass.has(cls)) byClass.set(cls, []);
-  byClass.get(cls)!.push(q);
+  const c = String(q.data.class);
+  if (!byClass.has(c)) byClass.set(c, { count: 0, subjects: new Set(), questions: 0 });
+  const entry = byClass.get(c)!;
+  entry.count++;
+  entry.subjects.add(quizSubjectName(q.data.subject));
+  entry.questions += q.data.questions?.length || 0;
 });
+const classes = [...byClass.entries()]
+  .map(([cls, v]) => ({ cls, count: v.count, subjects: v.subjects.size, questions: v.questions }))
+  .sort((a, b) => Number(a.cls) - Number(b.cls));
 
-const sortedClasses = [...byClass.keys()].sort((a, b) => {
-  const ai = CLASS_ORDER.indexOf(a), bi = CLASS_ORDER.indexOf(b);
-  if (ai === -1 && bi === -1) return Number(a) - Number(b);
-  if (ai === -1) return 1;
-  if (bi === -1) return -1;
-  return ai - bi;
-});
-sortedClasses.forEach(cls => {
-  byClass.get(cls)!.sort((a: any, b: any) => a.data.title.localeCompare(b.data.title));
-});
+const totalQuestions = quizzes.reduce((n: number, q: any) => n + (q.data.questions?.length || 0), 0);
+const totalSubjects = new Set(quizzes.map((q: any) => quizSubjectName(q.data.subject))).size;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Chapter-wise Practice Quizzes — Pakistani Board Students',
+  description: `Interactive MCQ quizzes organised by class, subject and chapter. ${quizzes.length} quizzes, ${totalQuestions} questions, instant feedback.`,
+};
 ---
-<BaseLayout title="Quizzes — Parhayi" description="Interactive MCQ quizzes for Pakistani students. Instant feedback, free, Class 9 to 12.">
-  <div class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
-      <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+<BaseLayout
+  title="Chapter-wise Practice Quizzes — Class 9 to 12 MCQs | Parhayi"
+  description={`Interactive MCQ quizzes organised by class, subject and chapter. ${quizzes.length} quizzes, ${totalQuestions} questions — instant feedback, no sign-up.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-12 pb-14 sm:px-7 lg:px-10 lg:pt-16 lg:pb-20">
+      <nav class="mb-8 flex items-center gap-2 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <span class="text-slate-500">Quizzes</span>
       </nav>
-      <div class="max-w-2xl">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">Quizzes</h1>
-        <p class="mt-3 text-base leading-relaxed text-slate-600">
-          {quizzes.length} interactive MCQ {quizzes.length === 1 ? 'quiz' : 'quizzes'} with instant feedback.
-        </p>
+      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Chapter-wise quizzes.
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Interactive MCQ quizzes organised by class, subject and chapter — matching exactly what appears in your board exam.
+      </p>
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Quizzes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{quizzes.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Questions</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalQuestions}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Subjects</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalSubjects}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your class</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Every class has its own chapter-wise quizzes.</p>
+    </div>
+
+    {classes.length === 0 ? (
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <p class="text-sm font-bold text-slate-900">Quizzes coming soon</p>
+        <p class="mt-1 text-xs text-slate-500">We're building chapter-wise MCQ quizzes for every class and subject.</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3 lg:grid-cols-4">
+        {classes.map(c => (
+          <a href={url(`/quizzes/class-${c.cls}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+            <span class="font-display text-4xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
+              {c.cls.padStart(2, '0')}
+            </span>
+            <div class="mt-6 text-[13px] font-bold text-slate-900">Class {c.cls}</div>
+            <div class="mt-0.5 text-[12px] text-slate-500">
+              {c.subjects} {c.subjects === 1 ? 'subject' : 'subjects'} · {c.questions} questions
+            </div>
+            <div class="mt-4 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+              Open
+              <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Why chapter-wise quizzes work</h2>
+        <p>Reading notes gets you ready. Testing yourself is what makes it stick. But a general "Physics quiz" barely helps — you need to know <em>which chapters</em> you've actually mastered, and which still trip you up.</p>
+        <p>Every quiz on Parhayi is tied to one specific chapter within one specific subject and class. That's how the board exams are structured, and that's how you should test yourself.</p>
+        <h3>How to use these quizzes</h3>
+        <ul>
+          <li><strong>After studying a chapter</strong> — take the quiz to see if you've really understood it</li>
+          <li><strong>Before an exam</strong> — go through each chapter's quiz to find your weak spots</li>
+          <li><strong>Spaced repetition</strong> — retake quizzes a week later to lock in the material</li>
+        </ul>
+        <h3>What to expect</h3>
+        <ul>
+          <li>One question at a time — no overwhelming wall of MCQs</li>
+          <li>Instant feedback after each choice</li>
+          <li>A running score and a final percentage</li>
+          <li>Restart any quiz as many times as you like</li>
+        </ul>
       </div>
     </div>
-  </div>
-
-  <div class="mx-auto max-w-[1200px] px-5 py-8 sm:px-7 lg:px-10 lg:py-10">
-<PageFilter placeholder="Search quizzes — subject, class or keyword…" filters={[{ label: 'Class', key: 'class', options: sortedClasses }]} />
-
-    <div id="quiz-list" class="space-y-10">
-      {sortedClasses.map(cls => {
-        const items = byClass.get(cls)!;
-        return (
-          <section data-class={cls} data-filter-section>
-            <div class="mb-4 flex items-end justify-between gap-4">
-              <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Class {cls}</h2>
-              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                {items.length} {items.length === 1 ? 'quiz' : 'quizzes'}
-              </span>
-            </div>
-            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {items.map((q: any) => (
-                <a href={url(`/quizzes/${q.id}`)} class="row group" data-filterable data-search={`${q.data.title} ${q.data.subject} ${cls}`} data-class={cls}>
-                  <span class="tile">
-                    <Icon name="circle-help" size={18} strokeWidth={2.2} />
-                  </span>
-                  <div class="min-w-0 flex-1">
-                    <div class="row-title">{q.data.title}</div>
-                    <div class="mt-1 flex flex-wrap gap-1.5">
-                      <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{q.data.subject}</span>
-                      <span class="inline-flex items-center rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1d4ed8]">{q.data.questions.length} questions</span>
-                    </div>
-                  </div>
-                  <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-                </a>
-              ))}
-            </div>
-          </section>
-        );
-      })}
-    </div>
-  </div>
-
-  </BaseLayout>
+  </section>
+</BaseLayout>

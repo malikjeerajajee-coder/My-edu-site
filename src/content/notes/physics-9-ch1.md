@@ -2,6 +2,8 @@
 title: "Physics — Chapter 1: Physical Quantities & Measurement"
 subject: "Physics"
 class: "9"
+chapter: "Physical Quantities & Measurement"
+chapterNumber: 1
 board: "Federal"
 pdfUrl: "/pdfs/physics-9-ch1.pdf"
 date: 2026-01-15

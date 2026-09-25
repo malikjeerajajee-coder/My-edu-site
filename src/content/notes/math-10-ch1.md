@@ -2,6 +2,8 @@
 title: "Math — Chapter 1: Quadratic Equations"
 subject: "Mathematics"
 class: "10"
+chapter: "Quadratic Equations"
+chapterNumber: 1
 board: "Punjab"
 pdfUrl: "/pdfs/math-10-ch1.pdf"
 date: 2026-01-15

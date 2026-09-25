@@ -40,7 +40,7 @@ export async function GET() {
       id: `quiz:${q.id}`,
       type: 'quiz' as const,
       title: q.data.title,
-      url: `${base}/quizzes/${q.id}/`,
+      url: `${base}/quiz/${q.id}/`,
       subject: q.data.subject,
       class: q.data.class,
     })),

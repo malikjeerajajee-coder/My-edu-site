@@ -1,82 +1,120 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import PageFilter from '../../components/PageFilter.astro';
 import { url } from '../../lib/url';
 import { getCollection } from 'astro:content';
+import { noteSubjectName } from '../../lib/noteMeta';
 
 const notes = await getCollection('notes');
-const CLASS_ORDER = ['9','10','11','12'];
 
-const byClass = new Map<string, any[]>();
+const byClass = new Map<string, { count: number; subjects: Set<string> }>();
 notes.forEach((n: any) => {
-  const cls = n.data.class;
-  if (!byClass.has(cls)) byClass.set(cls, []);
-  byClass.get(cls)!.push(n);
+  const c = String(n.data.class);
+  if (!byClass.has(c)) byClass.set(c, { count: 0, subjects: new Set() });
+  const entry = byClass.get(c)!;
+  entry.count++;
+  entry.subjects.add(noteSubjectName(n.data.subject));
 });
+const classes = [...byClass.entries()]
+  .map(([cls, v]) => ({ cls, count: v.count, subjects: v.subjects.size }))
+  .sort((a, b) => Number(a.cls) - Number(b.cls));
 
-const sortedClasses = [...byClass.keys()].sort((a, b) => {
-  const ai = CLASS_ORDER.indexOf(a), bi = CLASS_ORDER.indexOf(b);
-  if (ai === -1 && bi === -1) return Number(a) - Number(b);
-  if (ai === -1) return 1;
-  if (bi === -1) return -1;
-  return ai - bi;
-});
-sortedClasses.forEach(cls => {
-  byClass.get(cls)!.sort((a: any, b: any) => a.data.title.localeCompare(b.data.title));
-});
+const totalSubjects = new Set(notes.map((n: any) => noteSubjectName(n.data.subject))).size;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Study Notes for Pakistani Students',
+  description: `Subject-wise chapter notes for Class 9 to 12. ${notes.length} notes across ${totalSubjects} subjects.`,
+};
 ---
-<BaseLayout title="Notes — Parhayi" description="Chapter-wise notes for Pakistani students across all boards. Free download, Class 9 to 12.">
-  <div class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
-      <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+<BaseLayout
+  title="Study Notes — Class 9 to 12 Chapter Notes | Parhayi"
+  description={`Free chapter-wise study notes for Pakistani board students. ${notes.length} notes across ${totalSubjects} subjects, all boards.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-12 pb-14 sm:px-7 lg:px-10 lg:pt-16 lg:pb-20">
+      <nav class="mb-8 flex items-center gap-2 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <span class="text-slate-500">Notes</span>
       </nav>
-      <div class="max-w-2xl">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">Notes</h1>
-        <p class="mt-3 text-base leading-relaxed text-slate-600">
-          {notes.length} chapter-wise notes across Class 9 to 12.
-        </p>
+      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Chapter notes, written for your board.
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Clear, focused chapter notes for Pakistani board students — organised by class and subject.
+      </p>
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Notes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{notes.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Classes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{classes.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Subjects</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalSubjects}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your class</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Every class has notes for each subject.</p>
+    </div>
+
+    {classes.length === 0 ? (
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <p class="text-sm font-bold text-slate-900">Notes coming soon</p>
+        <p class="mt-1 text-xs text-slate-500">We're writing notes for every subject and chapter.</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3 lg:grid-cols-4">
+        {classes.map(c => (
+          <a href={url(`/notes/class-${c.cls}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+            <span class="font-display text-4xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
+              {c.cls.padStart(2, '0')}
+            </span>
+            <div class="mt-6 text-[13px] font-bold text-slate-900">Class {c.cls}</div>
+            <div class="mt-0.5 text-[12px] text-slate-500">
+              {c.count} {c.count === 1 ? 'note' : 'notes'} · {c.subjects} {c.subjects === 1 ? 'subject' : 'subjects'}
+            </div>
+            <div class="mt-4 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+              Open
+              <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Notes that actually help</h2>
+        <p>Not every note is useful. A wall of text copy-pasted from a textbook doesn't teach you anything. What works is a short, clear summary of each chapter's key ideas — the definitions, the formulas, the concepts that exams actually test.</p>
+        <p>Every note on Parhayi is written for one specific chapter, in one specific subject, for one specific class. That's how the board exams are structured, and that's how you should revise.</p>
+        <h3>How to use these notes</h3>
+        <ul>
+          <li><strong>Before class</strong> — skim the chapter's note to know what you're about to learn</li>
+          <li><strong>After class</strong> — read the note properly to lock in the concepts</li>
+          <li><strong>Before exams</strong> — use the notes as a quick-revision checklist for every chapter</li>
+        </ul>
+        <h3>What each note includes</h3>
+        <ul>
+          <li>The key definitions and concepts from the chapter</li>
+          <li>Important formulas and their derivations</li>
+          <li>Worked examples of the most common question types</li>
+          <li>Common mistakes students make (and how to avoid them)</li>
+        </ul>
       </div>
     </div>
-  </div>
-
-  <div class="mx-auto max-w-[1200px] px-5 py-8 sm:px-7 lg:px-10 lg:py-10">
-<PageFilter placeholder="Search notes — subject, chapter or class…" filters={[{ label: 'Class', key: 'class', options: sortedClasses }]} />
-
-    <div id="note-list" class="space-y-10">
-      {sortedClasses.map(cls => {
-        const items = byClass.get(cls)!;
-        return (
-          <section data-class={cls} data-filter-section>
-            <div class="mb-4 flex items-end justify-between gap-4">
-              <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Class {cls}</h2>
-              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                {items.length} {items.length === 1 ? 'note' : 'notes'}
-              </span>
-            </div>
-            <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {items.map((n: any) => (
-                <a href={url(`/notes/${n.id}`)} class="row group" data-filterable data-search={`${n.data.title} ${n.data.subject} ${cls}`} data-class={cls}>
-                  <span class="tile">
-                    <Icon name="file-text" size={18} strokeWidth={2.2} />
-                  </span>
-                  <div class="min-w-0 flex-1">
-                    <div class="row-title">{n.data.title}</div>
-                    <div class="mt-1 flex flex-wrap gap-1.5">
-                      <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{n.data.subject}</span>
-                    </div>
-                  </div>
-                  <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-                </a>
-              ))}
-            </div>
-          </section>
-        );
-      })}
-    </div>
-  </div>
-
-  </BaseLayout>
+  </section>
+</BaseLayout>

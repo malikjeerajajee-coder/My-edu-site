@@ -2,6 +2,8 @@
 title: "Math Class 10 — Chapter 1 Quiz"
 subject: "Mathematics"
 class: "10"
+chapter: "Quadratic Equations"
+chapterNumber: 1
 questions:
   - question: "What is the standard form of a quadratic equation?"
     options: ["ax + b = 0", "ax² + bx + c = 0", "ax³ + bx² + c = 0", "a/x + b = 0"]
