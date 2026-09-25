@@ -517,3 +517,108 @@ input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
   border-left: 1px solid #e5e9f0;
   border-top: 1px solid #e5e9f0;
 }
+
+/* ═══ Statement card — matches homepage board/class cards ═══ */
+.statement-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  padding: 1.5rem;
+  transition: background-color .15s ease;
+}
+.statement-card:hover {
+  background: #f8fafc;
+}
+.statement-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.statement-card-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.statement-card-desc {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.statement-card-count {
+  margin-top: 1.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--subtle);
+}
+.statement-card-arrow {
+  flex-shrink: 0;
+  margin-top: 0.375rem;
+  color: #cbd5e1;
+  transition: color .15s ease, transform .15s ease;
+}
+.statement-card:hover .statement-card-arrow {
+  color: var(--brand);
+  transform: translate(0.125rem, -0.125rem);
+}
+
+/* ═══ Number-forward card — matches homepage class cards ═══ */
+.num-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  padding: 1.5rem;
+  transition: background-color .15s ease;
+}
+.num-card:hover {
+  background: #f8fafc;
+}
+.num-card-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.num-card-label {
+  margin-top: 1.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.num-card-sub {
+  margin-top: 0.125rem;
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+.num-card-open {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--subtle);
+  transition: color .15s ease;
+}
+.num-card:hover .num-card-open {
+  color: var(--brand);
+}
+
+/* ═══ Neutralize icon tiles on statement cards ═══ */
+.tile {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}

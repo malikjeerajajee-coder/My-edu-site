@@ -2,7 +2,6 @@
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import Icon from '../../../../components/Icon.astro';
 import { url } from '../../../../lib/url';
-import { BOARDS } from '../../../../lib/boards';
 import { getClassContent, getAllClassPaths, slugify } from '../../../../lib/boardContent';
 
 export async function getStaticPaths() {
@@ -17,68 +16,78 @@ if (!data) return Astro.redirect('/boards');
 const { board, subjects, notes, quizzes, books, gazettes, pastPapers, guessPapers, pairingSchemes } = data;
 
 const sections = [
-  { slug: 'notes',           label: 'Notes',           icon: 'file-text',   count: notes.length },
-  { slug: 'past-papers',     label: 'Past Papers',     icon: 'scroll-text', count: pastPapers.length },
-  { slug: 'guess-papers',    label: 'Guess Papers',    icon: 'sparkles',    count: guessPapers.length },
-  { slug: 'pairing-schemes', label: 'Pairing Schemes', icon: 'list',        count: pairingSchemes.length },
-  { slug: 'quizzes',         label: 'Quizzes',         icon: 'circle-help', count: quizzes.length },
-  { slug: 'books',           label: 'Books',           icon: 'book-marked', count: books.length },
-  { slug: 'gazettes',        label: 'Result Gazettes', icon: 'newspaper',   count: gazettes.length },
+  { slug: 'notes',           label: 'Notes',           desc: 'Chapter-wise revision',      count: notes.length },
+  { slug: 'past-papers',     label: 'Past Papers',     desc: 'Official board exam papers', count: pastPapers.length },
+  { slug: 'guess-papers',    label: 'Guess Papers',    desc: 'Expected exam questions',    count: guessPapers.length },
+  { slug: 'pairing-schemes', label: 'Pairing Schemes', desc: 'Paper structure & marks',    count: pairingSchemes.length },
+  { slug: 'quizzes',         label: 'Quizzes',         desc: 'Interactive MCQs',           count: quizzes.length },
+  { slug: 'books',           label: 'Textbooks',       desc: 'Official board textbooks',   count: books.length },
+  { slug: 'gazettes',        label: 'Result Gazettes', desc: 'Board result documents',     count: gazettes.length },
 ].filter(s => s.count > 0);
 ---
 <BaseLayout title={`${board.name} Class ${cls} — All Subjects | Parhayi`} description={`All Class ${cls} study material for ${board.full}: notes, past papers, guess papers, quizzes and more.`}>
-  <!-- Page header -->
-  <div class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
-      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+  <div class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+      <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
         <span>/</span>
         <a href={url(`/board/${boardSlug}`)} class="hover:text-[#1d4ed8]">{board.name}</a>
         <span>/</span>
         <span class="text-slate-500">Class {cls}</span>
       </nav>
-      <div class="max-w-2xl">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">Class {cls} · {board.name}</h1>
-        <p class="mt-3 text-base text-slate-600">{subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'} · {data.total} items</p>
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        {board.name} · Class {cls}
       </div>
+      <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Class {cls}.
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        {data.total.toLocaleString()} resources across {subjects.length} subjects under {board.full}.
+      </p>
     </div>
   </div>
 
-  <!-- Browse by type -->
   {sections.length > 0 && (
-    <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
-      <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Browse by resource type</h2>
-      <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <div class="mb-8">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Browse by resource</h2>
+      </div>
+      <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {sections.map(s => (
-          <a href={url(`/board/${boardSlug}/class-${cls}/${s.slug}`)} class="row group">
-            <span class="tile"><Icon name={s.icon} size={18} strokeWidth={2.2} /></span>
-            <div class="min-w-0 flex-1">
-              <div class="row-title font-bold">{s.label}</div>
-              </div>
-            <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+          <a href={url(`/board/${boardSlug}/class-${cls}/${s.slug}`)} class="statement-card">
+            <div class="statement-card-head">
+              <h3 class="statement-card-title">{s.label}</h3>
+              <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="statement-card-arrow" />
+            </div>
+            <p class="statement-card-desc">{s.desc}</p>
+            <div class="statement-card-count">
+              {s.count.toLocaleString()} {s.count === 1 ? 'item' : 'items'}
+            </div>
           </a>
         ))}
       </div>
-    </div>
+    </section>
   )}
 
-  <!-- Browse by subject -->
   {subjects.length > 0 && (
-    <div class="border-t border-slate-200 bg-slate-50">
-      <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
-        <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Browse by subject</h2>
-        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <section class="border-t border-slate-200 bg-slate-50">
+      <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+        <div class="mb-8">
+          <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Browse by subject</h2>
+        </div>
+        <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {subjects.map(s => (
-            <a href={url(`/board/${boardSlug}/class-${cls}/${slugify(s)}`)} class="row group">
-              <span class="tile"><Icon name="library" size={18} strokeWidth={2.2} /></span>
-              <div class="min-w-0 flex-1">
-                <div class="row-title font-bold">{s}</div>
+            <a href={url(`/board/${boardSlug}/class-${cls}/${slugify(s)}`)} class="statement-card">
+              <div class="statement-card-head">
+                <h3 class="statement-card-title">{s}</h3>
+                <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="statement-card-arrow" />
               </div>
-              <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+              <p class="statement-card-desc">All {s} resources for Class {cls}</p>
             </a>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )}
 </BaseLayout>

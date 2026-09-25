@@ -52,8 +52,8 @@ const countFor = (c: string) =>
 ---
 <BaseLayout title={`${bise.name} Board — Class 9 & 10 Past Papers & Gazettes | Parhayi`} description={`Download past papers and result gazettes for ${bise.name} Board (${board.full}). Class 9 and Class 10, 2018 to 2026. Free PDFs.`}
   noindex={papers.length + gazettes.length === 0} jsonLd={biseBreadcrumbJsonLd}>
-  <div class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+  <div class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
       <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/boards')} class="hover:text-[#1d4ed8]">Boards</a>
         <span>/</span>
@@ -61,9 +61,9 @@ const countFor = (c: string) =>
         <span>/</span>
         <span class="text-slate-500">{bise.name}</span>
       </nav>
-      <div class="max-w-2xl">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">{bise.name} Board</h1>
-        <p class="mt-3 text-base text-slate-600">
+      <div class="max-w-4xl">
+        <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">{bise.name} Board</h1>
+        <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
           {board.name} · {papers.length} past papers · {gazettes.length} gazettes
         </p>
       </div>

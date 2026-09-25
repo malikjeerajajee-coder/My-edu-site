@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Icon from '../../../components/Icon.astro';
-import SubjectIcon from '../../../components/SubjectIcon.astro';
 import { url } from '../../../lib/url';
 import { boardMeta, bookSubjectName } from '../../../lib/bookSeo';
 import { getCollection } from 'astro:content';
@@ -41,23 +40,19 @@ books.sort((a: any, b: any) => {
   return a.data.subject.localeCompare(b.data.subject);
 });
 
-const subjects = [...new Set(books.map((b: any) => bookSubjectName(b.data.subject)))].sort();
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: `Class ${cls} ${boardName} Textbooks — All Subjects`,
-  description: `Download all Class ${cls} ${boardName} textbooks free. ${subjects.length} subjects available.`,
-};
+// Group by subject
+const bySubject = new Map<string, any[]>();
+books.forEach((b: any) => {
+  const subj = bookSubjectName(b.data.subject);
+  if (!bySubject.has(subj)) bySubject.set(subj, []);
+  bySubject.get(subj)!.push(b);
+});
+const subjects = [...bySubject.keys()].sort();
 ---
-<BaseLayout
-  title={`Class ${cls} ${boardName} Textbooks — All Subjects Free PDF | ${meta.abbreviation} | Parhayi`}
-  description={`Download all Class ${cls} ${boardName} textbook PDFs. ${subjects.length} subjects including ${subjects.slice(0, 4).join(', ')}. Free, no sign-up.`}
-  jsonLd={jsonLd}
->
-  <section class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
-      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+<BaseLayout title={`Class ${cls} ${boardName} Textbooks — All Subjects | Parhayi`} description={`Download all Class ${cls} ${boardName} textbook PDFs. ${subjects.length} subjects. Free, no sign-up.`}>
+  <div class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+      <nav class="mb-6 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <a href={url('/books')} class="hover:text-[#1d4ed8]">Textbooks</a>
@@ -66,63 +61,47 @@ const jsonLd = {
         <span>/</span>
         <span class="text-slate-500">Class {cls}</span>
       </nav>
-      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
-        Class {cls} · {boardName}
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        {meta.abbreviation} · Class {cls}
+      </div>
+      <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Class {cls} Textbooks.
       </h1>
-      <p class="mt-5 max-w-2xl text-base leading-relaxed text-slate-600">
-        {books.length} textbooks across {subjects.length} subjects. Every book is a free PDF download.
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        {books.length} {boardName} textbooks across {subjects.length} subjects. All free PDFs.
       </p>
     </div>
-  </section>
+  </div>
 
   <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
-    <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-      {books.map(b => {
-        const subj = bookSubjectName(b.data.subject);
-        const schemeLabel = b.data.scheme === 'new' ? `New ${b.data.year || ''}`.trim()
-                          : b.data.scheme === 'snc' ? `SNC ${b.data.year || ''}`.trim()
-                          : b.data.scheme === 'previous' ? b.data.year || 'Previous'
-                          : b.data.year || '';
-        const mediumLabel = b.data.medium === 'english' ? 'English'
-                          : b.data.medium === 'urdu' ? 'Urdu'
-                          : b.data.medium === 'sindhi' ? 'Sindhi'
-                          : '';
-        const meta = [mediumLabel, schemeLabel].filter(Boolean).join(' · ');
-        return (
-          <a href={url(`/textbook/${b.id}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
-            <div class="flex items-start gap-3">
-              <SubjectIcon subject={subj} size="sm" />
-              <div class="min-w-0 flex-1">
-                <h3 class="font-display text-[17px] font-extrabold leading-tight tracking-tight text-slate-900">
-                  {subj}
-                </h3>
-                {meta && <p class="mt-1 text-[12px] text-slate-500">{meta}</p>}
-              </div>
-            </div>
-            <div class="mt-6 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
-              Download PDF
-              <Icon name="arrow-right" size={11} strokeWidth={2.6} />
-            </div>
-          </a>
-        );
-      })}
-    </div>
-  </section>
-
-  <section class="border-t border-slate-200 bg-white">
-    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
-      <div class="prose">
-        <h2>Class {cls} {boardName} textbooks</h2>
-        <p>
-          Class {cls} is a critical year in the {boardName} system. The {subjects.length} subjects above are the official textbooks published by the {meta.authority}. Every textbook is available as a free PDF download.
-        </p>
-        <h3>Subjects in Class {cls}</h3>
-        <ul>
-          {subjects.map(s => <li><strong>{s}</strong> — official {boardName} textbook</li>)}
-        </ul>
-        <h3>Mediums and editions</h3>
-        <p>Where the board publishes both English medium (EM) and Urdu medium (UM) editions, both are listed. If a subject has been revised under the current Single National Curriculum (SNC), the newest edition is shown first with its year clearly tagged.</p>
-      </div>
+    <div class="space-y-10">
+      {subjects.map(subj => (
+        <div>
+          <div class="mb-5 flex items-baseline justify-between gap-4 border-b border-slate-200 pb-3">
+            <h2 class="font-display text-lg font-extrabold tracking-tight text-slate-900">{subj}</h2>
+            <span class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">
+              {bySubject.get(subj)!.length} {bySubject.get(subj)!.length === 1 ? 'item' : 'items'}
+            </span>
+          </div>
+          <div class="seamed-grid grid-cols-1 sm:grid-cols-2">
+            {bySubject.get(subj)!.map((b: any) => {
+              const schemeLabel = b.data.scheme === 'new' ? 'New' : b.data.scheme === 'snc' ? 'SNC' : b.data.scheme === 'previous' ? 'Previous' : '';
+              const mediumLabel = b.data.medium === 'english' ? 'English' : b.data.medium === 'urdu' ? 'Urdu' : b.data.medium === 'sindhi' ? 'Sindhi' : '';
+              const meta = [mediumLabel, schemeLabel, b.data.year].filter(Boolean).join(' · ');
+              return (
+                <a href={url(`/textbook/${b.id}`)} class="statement-card">
+                  <div class="statement-card-head">
+                    <h3 class="statement-card-title">{subj}</h3>
+                    <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="statement-card-arrow" />
+                  </div>
+                  {meta && <p class="statement-card-desc">{meta}</p>}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 </BaseLayout>
