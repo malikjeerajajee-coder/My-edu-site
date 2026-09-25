@@ -1,0 +1,3 @@
+# IndexNow verification for Bing/Yandex
+# Replace with your actual IndexNow key from https://www.indexnow.org/
+YOUR_INDEXNOW_KEY_HERE

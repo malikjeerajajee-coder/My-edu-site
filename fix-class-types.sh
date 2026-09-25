@@ -1,0 +1,251 @@
+#!/bin/bash
+set -e
+cd ~/my-edu-site 2>/dev/null || cd /public/my-edu-site
+
+echo "════════════════════════════════════════════"
+echo "  Fixing [type].astro — inline TYPES"
+echo "════════════════════════════════════════════"
+echo ""
+
+cat > 'src/pages/class/[class]/[type].astro' <<'ASTRO'
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import SubjectIcon from '../../../components/SubjectIcon.astro';
+import { url } from '../../../lib/url';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  // Config defined INSIDE getStaticPaths to avoid TDZ
+  const TYPE_LIST: { slug: string; collection: string }[] = [
+    { slug: 'notes',           collection: 'notes' },
+    { slug: 'past-papers',     collection: 'pastPapers' },
+    { slug: 'guess-papers',    collection: 'guessPapers' },
+    { slug: 'pairing-schemes', collection: 'pairingSchemes' },
+    { slug: 'quizzes',         collection: 'quizzes' },
+    { slug: 'books',           collection: 'books' },
+    { slug: 'gazettes',        collection: 'gazettes' },
+  ];
+
+  const collections = await Promise.all([
+    getCollection('notes'),
+    getCollection('pastPapers'),
+    getCollection('guessPapers'),
+    getCollection('pairingSchemes'),
+    getCollection('quizzes'),
+    getCollection('books'),
+    getCollection('gazettes'),
+  ]);
+  const map: Record<string, any[]> = {
+    notes: collections[0],
+    pastPapers: collections[1],
+    guessPapers: collections[2],
+    pairingSchemes: collections[3],
+    quizzes: collections[4],
+    books: collections[5],
+    gazettes: collections[6],
+  };
+
+  const paths: any[] = [];
+  for (const t of TYPE_LIST) {
+    const coll = map[t.collection] || [];
+    const classes = new Set<string>();
+    coll.forEach((i: any) => classes.add(String(i.data.class)));
+    for (const cls of classes) {
+      paths.push({ params: { class: cls, type: t.slug } });
+    }
+  }
+  return paths;
+}
+
+const { class: cls, type: typeSlug } = Astro.params;
+
+// Same config — declared in the frontmatter body (runs after getStaticPaths)
+const TYPE_DATA: Record<string, {
+  label: string; singular: string; collection: string;
+  detailBase: string; icon: string; desc: string;
+}> = {
+  'notes': {
+    label: 'Notes', singular: 'note', collection: 'notes',
+    detailBase: '/note', icon: 'file-text',
+    desc: 'Chapter-wise revision notes',
+  },
+  'past-papers': {
+    label: 'Past Papers', singular: 'paper', collection: 'pastPapers',
+    detailBase: '/past-papers', icon: 'scroll-text',
+    desc: 'Official board exam papers, 2018–2026',
+  },
+  'guess-papers': {
+    label: 'Guess Papers', singular: 'paper', collection: 'guessPapers',
+    detailBase: '/guess-papers', icon: 'sparkles',
+    desc: 'Expected questions based on exam trends',
+  },
+  'pairing-schemes': {
+    label: 'Pairing Schemes', singular: 'scheme', collection: 'pairingSchemes',
+    detailBase: '/pairing-schemes', icon: 'list',
+    desc: 'Official paper structure and marks distribution',
+  },
+  'quizzes': {
+    label: 'Quizzes', singular: 'quiz', collection: 'quizzes',
+    detailBase: '/quiz', icon: 'circle-help',
+    desc: 'Interactive MCQs with instant feedback',
+  },
+  'books': {
+    label: 'Textbooks', singular: 'book', collection: 'books',
+    detailBase: '/textbook', icon: 'book-marked',
+    desc: 'Official board textbooks, free PDFs',
+  },
+  'gazettes': {
+    label: 'Result Gazettes', singular: 'gazette', collection: 'gazettes',
+    detailBase: '/gazettes', icon: 'newspaper',
+    desc: 'Official board result documents',
+  },
+};
+
+const cfg = TYPE_DATA[typeSlug!];
+if (!cfg) return Astro.redirect(`/class/${cls}`);
+
+const allItems = await getCollection(cfg.collection as any);
+const items = allItems.filter((i: any) => String(i.data.class) === cls);
+
+if (!items.length) return Astro.redirect(`/class/${cls}`);
+
+const bySubject = new Map<string, any[]>();
+items.forEach((i: any) => {
+  const subj = (i.data.subject || i.data.board || 'General').replace(/\s*\([^)]*\)\s*/g, '').trim();
+  if (!bySubject.has(subj)) bySubject.set(subj, []);
+  bySubject.get(subj)!.push(i);
+});
+const subjects = [...bySubject.keys()].sort();
+
+subjects.forEach(s => {
+  bySubject.get(s)!.sort((a: any, b: any) => {
+    if (a.data.year && b.data.year) return b.data.year - a.data.year;
+    if (a.data.chapterNumber && b.data.chapterNumber) return a.data.chapterNumber - b.data.chapterNumber;
+    return (a.data.title || '').localeCompare(b.data.title || '');
+  });
+});
+
+const totalItems = items.length;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Class ${cls} ${cfg.label}`,
+  description: `${totalItems} ${cfg.label.toLowerCase()} for Class ${cls} Pakistani students. Free downloads.`,
+};
+---
+<BaseLayout
+  title={`Class ${cls} ${cfg.label} — ${totalItems} ${totalItems === 1 ? 'Item' : 'Items'} | Parhayi`}
+  description={`Free Class ${cls} ${cfg.label.toLowerCase()} for Pakistani students. ${totalItems} items across ${subjects.length} subjects.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-14 sm:px-7 lg:px-10 lg:pt-12 lg:pb-16">
+      <nav class="mb-8 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url(`/class/${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
+        <span>/</span>
+        <span class="text-slate-500">{cfg.label}</span>
+      </nav>
+
+      <div class="flex items-start gap-4">
+        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
+          <Icon name={cfg.icon} size={22} strokeWidth={2.2} />
+        </span>
+        <div>
+          <div class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">Class {cls}</div>
+          <h1 class="mt-2 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
+            {cfg.label}
+          </h1>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-slate-500">
+            {cfg.desc} · {totalItems} {totalItems === 1 ? 'item' : 'items'} across {subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="space-y-12">
+      {subjects.map(subj => (
+        <div>
+          <div class="mb-4 flex items-center gap-3">
+            <SubjectIcon subject={subj} size="sm" />
+            <h2 class="font-display text-lg font-extrabold tracking-tight text-slate-900">{subj}</h2>
+            <span class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400">
+              {bySubject.get(subj)!.length} {bySubject.get(subj)!.length === 1 ? 'item' : 'items'}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-2 lg:grid-cols-3">
+            {bySubject.get(subj)!.map((item: any) => {
+              const year = item.data.year ? ` · ${item.data.year}` : '';
+              const chapter = item.data.chapterNumber ? `Ch ${item.data.chapterNumber}` : '';
+              const bise = item.data.bise ? ` · ${item.data.bise}` : '';
+              const board = !item.data.bise && item.data.boards?.[0] ? ` · ${item.data.boards[0]}` : '';
+              const extra = [chapter, year, bise, board].filter(Boolean).join('');
+              const detailUrl = `${cfg.detailBase}/${item.id}`;
+
+              return (
+                <a href={url(detailUrl)} class="group relative flex flex-col bg-white p-5 transition-colors hover:bg-slate-50">
+                  <h3 class="font-display text-[15px] font-extrabold leading-snug tracking-tight text-slate-900 line-clamp-2">
+                    {item.data.title}
+                  </h3>
+                  {extra && <p class="mt-1.5 text-[12px] text-slate-500">{extra}</p>}
+                  <div class="mt-4 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+                    Open
+                    <Icon name="arrow-right" size={10} strokeWidth={2.8} />
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Class {cls} {cfg.label}</h2>
+        <p>{cfg.desc}. Every item on this page is written or compiled specifically for the Class {cls} Pakistani board syllabus.</p>
+        <p>Use the subject headings above to jump to what you need. Every resource is a free download — no sign-up, no ads, no paywall.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-[1200px] px-5 pb-16 pt-8 sm:px-7 lg:px-10">
+    <a href={url(`/class/${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-[#1d4ed8]">
+      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {cls}
+    </a>
+  </div>
+</BaseLayout>
+ASTRO
+echo "  ✓ [type].astro rewritten with inlined TYPES"
+
+# ═════════════════════════════════════════════════════════
+#  Rebuild
+# ═════════════════════════════════════════════════════════
+echo ""
+echo "Rebuilding..."
+rm -rf dist .astro node_modules/.vite
+npm run build 2>&1 | tail -12
+
+echo ""
+echo "════════════════════════════════════════════════════════"
+echo "  DONE"
+echo ""
+echo "  Preview: bash preview.sh"
+echo ""
+echo "  Test:"
+echo "    http://localhost:4321/class/9/"
+echo "    → click Textbooks → /class/9/books/"
+echo "    → click a book → /textbook/[id]"
+echo "    → click Notes → /class/9/notes/"
+echo ""
+echo "  Push when happy:"
+echo "    git add . && git commit -m 'Fix class type pages' && git push"
+echo "════════════════════════════════════════════════════════"
