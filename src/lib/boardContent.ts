@@ -157,7 +157,7 @@ export { CLASSES, SUBJECTS, CONTENT_TYPES, BOARDS };
 const TYPE_MAP: Record<string, { label: string; icon: string; collection: string; base: string }> = {
   'notes':            { label: 'Notes',           icon: 'file-text',     collection: 'notes',           base: '/notes' },
   'quizzes':          { label: 'Quizzes',         icon: 'circle-help',   collection: 'quizzes',         base: '/quizzes' },
-  'books':            { label: 'Books',           icon: 'book-marked',   collection: 'books',           base: '/books' },
+  'books':            { label: 'Books',           icon: 'book-marked',   collection: 'books',           base: '/textbook' },
   'past-papers':      { label: 'Past Papers',     icon: 'scroll-text',   collection: 'pastPapers',      base: '/past-papers' },
   'guess-papers':     { label: 'Guess Papers',    icon: 'sparkles',      collection: 'guessPapers',     base: '/guess-papers' },
   'pairing-schemes':  { label: 'Pairing Schemes', icon: 'list',          collection: 'pairingSchemes',  base: '/pairing-schemes' },

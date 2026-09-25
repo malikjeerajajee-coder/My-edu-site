@@ -2,149 +2,155 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
-import { BOARDS, CLASSES } from '../lib/boards';
+import { BOARDS } from '../lib/boards';
+import { getCollection } from 'astro:content';
+
+const [notes, quizzes, books, gazettes, pastPapers, guessPapers, pairingSchemes] = await Promise.all([
+  getCollection('notes'),
+  getCollection('quizzes'),
+  getCollection('books'),
+  getCollection('gazettes'),
+  getCollection('pastPapers'),
+  getCollection('guessPapers'),
+  getCollection('pairingSchemes'),
+]);
+
+const all = [...notes, ...quizzes, ...books, ...gazettes, ...pastPapers, ...guessPapers, ...pairingSchemes];
+
+// Classes with content
+const classSet = new Set<string>();
+all.forEach((i: any) => classSet.add(String(i.data.class)));
+const classes = [...classSet].sort((a, b) => Number(a) - Number(b));
+const classCount = (c: string) => all.filter((i: any) => String(i.data.class) === c).length;
+
+// Boards with content
+const boardSet = new Set<string>();
+books.forEach((b: any) => (b.data.boards || []).forEach((x: string) => boardSet.add(x)));
+pastPapers.forEach((p: any) => (p.data.boards || []).forEach((x: string) => boardSet.add(x)));
+gazettes.forEach((g: any) => (g.data.boards || []).forEach((x: string) => boardSet.add(x)));
+const activeBoards = BOARDS.filter(b => boardSet.has(b.name));
+const boardCount = (name: string) =>
+  books.filter((b: any) => (b.data.boards || []).includes(name)).length +
+  pastPapers.filter((p: any) => (p.data.boards || []).includes(name)).length +
+  gazettes.filter((g: any) => (g.data.boards || []).includes(name)).length;
 
 const resources = [
-  { href: '/notes',           icon: 'file-text',      label: 'Notes',           color: 'notes' },
-  { href: '/past-papers',     icon: 'scroll-text',    label: 'Past Papers',     color: 'papers' },
-  { href: '/guess-papers',    icon: 'sparkles',       label: 'Guess Papers',    color: 'guess' },
-  { href: '/pairing-schemes', icon: 'list',           label: 'Pairing Schemes', color: 'pairing' },
-  { href: '/quizzes',         icon: 'circle-help',    label: 'Quizzes',         color: 'quizzes' },
-  { href: '/books',           icon: 'book-marked',    label: 'Books',           color: 'books' },
-  { href: '/gazettes',        icon: 'newspaper',      label: 'Result Gazettes', color: 'gazettes' },
-  { href: '/boards',          icon: 'graduation-cap', label: 'All Boards',      color: 'brand' },
+  { href: '/notes',           icon: 'file-text',     label: 'Notes',           desc: 'Chapter-wise revision notes', count: notes.length },
+  { href: '/past-papers',     icon: 'scroll-text',   label: 'Past Papers',     desc: 'Official board exam papers',  count: pastPapers.length },
+  { href: '/guess-papers',    icon: 'sparkles',      label: 'Guess Papers',    desc: 'Expected exam questions',     count: guessPapers.length },
+  { href: '/pairing-schemes', icon: 'list',          label: 'Pairing Schemes', desc: 'Exam paper structure',        count: pairingSchemes.length },
+  { href: '/quizzes',         icon: 'circle-help',   label: 'Quizzes',         desc: 'Interactive MCQs',            count: quizzes.length },
+  { href: '/books',           icon: 'book-marked',   label: 'Textbooks',       desc: 'Official board textbooks',    count: books.length },
+  { href: '/gazettes',        icon: 'newspaper',     label: 'Result Gazettes', desc: 'Board result documents',      count: gazettes.length },
 ];
 
-const faqs = [
-  {
-    q: 'Which boards are covered?',
-    a: 'All six major Pakistani boards: Punjab (all 9 BISEs), Federal (FBISE), Khyber Pakhtunkhwa, Sindh, Balochistan, and Azad Jammu & Kashmir. Every resource is tailored to your specific board syllabus.'
+const totalPages = all.length;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Parhayi',
+  alternateName: 'parhayi.com',
+  url: 'https://parhayi.pages.dev/',
+  description: 'Free notes, past papers, guess papers, textbooks and result gazettes for Pakistani students — organised by board, class and subject.',
+  inLanguage: 'en',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://parhayi.pages.dev/search/?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
   },
-  {
-    q: 'Is everything really free?',
-    a: 'Yes. No sign-up, no ads, no paywalls. Every note, past paper, guess paper, pairing scheme and quiz is free to download and use — forever.'
-  },
-  {
-    q: 'Which classes are supported?',
-    a: 'Textbooks are available for Class 1 to 12, and exam resources — notes, past papers, guess papers and quizzes — cover Class 9, 10, 11 and 12 (Matric and Intermediate).'
-  },
-  {
-    q: 'How are past papers organised?',
-    a: 'Each paper is tagged by board, class, subject and year. Browse by board to see only the papers relevant to your exam — from 2018 up to today.'
-  },
-  {
-    q: 'Can I use this on my phone?',
-    a: 'Yes. The site is designed mobile-first. Everything works on any phone, tablet or computer — no app required.'
-  },
-];
+};
 ---
-<BaseLayout title="Parhayi — Exam-specific revision for Pakistani students">
-  <!-- ═══ HERO ═══ -->
-  <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[1200px] px-5 pt-16 pb-12 sm:px-7 sm:pt-20 sm:pb-16 lg:px-10 lg:pt-24 lg:pb-20">
-      <div class="mx-auto max-w-3xl text-center">
-        <div class="pill mx-auto">
-          <span class="pill-dot"></span>
-          Trusted by students across Pakistan
-        </div>
-        <h1 class="mt-6 text-[2.25rem] font-extrabold leading-[1.05] tracking-[-0.04em] text-slate-900 sm:text-[3rem] lg:text-[3.5rem]">
-          Exam-specific revision,<br />
-          made by trusted educators
-        </h1>
-        <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-600">
-          Real expertise. Real results. Every note, past paper and guess paper — organised for your exact board and class.
-        </p>
-
-        <form action={url('/search')} method="get" role="search" class="mx-auto mt-9 flex max-w-xl items-stretch overflow-hidden rounded-xl border border-slate-300 bg-white transition-colors focus-within:border-[#1d4ed8]">
-          <span class="grid w-12 shrink-0 place-items-center text-slate-400">
-            <Icon name="search" size={18} strokeWidth={2.4} />
-          </span>
-          <input type="search" name="q" placeholder="Search notes, past papers, books..." class="min-w-0 flex-1 bg-transparent py-3.5 pr-3 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
-          <button type="submit" class="m-1.5 rounded-lg bg-[#1d4ed8] px-5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">Search</button>
-        </form>
-
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-slate-500">
-          <span class="flex items-center gap-1.5">
-            <Icon name="check" size={14} strokeWidth={3} class="text-[#1d4ed8]" /> 6 boards covered
-          </span>
-          <span class="flex items-center gap-1.5">
-            <Icon name="check" size={14} strokeWidth={3} class="text-[#1d4ed8]" /> Class 9–12
-          </span>
-          <span class="flex items-center gap-1.5">
-            <Icon name="check" size={14} strokeWidth={3} class="text-[#1d4ed8]" /> 100% free
-          </span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ CHOOSE YOUR CLASS ═══ -->
-  <section class="section">
-    <div class="section-inner">
-      <div class="mb-8">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Choose your class</h2>
-        <p class="mt-2 text-sm text-slate-500">Or start here if you know your class — everything for that year in one place.</p>
+<BaseLayout
+  title="Parhayi — Free Past Papers, Notes & Textbooks for Pakistani Board Students"
+  description={`Download ${totalPages.toLocaleString()}+ free past papers, notes, guess papers, textbooks & result gazettes for Pakistani board students. Punjab, Federal, Sindh, KPK boards. Class 1–12. No sign-up needed.`}
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        Trusted by students across Pakistan
       </div>
 
-      <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-        {CLASSES.map(c => (
-          <a href={url(`/class/${c}`)} class="rtile group" style="--tile-color: #1d4ed8; --tile-tint: #eff4ff;">
-            <span class="rtile-icon" style="font-size: 1rem; font-weight: 800;">{c}</span>
-            <div class="min-w-0 flex-1">
-              <div class="rtile-label">Class {c}</div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+      <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Study smarter. Score higher.
+      </h1>
 
-  <!-- ═══ CHOOSE YOUR BOARD ═══ -->
-  <section class="section">
-    <div class="section-inner">
-      <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Free notes, past papers, guess papers, textbooks, quizzes and result gazettes — organised by <strong class="text-slate-900">board</strong>, <strong class="text-slate-900">class</strong> and <strong class="text-slate-900">subject</strong>.
+      </p>
+
+      <form action={url('/search')} method="get" role="search" class="mt-8 flex max-w-xl items-center gap-2 rounded-xl border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
+        <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-slate-400" />
+        <input type="search" name="q" placeholder="Search notes, past papers, books…" class="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
+        <button type="submit" class="rounded-lg bg-[#1d4ed8] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">Search</button>
+      </form>
+
+      <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
         <div>
-          <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Choose your board</h2>
-          <p class="mt-2 text-sm text-slate-500">Everything is organised for your specific board.</p>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Resources</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalPages.toLocaleString()}</dd>
         </div>
-        <a href={url('/boards')} class="hidden items-center gap-1 text-sm font-bold text-[#1d4ed8] hover:text-[#1e3a8a] sm:inline-flex">
-          All boards <Icon name="arrow-right" size={14} strokeWidth={2.6} />
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Boards</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{activeBoards.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Classes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{classes[0]}–{classes[classes.length - 1]}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Cost</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">Free</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Choose your class -->
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your class</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Every class has its own notes, textbooks, past papers and quizzes.</p>
+    </div>
+
+    <div class="seamed-grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6">
+      {classes.map(c => (
+        <a href={url(`/class/${c}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+          <span class="font-display text-3xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
+            {c.padStart(2, '0')}
+          </span>
+          <div class="mt-5 text-[13px] font-bold text-slate-900">Class {c}</div>
+          <div class="mt-0.5 text-[11px] text-slate-500">{classCount(c).toLocaleString()} items</div>
+          <div class="mt-4 flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+            Open
+            <Icon name="arrow-right" size={10} strokeWidth={2.8} />
+          </div>
         </a>
-      </div>
-
-      <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-        {BOARDS.map(b => (
-          <a href={url(`/board/${b.slug}`)} class="row group">
-            <span class="tile">
-              <Icon name="graduation-cap" size={19} strokeWidth={2.2} />
-            </span>
-            <div class="min-w-0 flex-1">
-              <div class="row-title">{b.name}</div>
-            </div>
-            <Icon name="arrow-right" size={15} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-          </a>
-        ))}
-      </div>
+      ))}
     </div>
   </section>
 
-  <!-- ═══ BROWSE BY RESOURCE ═══ -->
-  <section class="border-t border-slate-200 bg-slate-50 section">
-    <div class="section-inner">
+  <!-- Browse by board -->
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
       <div class="mb-8">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Browse by resource</h2>
-        <p class="mt-2 text-sm text-slate-500">Seven content types — all free, all board-specific.</p>
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Browse by board</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Every board publishes its own papers, textbooks and gazettes.</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
-        {resources.map(r => (
-          <a href={url(r.href)} class="rtile group"
-             style={`--tile-color: var(--c-${r.color}); --tile-tint: var(--c-${r.color}-tint);`}>
-            <span class="rtile-icon">
-              <Icon name={r.icon} size={19} strokeWidth={2.2} />
-            </span>
-            <div class="min-w-0 flex-1">
-              <div class="rtile-label">{r.label}</div>
+      <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {activeBoards.map(b => (
+          <a href={url(`/board/${b.slug}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.name}</h3>
+              <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="mt-1.5 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+            </div>
+            <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{b.full}</p>
+            <div class="mt-6 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+              {boardCount(b.name).toLocaleString()} resources
             </div>
           </a>
         ))}
@@ -152,78 +158,56 @@ const faqs = [
     </div>
   </section>
 
-  <!-- ═══ HOW IT WORKS ═══ -->
-  <section class="section">
-    <div class="section-inner">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">How it works</h2>
-        <p class="mt-3 text-base text-slate-600">Three steps to focused exam preparation.</p>
-      </div>
+  <!-- Browse by resource -->
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Browse by resource</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Seven ways to study — all free, all board-specific.</p>
+    </div>
 
-      <div class="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
-        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
-          <span class="step-num">1</span>
-          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Pick your board</h3>
-          <p class="text-sm leading-relaxed text-slate-600">
-            Six boards, each with its own syllabus. You only see what's on your paper — nothing else.
-          </p>
-        </div>
-        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
-          <span class="step-num">2</span>
-          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Choose your class and subject</h3>
-          <p class="text-sm leading-relaxed text-slate-600">
-            Drill down to your exact class and subject. Notes, papers, quizzes and textbooks — all in one place.
-          </p>
-        </div>
-        <div class="flex flex-col items-start gap-4 sm:items-center sm:text-center">
-          <span class="step-num">3</span>
-          <h3 class="text-base font-extrabold tracking-tight text-slate-900">Revise and test yourself</h3>
-          <p class="text-sm leading-relaxed text-slate-600">
-            Study from notes, practice with past papers, test yourself with quizzes — walk into the exam prepared.
-          </p>
-        </div>
-      </div>
+    <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {resources.map(r => (
+        <a href={url(r.href)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+          <div class="flex items-start gap-4">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-slate-100 text-slate-600">
+              <Icon name={r.icon} size={17} strokeWidth={2.2} />
+            </span>
+            <div class="min-w-0 flex-1">
+              <h3 class="font-display text-[16px] font-extrabold leading-tight tracking-tight text-slate-900">{r.label}</h3>
+              <p class="mt-1 text-[12px] text-slate-500">{r.desc}</p>
+            </div>
+          </div>
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+              {r.count.toLocaleString()} {r.count === 1 ? 'item' : 'items'}
+            </span>
+            <span class="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
+              Browse
+              <Icon name="arrow-right" size={11} strokeWidth={2.6} />
+            </span>
+          </div>
+        </a>
+      ))}
     </div>
   </section>
 
-  <!-- ═══ FAQ ═══ -->
-  <section class="border-t border-slate-200 bg-slate-50 section">
-    <div class="section-inner">
-      <div class="mx-auto max-w-3xl">
-        <div class="text-center">
-          <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Frequently asked questions</h2>
-          <p class="mt-3 text-base text-slate-600">Everything you need to know about Parhayi.</p>
-        </div>
-
-        <div class="mt-10 space-y-2">
-          {faqs.map((f, i) => (
-            <details class="group rounded-xl border border-slate-200 bg-white" open={i === 0}>
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-[15px] font-extrabold text-slate-900">
-                <span>{f.q}</span>
-                <Icon name="chevron-right" size={17} strokeWidth={2.4} class="shrink-0 text-slate-400 transition-transform group-open:rotate-90" />
-              </summary>
-              <div class="border-t border-slate-200 px-5 py-4 text-sm leading-relaxed text-slate-600">{f.a}</div>
-            </details>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ CTA ═══ -->
-  <section class="section">
-    <div class="section-inner">
-      <div class="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white p-10 text-center sm:p-14">
-        <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Ready to start revising?</h2>
-        <p class="mx-auto mt-4 max-w-xl text-base text-slate-600">
-          Everything free, everything board-specific. Pick your board and get straight into it.
-        </p>
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a href={url('/boards')} class="btn btn-primary">
-            Browse boards <Icon name="arrow-right" size={14} strokeWidth={2.6} />
-          </a>
-          <a href={url('/notes')} class="btn btn-outline">Browse notes</a>
-        </div>
+  <!-- Prose -->
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>Pakistan's complete study library</h2>
+        <p>Every Pakistani student deserves free access to quality study material — past papers, notes, textbooks, and result gazettes — the official notes, the past papers, the textbooks, and the result gazettes. Not scattered across WhatsApp groups and outdated websites, but organised the way the board exams actually work.</p>
+        <p>Parhayi hosts <strong>{totalPages.toLocaleString()}+ free resources</strong> for Class 1 through Class 12, covering every major board in Pakistan: Punjab (PTB), Federal (FBISE), Sindh (STBB), Khyber Pakhtunkhwa (KPTBB), Balochistan (BTBB), and Azad Jammu and Kashmir (AJKTB).</p>
+        <h3>How to find what you need</h3>
+        <p>Pick your class, then your board, then your subject. Every resource — notes, past papers, textbooks, quizzes — is one click away. No sign-up. No paywall. No ads.</p>
+        <h3>What you'll find</h3>
+        <ul>
+          <li><strong>Notes</strong> — chapter-wise summaries for every subject</li>
+          <li><strong>Past papers</strong> — 2018 to 2026, from every BISE</li>
+          <li><strong>Textbooks</strong> — the official PDFs from each board</li>
+          <li><strong>Quizzes</strong> — interactive MCQs with instant feedback</li>
+          <li><strong>Guess papers, pairing schemes, gazettes</strong> — the exam tools students actually use</li>
+        </ul>
       </div>
     </div>
   </section>

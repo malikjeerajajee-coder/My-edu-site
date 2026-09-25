@@ -15,6 +15,17 @@ const data = await getBoardContent(slug!);
 if (!data) return Astro.redirect('/boards');
 const { board, classes, notes, quizzes, books, gazettes, pastPapers, guessPapers, pairingSchemes, total } = data;
 const info = getBoardInfo(slug!);
+
+// FAQ structured data for SEO
+const faqSchema = info && info.faq.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: info.faq.map((f: any) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+} : null;
 ---
 <BaseLayout
   title={`${board.full} — Class 9 to 12 Notes, Past Papers & Gazettes | Parhayi`}

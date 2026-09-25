@@ -9,30 +9,40 @@ export async function getStaticPaths() {
   return gazettes.map(g => ({ params: { slug: g.id }, props: { gazette: g } }));
 }
 const { gazette } = Astro.props;
+const d = gazette.data;
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
+    { '@type': 'ListItem', position: 2, name: 'Result Gazettes', item: 'https://parhayi.pages.dev/gazettes/' },
+    { '@type': 'ListItem', position: 3, name: d.title },
+  ],
+};
 ---
-<BaseLayout data-pagefind-body title={`${gazette.data.title} — Parhayi`} description={`${gazette.data.board} result gazette for Class ${gazette.data.class}, ${gazette.data.year}.`}>
-  <div class="mx-auto w-full max-w-4xl px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
-    <nav class="mb-6 flex items-center gap-1.5 text-xs font-semibold text-neutral-400">
-      <a href={url('/')} class="transition-colors hover:text-[#110176]">Home</a>
+<BaseLayout data-pagefind-body jsonLd={breadcrumbSchema} title={`${gazette.data.title} — Parhayi`} description={`${gazette.data.board} result gazette for Class ${gazette.data.class}, ${gazette.data.year}.`}>
+  <div class="mx-auto w-full max-w-[900px] px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
+    <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+      <a href={url('/')} class="transition-colors hover:text-[#1d4ed8]">Home</a>
       <span>/</span>
-      <a href={url('/gazettes')} class="transition-colors hover:text-[#110176]">Gazettes</a>
+      <a href={url('/gazettes')} class="transition-colors hover:text-[#1d4ed8]">Gazettes</a>
       <span>/</span>
-      <span class="truncate text-neutral-500">Gazette</span>
+      <span class="truncate text-slate-500">Gazette</span>
     </nav>
 
-    <a href={url('/gazettes')} class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 transition-colors hover:text-rose-700">
+    <a href={url('/gazettes')} class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#1d4ed8]">
       <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to gazettes
     </a>
 
-    <div class="relative overflow-hidden border-b border-neutral-200 pb-8 text-neutral-900">
+    <div class="relative overflow-hidden border-b border-slate-200 pb-8 text-slate-900">
       <div class="flex flex-wrap gap-1.5">
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">{gazette.data.board}</span>
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">Class {gazette.data.class}</span>
-        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eef2fe] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">{gazette.data.year}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eff4ff] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">{gazette.data.board}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eff4ff] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">Class {gazette.data.class}</span>
+        <span class="inline-flex items-center gap-1.5 rounded-md bg-[#eff4ff] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1d4ed8]">{gazette.data.year}</span>
       </div>
       <h1 class="mt-4 text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl">{gazette.data.title}</h1>
     </div>
 
-    <a href={url(gazette.data.pdfUrl)} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1d4ed8] px-5 py-3.5 text-sm font-bold !text-white transition-colors hover:bg-[#110176]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
+    <a href={url(gazette.data.pdfUrl)} target="_blank" rel="noopener" class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1d4ed8] px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]"><Icon name="download" size={18} strokeWidth={2.4} /> Open PDF</a>
   </div>
 </BaseLayout>

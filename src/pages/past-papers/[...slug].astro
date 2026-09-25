@@ -17,8 +17,8 @@ const { paper } = Astro.props;
 const d = paper.data;
 const allPapers = await getCollection('pastPapers');
 
-const SITE = 'https://malikjeerajajee-coder.github.io';
-const BASE = '/My-edu-site';
+const SITE = import.meta.env.SITE || 'https://parhayi.pages.dev';
+const BASE = '';
 const canonical = `${SITE}${BASE}/past-papers/${paper.id}/`;
 
 const boardName = d.bise ? `BISE ${d.bise}` : (d.boards?.[0] || 'Punjab Board');

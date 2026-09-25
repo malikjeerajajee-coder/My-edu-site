@@ -1,8 +1,30 @@
+# Parhayi — robots.txt
+# Allow all crawlers, disallow search and internal pages
+
 User-agent: *
 Allow: /
 
-# Crawl-friendly hints
+# Disallow search page (noindex anyway)
+Disallow: /search/
+
+# Disallow internal API
+Disallow: /search-index.json
+
+# Sitemap locations
 Sitemap: https://parhayi.pages.dev/sitemap-index.xml
 
-# Block nothing — we want everything indexed
-Disallow:
+# Bing-specific: allow full crawling
+User-agent: bingbot
+Allow: /
+Crawl-delay: 0
+
+# Google-specific
+User-agent: Googlebot
+Allow: /
+
+# Allow image indexing for educational diagrams
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /

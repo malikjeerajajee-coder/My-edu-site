@@ -15,30 +15,32 @@ const {
   jsonLd,
 } = Astro.props;
 
-const SITE = 'https://malikjeerajajee-coder.github.io';
-const BASE = '/My-edu-site';
+const SITE = import.meta.env.SITE || 'https://parhayi.pages.dev';
+const BASE = '';
 
 let pathname = Astro.url.pathname;
-if (!pathname.startsWith(BASE)) pathname = BASE + pathname;
-let canonical = SITE + pathname;
-canonical = canonical.replace(new RegExp(SITE + BASE + BASE, 'g'), SITE + BASE);
+if (BASE && !pathname.startsWith(BASE)) pathname = BASE + pathname;
+let canonical = SITE.replace(/\/$/, '') + pathname;
 if (!canonical.endsWith('/') && !canonical.match(/\.[a-z0-9]+$/i)) canonical += '/';
 
 const schemas: object[] = [];
 
-// WebSite + Organization — only on homepage
-if (pathname === BASE + '/' || pathname === BASE) {
+// Homepage schemas
+if (pathname === '/' || pathname === BASE + '/' || pathname === BASE) {
   schemas.push({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Parhayi',
-    alternateName: 'parhayi.com',
-    url: SITE + BASE + '/',
-    description,
-    inLanguage: 'en',
+    alternateName: ['Parhayi.com', 'پڑھائی'],
+    url: SITE + '/',
+    description: 'Free notes, past papers, guess papers, textbooks, quizzes and result gazettes for Pakistani students — organised by board, class and subject.',
+    inLanguage: 'en-PK',
     potentialAction: {
       '@type': 'SearchAction',
-      target: SITE + BASE + '/search/?q={search_term_string}',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: SITE + '/search/?q={search_term_string}',
+      },
       'query-input': 'required name=search_term_string',
     },
   });
@@ -46,40 +48,71 @@ if (pathname === BASE + '/' || pathname === BASE) {
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization',
     name: 'Parhayi',
-    url: SITE + BASE + '/',
-    description,
+    url: SITE + '/',
+    description: 'Free educational resources for Pakistani board students — Class 1 to 12, all provinces.',
     areaServed: { '@type': 'Country', name: 'Pakistan' },
+    knowsAbout: [
+      'Punjab Board past papers', 'FBISE past papers', 'Sindh Board notes',
+      'KPK Board textbooks', 'BISE result gazettes', 'Matric guess papers',
+      'Inter pairing schemes', 'SSC exam preparation', 'HSSC study material',
+    ],
   });
 }
 
-// Any passed JSON-LD
+// Merge passed JSON-LD
 if (jsonLd) {
   if (Array.isArray(jsonLd)) schemas.push(...jsonLd);
   else schemas.push(jsonLd);
 }
+
+// Truncate description for safety
+const desc = description.length > 160 ? description.slice(0, 157) + '…' : description;
+const titleTag = title.length > 65 ? title.slice(0, 62) + '…' : title;
 ---
+
+<!-- Primary Meta -->
 <link rel="canonical" href={canonical} />
-<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1' } />
+<meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
 <meta name="author" content="Parhayi" />
+<meta name="publisher" content="Parhayi" />
 <meta name="language" content="English" />
+<meta name="revisit-after" content="7 days" />
+<meta name="distribution" content="global" />
+<meta name="rating" content="general" />
 <meta name="geo.region" content="PK" />
 <meta name="geo.placename" content="Pakistan" />
+<meta name="geo.position" content="30.3753;69.3451" />
+<meta name="ICBM" content="30.3753, 69.3451" />
 
+<!-- Bing-specific -->
+<meta name="msvalidate.01" content="" />
+<!-- ↑ Add your Bing Webmaster Tools verification code here -->
+
+<!-- Open Graph -->
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonical} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
+<meta property="og:title" content={titleTag} />
+<meta property="og:description" content={desc} />
 <meta property="og:site_name" content="Parhayi" />
 <meta property="og:locale" content="en_PK" />
-<meta property="og:image" content={SITE + BASE + '/og.png'} />
+<meta property="og:image" content={SITE + '/og.png'} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Parhayi — Free study resources for Pakistani students" />
 
+<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={SITE + BASE + '/og.png'} />
+<meta name="twitter:site" content="@parhayi" />
+<meta name="twitter:creator" content="@parhayi" />
+<meta name="twitter:title" content={titleTag} />
+<meta name="twitter:description" content={desc} />
+<meta name="twitter:image" content={SITE + '/og.png'} />
+<meta name="twitter:image:alt" content="Parhayi — Free study resources for Pakistani students" />
 
-<link rel="sitemap" type="application/xml" href={SITE + BASE + '/sitemap-index.xml'} />
+<!-- Sitemap reference -->
+<link rel="sitemap" type="application/xml" href={SITE + '/sitemap-index.xml'} />
 
+<!-- Structured Data -->
 {schemas.map(s => (
   <script type="application/ld+json" set:html={JSON.stringify(s)} />
 ))}

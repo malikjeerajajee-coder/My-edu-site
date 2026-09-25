@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
 :root {
@@ -228,11 +229,6 @@ h1, h2, h3, h4 {
   color: var(--brand);
 }
 
-/* Force white text on colored buttons */
-a[class*="bg-[#1d4ed8]"],
-button[class*="bg-[#1d4ed8]"] { color: #ffffff !important; }
-a[class*="bg-[#1d4ed8]"] svg,
-button[class*="bg-[#1d4ed8]"] svg { color: #ffffff !important; stroke: #ffffff !important; }
 
 /* ═══ Numbered step ═══ */
 .step-num {
@@ -499,4 +495,25 @@ input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
   margin-top: 0.5rem;
   font-size: 0.8125rem;
   color: #64748b;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ═══ Seamed grid — no gray empty cells ═══ */
+.seamed-grid {
+  display: grid;
+  overflow: hidden;
+  border-radius: 1rem;
+  border-right: 1px solid #e5e9f0;
+  border-bottom: 1px solid #e5e9f0;
+  background: #ffffff;
+}
+.seamed-grid > * {
+  border-left: 1px solid #e5e9f0;
+  border-top: 1px solid #e5e9f0;
 }

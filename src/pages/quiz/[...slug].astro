@@ -26,10 +26,10 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/' },
-      { '@type': 'ListItem', position: 2, name: 'Quizzes', item: 'https://malikjeerajajee-coder.github.io/My-edu-site/quizzes/' },
-      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://malikjeerajajee-coder.github.io/My-edu-site/quizzes/class-${cls}/` },
-      { '@type': 'ListItem', position: 4, name: subj, item: `https://malikjeerajajee-coder.github.io/My-edu-site/quizzes/class-${cls}/${subjSlug}/` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
+      { '@type': 'ListItem', position: 2, name: 'Quizzes', item: 'https://parhayi.pages.dev/quizzes/' },
+      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://parhayi.pages.dev/quizzes/class-${cls}/` },
+      { '@type': 'ListItem', position: 4, name: subj, item: `https://parhayi.pages.dev/quizzes/class-${cls}/${subjSlug}/` },
       { '@type': 'ListItem', position: 5, name: d.title },
     ],
   },
@@ -55,7 +55,7 @@ const jsonLd = [
 >
   <section class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[900px] px-5 pt-8 pb-10 sm:px-7 lg:px-10 lg:pt-10 lg:pb-12">
-      <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-400">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <a href={url('/quizzes')} class="hover:text-[#1d4ed8]">Quizzes</a>

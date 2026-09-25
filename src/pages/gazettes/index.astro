@@ -2,71 +2,90 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
-import { BOARDS, itemBoards } from '../../lib/boards';
+import { BOARDS } from '../../lib/boards';
 import { getCollection } from 'astro:content';
 
-const items = await getCollection('gazettes');
-const boardCounts: Record<string, number> = {};
-for (const b of BOARDS) {
-  boardCounts[b.slug] = items.filter((p: any) => itemBoards(p.data).includes(b.name)).length;
-}
-const recent = [...items].sort((a: any, b: any) => (b.data.year || 0) - (a.data.year || 0)).slice(0, 6);
+const gazettes = await getCollection('gazettes');
+const count = (name: string) => gazettes.filter((g: any) => (g.data.boards || []).includes(name)).length;
+const boards = BOARDS.map(b => ({ ...b, count: count(b.name) })).filter(b => b.count > 0);
+const years = [...new Set(gazettes.map((g: any) => g.data.year))].sort((a, b) => b - a);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Result Gazettes — Pakistani Boards',
+  description: `${gazettes.length} result gazettes from every major Pakistani board. Class 9 to 12, 2018–2026.`,
+};
 ---
-<BaseLayout title="Result Gazettes — All Pakistan Boards | Parhayi" description="Board result gazettes for Pakistani students.">
-  <div class="border-b border-slate-200 bg-slate-50">
+<BaseLayout
+  title={`Result Gazettes ${new Date().getFullYear()} — ${gazettes.length} Free PDFs for All Boards | Parhayi`}
+  description={`Download ${gazettes.length} official result gazettes from Pakistani boards. Punjab, Federal, Sindh, KPK, Balochistan, AJK. Free PDFs.`}
+  jsonLd={jsonLd}
+>
+  <section class="border-b border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
-      <nav class="mb-5 flex items-center gap-1.5 text-xs font-semibold text-slate-400">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <span class="text-slate-500">Result Gazettes</span>
       </nav>
-      <div class="max-w-2xl">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">Result Gazettes</h1>
-        <p class="mt-3 text-base leading-relaxed text-slate-600">Official result gazettes from Pakistani boards, Class 9 through 12.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
-    <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Choose your board</h2>
-    <p class="mt-2 text-sm text-slate-500">Resources are different for each board — pick yours to continue.</p>
-    <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {BOARDS.map(b => {
-        const count = boardCounts[b.slug];
-        const disabled = count === 0;
-        return (
-          <a href={url(`/board/${b.slug}`)} class:list={["row group", disabled && "opacity-60"]}>
-            <span class="tile"><Icon name="newspaper" size={18} strokeWidth={2.2} /></span>
-            <div class="min-w-0 flex-1">
-              <div class="row-title font-bold">{b.name}</div>
-              <div class="row-sub">{disabled ? 'Coming soon' : `${count} ${count === 1 ? 'item' : 'items'}`}</div>
-            </div>
-            {!disabled && <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />}
-          </a>
-        );
-      })}
-    </div>
-  </div>
-
-  {recent.length > 0 && (
-    <div class="border-t border-slate-200 bg-slate-50">
-      <div class="mx-auto max-w-[1200px] px-5 py-12 sm:px-7 lg:px-10 lg:py-14">
-        <h2 class="text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">Recently added</h2>
-        <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {recent.map((p: any) => (
-            <a href={url(`/gazettes/${p.id}`)} class="row group">
-              <span class="tile"><Icon name="newspaper" size={18} strokeWidth={2.2} /></span>
-              <div class="min-w-0 flex-1">
-                <div class="truncate text-sm font-bold text-slate-900">{p.data.title}</div>
-                <div class="mt-1 flex flex-wrap gap-1.5">
-                  {p.data.class && <span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">Class {p.data.class}</span>}
-                  {p.data.year && <span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-600">{p.data.year}</span>}
-                </div>
-              </div>
-            </a>
-          ))}
+      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Official result gazettes.
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Download the official result gazettes from every Pakistani board. Free PDFs, 2018 to 2026.
+      </p>
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Gazettes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{gazettes.length.toLocaleString()}</dd>
         </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Boards</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boards.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Years</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{years[years.length - 1]}–{years[0]}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your board</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Every board publishes its own result gazettes.</p>
+    </div>
+
+    <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {boards.map(b => (
+        <a href={url(`/board/${b.slug}`)} class="group relative flex flex-col bg-white p-7 transition-colors hover:bg-slate-50">
+          <div class="flex items-start justify-between gap-4">
+            <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.name}</h3>
+            <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="mt-1.5 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
+          </div>
+          <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{b.full}</p>
+          <div class="mt-8 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
+            {b.count.toLocaleString()} {b.count === 1 ? 'gazette' : 'gazettes'}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <div class="prose">
+        <h2>What is a result gazette?</h2>
+        <p>A result gazette is the official document published by each board after exams are marked. It lists every student's roll number, name, and marks — arranged by school and registration number. If you need to verify a result, apply for a duplicate certificate, or resolve a discrepancy, the gazette is the authoritative source.</p>
+        <h3>When you need it</h3>
+        <ul>
+          <li><strong>Verification</strong> — proving your result to a college, university, or employer</li>
+          <li><strong>Correction requests</strong> — if a printed result shows an error</li>
+          <li><strong>Historical research</strong> — comparing results across years</li>
+        </ul>
       </div>
     </div>
-  )}
+  </section>
 </BaseLayout>

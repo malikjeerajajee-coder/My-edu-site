@@ -31,13 +31,13 @@ const jsonLd = {
 };
 ---
 <BaseLayout
-  title="Chapter-wise Practice Quizzes — Class 9 to 12 MCQs | Parhayi"
+  title="Free MCQ Quizzes — Chapter-wise Practice for Pakistani Board Students | Parhayi"
   description={`Interactive MCQ quizzes organised by class, subject and chapter. ${quizzes.length} quizzes, ${totalQuestions} questions — instant feedback, no sign-up.`}
   jsonLd={jsonLd}
 >
   <section class="border-b border-slate-200 bg-slate-50">
-    <div class="mx-auto max-w-[1200px] px-5 pt-12 pb-14 sm:px-7 lg:px-10 lg:pt-16 lg:pb-20">
-      <nav class="mb-8 flex items-center gap-2 text-xs font-semibold text-slate-400">
+    <div class="mx-auto max-w-[1200px] px-5 pt-10 pb-10 sm:px-7 lg:px-10 lg:pt-14 lg:pb-12">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <span class="text-slate-500">Quizzes</span>
@@ -77,7 +77,7 @@ const jsonLd = {
         <p class="mt-1 text-xs text-slate-500">We're building chapter-wise MCQ quizzes for every class and subject.</p>
       </div>
     ) : (
-      <div class="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3 lg:grid-cols-4">
+      <div class="seamed-grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {classes.map(c => (
           <a href={url(`/quizzes/class-${c.cls}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
             <span class="font-display text-4xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">

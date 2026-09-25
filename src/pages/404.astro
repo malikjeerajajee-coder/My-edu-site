@@ -3,21 +3,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
 ---
-<BaseLayout title="Page not found — Parhayi" description="The page you were looking for doesn't exist. Browse boards, classes and subjects instead.">
+<BaseLayout title="Page not found — Parhayi" description="Page not found on Parhayi. Browse free past papers, notes, textbooks, quizzes and result gazettes for Pakistani board students — Punjab, Federal, Sindh, KPK boards.">
   <div class="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6 lg:px-8">
     <div class="text-[7rem] font-extrabold leading-none tracking-tighter text-[#1d4ed8]">404</div>
-    <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-neutral-900">Page not found</h1>
-    <p class="mt-3 text-base text-neutral-500">
+    <h1 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">Page not found</h1>
+    <p class="mt-3 text-base text-slate-500">
       The page you're looking for doesn't exist or has been moved. Let's get you back to studying.
     </p>
     <div class="mt-8 flex flex-wrap justify-center gap-3">
-      <a href={url('/')} class="inline-flex items-center gap-1.5 rounded-xl bg-[#1d4ed8] px-5 py-3 text-sm font-bold text-white hover:bg-[#110176] !text-white">
+      <a href={url('/')} class="inline-flex items-center gap-1.5 rounded-xl bg-[#1d4ed8] px-5 py-3 text-sm font-bold text-white hover:bg-[#1e3a8a] text-white">
         <Icon name="home" size={15} strokeWidth={2.4} /> Go home
       </a>
-      <a href={url('/boards')} class="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-5 py-3 text-sm font-bold text-neutral-700 hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
+      <a href={url('/boards')} class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
         <Icon name="graduation-cap" size={15} strokeWidth={2.4} /> Browse boards
       </a>
-      <a href={url('/search')} class="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-5 py-3 text-sm font-bold text-neutral-700 hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
+      <a href={url('/search')} class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
         <Icon name="search" size={15} strokeWidth={2.4} /> Search
       </a>
     </div>
