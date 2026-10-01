@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import SubjectIcon from '../../../components/SubjectIcon.astro';
+import { url } from '../../../lib/url';
+import { getCollection } from 'astro:content';
+import { getExamPattern } from '../../../lib/content/examPatterns';
+
+function slugify(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+export async function getStaticPaths() {
+  function slugifyWorker(s) {
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  const papers = await getCollection('pastPapers');
+  const map = new Map();
+  
+  for (const p of papers) {
+    const board = (p.data.boards && p.data.boards[0]) || p.data.board || 'Punjab';
+    const bise = p.data.bise || null;
+    const cls = String(p.data.class);
+    const subject = p.data.subject || 'General';
+    
+    const slug = [slugifyWorker(board), bise ? slugifyWorker(bise) : null, cls, slugifyWorker(subject)]
+      .filter(Boolean)
+      .join('-');
+      
+    if (!map.has(slug)) {
+      map.set(slug, { slug, board, bise, cls, subject, items: [] });
+    }
+    map.get(slug).items.push(p);
+  }
+  
+  return Array.from(map.values()).map(g => ({ 
+    params: { slug: g.slug }, 
+    props: { group: g } 
+  }));
+}
+
+const { group } = Astro.props;
+
+const items = [...group.items].sort((a, b) => (b.data.year || 0) - (a.data.year || 0));
+const years = items.map(i => i.data.year).filter(Boolean);
+const minYear = Math.min(...years);
+const maxYear = Math.max(...years);
+
+const boardSlug = slugify(group.board);
+const biseSlug = group.bise ? slugify(group.bise) : null;
+const biseLabel = group.bise ? `${group.bise} Board` : `${group.board} Board`;
+
+const pattern = getExamPattern(group.subject);
+const tips = pattern.studyTips || [];
+const mistakes = pattern.commonMistakes || [];
+
+const faq = [
+  { q: `How many ${group.subject} past papers are available for Class ${group.cls}?`, a: `${items.length} official ${group.subject} papers for Class ${group.cls} (${biseLabel}), covering ${minYear} to ${maxYear}. Each is the original board exam paper.` },
+  { q: `Are these ${group.subject} papers official?`, a: `Yes — these are the same papers administered by ${biseLabel} during annual examinations, which makes them the most reliable practice material available.` },
+  { q: `How should I practise with these papers?`, a: `Start with the most recent year and work backwards. Time yourself strictly (${pattern.duration}), then review your answers against the marking scheme where available.` },
+  { q: `What is the exam pattern for Class ${group.cls} ${group.subject}?`, a: `The paper is worth ${pattern.totalMarks} marks and lasts ${pattern.duration}: ${pattern.sections.map((s) => `${s.name} (${s.marks} marks)`).join(', ')}.` },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
+      { '@type': 'ListItem', position: 2, name: 'Past Papers', item: 'https://parhayi.pages.dev/past-papers/' },
+      { '@type': 'ListItem', position: 3, name: `${biseLabel} Class ${group.cls} ${group.subject} Past Papers` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${group.subject} Past Papers Class ${group.cls} — ${biseLabel}`,
+    description: `${items.length} official ${group.subject} past papers for Class ${group.cls} (${minYear}–${maxYear}), free PDF downloads.`,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+
+<BaseLayout
+  data-pagefind-body
+  jsonLd={jsonLd}
+  title={`${group.subject} Past Papers Class ${group.cls} — ${biseLabel} (${minYear}–${maxYear}) | Parhayi`}
+  description={`Download ${items.length} official ${group.subject} past papers for Class ${group.cls} (${biseLabel}), ${minYear} to ${maxYear}. Free PDFs with exam pattern, chapter weightage and study tips.`}
+>
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="transition-colors hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/past-papers')} class="transition-colors hover:text-[#1d4ed8]">Past Papers</a>
+        <span>/</span>
+        <a href={url(`/board/${boardSlug}`)} class="transition-colors hover:text-[#1d4ed8]">{group.board}</a>
+        {group.bise && (
+          <>
+            <span>/</span>
+            <a href={url(`/board/${boardSlug}/${biseSlug}`)} class="transition-colors hover:text-[#1d4ed8]">{group.bise}</a>
+          </>
+        )}
+        <span>/</span>
+        <span class="text-slate-500">Class {group.cls} {group.subject}</span>
+      </nav>
+
+      <div class="flex items-start gap-4">
+        <SubjectIcon subject={group.subject} size="md" />
+        <div>
+          <h1 class="max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
+            {group.subject} Past Papers — Class {group.cls}
+          </h1>
+          <p class="mt-3 max-w-2xl text-base text-slate-600">
+            Every official {biseLabel} {group.subject} paper from {minYear} to {maxYear}, with the exam pattern and chapter weightage you need to practise smart.
+          </p>
+        </div>
+      </div>
+
+      <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Papers</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{items.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Years</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{minYear}–{maxYear}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Total marks</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{pattern.totalMarks}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Duration</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{pattern.duration}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Download every year</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Official {biseLabel} papers, newest first.</p>
+    </div>
+    <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((p) => (
+        <a
+          href={url(String(p.data.pdfUrl))}
+          target={String(p.data.pdfUrl).startsWith('http') ? '_blank' : undefined}
+          rel="noopener"
+          class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-[#1d4ed8]">{p.data.year}</div>
+            <Icon name="download" size={16} strokeWidth={2.4} class="text-slate-300 transition-colors group-hover:text-[#1d4ed8]" />
+          </div>
+          <h3 class="mt-2 font-display text-[16px] font-extrabold leading-tight tracking-tight text-slate-900">{p.data.title}</h3>
+          <div class="mt-6 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">PDF · Class {group.cls}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <div class="mb-8">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Exam pattern & chapter weightage</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Know the structure before you practise.</p>
+      </div>
+      <div class="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <h3 class="font-display text-lg font-extrabold tracking-tight text-slate-900">Paper structure</h3>
+          <div class="mt-5 space-y-3">
+            {pattern.sections.map((s) => (
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                <span class="text-sm font-semibold text-slate-900">{s.name}</span>
+                <span class="text-sm text-slate-500">{s.marks} marks · {s.questions} questions</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <h3 class="font-display text-lg font-extrabold tracking-tight text-slate-900">Where the marks come from</h3>
+          <div class="mt-5 space-y-3">
+            {pattern.chapterWeightage.map((c) => (
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-semibold text-slate-900">{c.chapter}</span>
+                  {c.priority === 'high' && (
+                    <span class="rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1d4ed8]">Focus here</span>
+                  )}
+                </div>
+                <span class="text-sm text-slate-500">{c.marks} marks</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">How to use these papers</h2>
+      <p class="mt-1.5 text-sm text-slate-500">{group.subject}-specific advice for Class {group.cls} students.</p>
+    </div>
+    <div class="grid grid-cols-1 gap-2.5 lg:grid-cols-2">
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h3 class="font-display text-lg font-extrabold tracking-tight text-slate-900">Study tips</h3>
+        <ul class="mt-5 space-y-2.5">
+          {tips.map(t => (
+            <li class="flex gap-2.5 text-sm leading-relaxed text-slate-600">
+              <Icon name="sparkles" size={16} strokeWidth={2.2} class="mt-0.5 shrink-0 text-[#1d4ed8]" />
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h3 class="font-display text-lg font-extrabold tracking-tight text-slate-900">Common mistakes to avoid</h3>
+        <ul class="mt-5 space-y-2.5">
+          {mistakes.map(m => (
+            <li class="flex gap-2.5 text-sm leading-relaxed text-slate-600">
+              <Icon name="circle-help" size={16} strokeWidth={2.2} class="mt-0.5 shrink-0 text-slate-400" />
+              <span>{m}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-white">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Frequently asked questions</h2>
+      <div class="mt-6 space-y-2">
+        {faq.map((f, i) => (
+          <details class="group rounded-xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-bold text-slate-900">
+              <span>{f.q}</span>
+              <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-400 transition-transform group-open:rotate-90" />
+            </summary>
+            <div class="border-t border-slate-200 px-5 py-4 text-sm leading-relaxed text-slate-600">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 py-10 sm:px-7 lg:px-10">
+      <a href={url('/past-papers')} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#1d4ed8]">
+        <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to past papers
+      </a>
+    </div>
+  </div>
+</BaseLayout>

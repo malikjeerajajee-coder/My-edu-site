@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import PaperEnrichment from '../../components/PaperEnrichment.astro';
 import RelatedPapers from '../../components/RelatedPapers.astro';
+import RelatedGazettes from '../../components/RelatedGazettes.astro';
 import { url } from '../../lib/url';
 import { boardByName } from '../../lib/boards';
 import { boardBySlug } from '../../lib/boards';
@@ -87,5 +88,6 @@ const desc = `Download ${d.subject} Class ${d.class} ${d.year} past paper from $
   <div class="mx-auto max-w-[900px] px-5 py-10 sm:px-7 lg:px-10 lg:py-14">
     <PaperEnrichment paper={paper} />
     <RelatedPapers paper={paper} allPapers={allPapers} />
+<RelatedGazettes board={d.board} bise={d.bise} cls={d.class} year={d.year} />
   </div>
 </BaseLayout>

@@ -1,3 +1,6 @@
-# Cloudflare redirects
-# Old GitHub Pages URL patterns → new root
-/My-edu-site/* /:splat 301
+# Redirect old thin pages to new consolidated pages
+# This maintains SEO value from any existing backlinks
+
+# Example redirects (you'll need to generate these programmatically)
+# /past-papers/biology-10-2018  /past-papers/punjab-lahore-10-biology  301
+# /past-papers/biology-10-2019  /past-papers/punjab-lahore-10-biology  301

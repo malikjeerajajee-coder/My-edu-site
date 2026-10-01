@@ -1,0 +1,13 @@
+---
+interface MetaItem { label: string; value: string; }
+interface Props { items: MetaItem[]; }
+const { items } = Astro.props;
+---
+<dl class="meta-grid">
+  {items.map(m => (
+    <div class="meta-item">
+      <dt class="meta-label">{m.label}</dt>
+      <dd class="meta-value">{m.value}</dd>
+    </div>
+  ))}
+</dl>

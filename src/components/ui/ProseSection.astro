@@ -1,0 +1,11 @@
+---
+interface Props { children: any; }
+const { children } = Astro.props;
+---
+<section class="prose-section">
+  <div class="prose-container">
+    <div class="prose">
+      <slot />
+    </div>
+  </div>
+</section>

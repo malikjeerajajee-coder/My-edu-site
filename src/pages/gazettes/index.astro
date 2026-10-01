@@ -8,18 +8,52 @@ import { getCollection } from 'astro:content';
 const gazettes = await getCollection('gazettes');
 const count = (name: string) => gazettes.filter((g: any) => (g.data.boards || []).includes(name)).length;
 const boards = BOARDS.map(b => ({ ...b, count: count(b.name) })).filter(b => b.count > 0);
-const years = [...new Set(gazettes.map((g: any) => g.data.year))].sort((a, b) => b - a);
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: 'Result Gazettes — Pakistani Boards',
-  description: `${gazettes.length} result gazettes from every major Pakistani board. Class 9 to 12, 2018–2026.`,
-};
+const years = gazettes.map((g: any) => g.data.year);
+const minY = years.length ? Math.min(...years) : 0;
+const maxY = years.length ? Math.max(...years) : 0;
+const classes = [...new Set(gazettes.map((g: any) => String(g.data.class)))].sort((a, b) => Number(a) - Number(b));
+const classLo = classes[0] || '9';
+const classHi = classes.length ? classes[classes.length - 1] : '12';
+
+const faq = [
+  { q: 'What is a result gazette?', a: 'When a board announces results, it publishes an official gazette — a PDF listing every candidate\'s roll number, subject-wise marks and total. It is the final, official record of a board exam\'s results.' },
+  { q: 'What is the difference between Annual and Supply gazettes?', a: 'The Annual gazette covers the main yearly exam. Supply (also called 2nd Annual) gazettes cover the re-sit exam held a few months later for students who need to clear one or more subjects. Both types are available here.' },
+  { q: 'How do I find my result in a gazette?', a: 'Open the gazette for your board, class and year, then use Find (Ctrl+F on desktop) and search your roll number. Your row shows subject-wise marks, total and status.' },
+  { q: 'Are these gazettes official?', a: 'Yes. These are the same PDFs each BISE and FBISE publishes after announcing results. We host them on Google Drive so they stay fast and always available.' },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
+      { '@type': 'ListItem', position: 2, name: 'Result Gazettes' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Result Gazettes — All Pakistani Boards',
+    description: `Official result gazettes from ${minY} to ${maxY} for Class ${classLo} to ${classHi} — Annual and Supply exams from every Pakistani board, free on Google Drive.`,
+    inLanguage: 'en',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
+
 <BaseLayout
-  title={`Result Gazettes ${new Date().getFullYear()} — ${gazettes.length} Free PDFs for All Boards | Parhayi`}
-  description={`Download ${gazettes.length} official result gazettes from Pakistani boards. Punjab, Federal, Sindh, KPK, Balochistan, AJK. Free PDFs.`}
+  title={`Result Gazettes ${maxY} — All Pakistani Boards | Parhayi`}
+  description={`Official result gazettes from ${minY} to ${maxY} for Class ${classLo} to ${classHi} — Annual and Supply exams from every Pakistani board. Free, hosted on Google Drive.`}
   jsonLd={jsonLd}
 >
   <section class="border-b border-slate-200">
@@ -29,12 +63,8 @@ const jsonLd = {
         <span>/</span>
         <span class="text-slate-500">Result Gazettes</span>
       </nav>
-      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-        Official result gazettes.
-      </h1>
-      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-        Download the official result gazettes from every Pakistani board. Free PDFs, 2018 to 2026.
-      </p>
+      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">Official result gazettes.</h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">Every board publishes a gazette after each exam — the complete, official record of results. Annual and Supply exams, Class {classLo} to {classHi}, hosted on Google Drive. Free forever.</p>
       <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
         <div>
           <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Gazettes</dt>
@@ -45,8 +75,12 @@ const jsonLd = {
           <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boards.length}</dd>
         </div>
         <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Classes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{classLo}–{classHi}</dd>
+        </div>
+        <div>
           <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Years</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{years[years.length - 1]}–{years[0]}</dd>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{minY}–{maxY}</dd>
         </div>
       </dl>
     </div>
@@ -57,7 +91,6 @@ const jsonLd = {
       <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your board</h2>
       <p class="mt-1.5 text-sm text-slate-500">Every board publishes its own result gazettes.</p>
     </div>
-
     <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       {boards.map(b => (
         <a href={url(`/board/${b.slug}`)} class="group relative flex flex-col bg-white p-7 transition-colors hover:bg-slate-50">
@@ -66,9 +99,7 @@ const jsonLd = {
             <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="mt-1.5 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
           </div>
           <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{b.full}</p>
-          <div class="mt-8 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
-            {b.count.toLocaleString()} {b.count === 1 ? 'gazette' : 'gazettes'}
-          </div>
+          <div class="mt-8 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">{b.count.toLocaleString()} {b.count === 1 ? 'gazette' : 'gazettes'}</div>
         </a>
       ))}
     </div>
@@ -76,15 +107,17 @@ const jsonLd = {
 
   <section class="border-t border-slate-200 bg-white">
     <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
-      <div class="prose">
-        <h2>What is a result gazette?</h2>
-        <p>A result gazette is the official document published by each board after exams are marked. It lists every student's roll number, name, and marks — arranged by school and registration number. If you need to verify a result, apply for a duplicate certificate, or resolve a discrepancy, the gazette is the authoritative source.</p>
-        <h3>When you need it</h3>
-        <ul>
-          <li><strong>Verification</strong> — proving your result to a college, university, or employer</li>
-          <li><strong>Correction requests</strong> — if a printed result shows an error</li>
-          <li><strong>Historical research</strong> — comparing results across years</li>
-        </ul>
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Frequently asked questions</h2>
+      <div class="mt-6 space-y-2">
+        {faq.map((f, i) => (
+          <details class="group rounded-xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-bold text-slate-900">
+              <span>{f.q}</span>
+              <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-400 transition-transform group-open:rotate-90" />
+            </summary>
+            <div class="border-t border-slate-200 px-5 py-4 text-sm leading-relaxed text-slate-600">{f.a}</div>
+          </details>
+        ))}
       </div>
     </div>
   </section>

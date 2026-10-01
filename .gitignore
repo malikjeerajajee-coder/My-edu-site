@@ -26,3 +26,9 @@ pnpm-debug.log*
 .idea/
 .preview/
 .env.cf
+/*.sh
+fix-*.js
+*.bak
+fix.cjs
+Fix.cjs
+fix-import.cjs

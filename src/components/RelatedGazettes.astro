@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { url } from '../lib/url';
+import { getCollection } from 'astro:content';
+
+interface Props { board: string; bise?: string; cls: string; year?: number; }
+const { board, bise, cls, year } = Astro.props;
+
+const all = await getCollection('gazettes');
+const related = all
+  .filter((g: any) => {
+    if (g.data.board !== board) return false;
+    if (bise && g.data.bise && g.data.bise !== bise) return false;
+    if (String(g.data.class) !== String(cls)) return false;
+    return true;
+  })
+  .sort((a: any, b: any) => {
+    const aScore = a.data.year === year ? 1 : 0;
+    const bScore = b.data.year === year ? 1 : 0;
+    if (aScore !== bScore) return bScore - aScore;
+    return (b.data.year || 0) - (a.data.year || 0);
+  })
+  .slice(0, 4);
+---
+
+{related.length > 0 && (
+  <section class="mt-12 border-t border-slate-200 pt-10">
+    <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
+      {year ? `${year} Result Gazettes` : 'Result Gazettes'}
+      <span class="ml-2 text-sm font-normal text-slate-500">({bise || board} · Class {cls})</span>
+    </h2>
+    <p class="mt-1.5 text-sm text-slate-500">View the official result documents for this class and board.</p>
+
+    <div class="seamed-grid mt-6 grid-cols-1 sm:grid-cols-2">
+      {related.map((g: any) => (
+        <a href={url(`/gazettes/${g.id}`)} class="group flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-5 transition-all hover:border-[#1d4ed8] hover:shadow-sm">
+          <div class="min-w-0">
+            <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-[#1d4ed8]">{g.data.year} · {g.data.examType}</div>
+            <div class="mt-1 truncate text-sm font-bold text-slate-900 transition-colors group-hover:text-[#1d4ed8]">{g.data.title}</div>
+          </div>
+          <Icon name="newspaper" size={20} strokeWidth={2.2} class="shrink-0 text-slate-300 transition-colors group-hover:text-[#1d4ed8]" />
+        </a>
+      ))}
+    </div>
+  </section>
+)}

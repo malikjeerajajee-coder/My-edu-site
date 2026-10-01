@@ -112,10 +112,6 @@ const branchActive = (item: any): boolean =>
   <meta property="og:locale" content="en_PK" />
   <link rel="icon" type="image/png" href={url('/favicon.png')} />
   <link rel="sitemap" type="application/xml" href={url('/sitemap-index.xml')} />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
   {schemas.map(s => (
     <script type="application/ld+json" set:html={JSON.stringify(s)} />
   ))}

@@ -1,0 +1,13 @@
+---
+interface Stat { label: string; value: string | number; }
+interface Props { stats: Stat[]; }
+const { stats } = Astro.props;
+---
+<dl class="stats-grid">
+  {stats.map(s => (
+    <div>
+      <dt class="stat-label">{s.label}</dt>
+      <dd class="stat-value">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</dd>
+    </div>
+  ))}
+</dl>

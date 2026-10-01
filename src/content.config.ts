@@ -56,9 +56,12 @@ const gazettes = defineCollection({
     title: z.string(),
     year: z.number(),
     board: z.string(),
-    boards: z.array(z.string()).optional(),
+    boards: z.array(z.string()),
+    bise: z.string().optional(),
     class: z.string(),
-    pdfUrl: z.string(),
+    examType: z.string(),
+    variant: z.string().optional(),
+    driveUrl: z.string(),
   }),
 });
 
