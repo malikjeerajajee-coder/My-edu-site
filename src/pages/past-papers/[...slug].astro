@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import SubjectIcon from '../../components/SubjectIcon.astro';
+import { url } from '../../lib/url';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const papers = await getCollection('pastPapers');
+  return papers.map((p: any) => ({ params: { slug: p.id }, props: { paper: p } }));
+}
+
+const { paper } = Astro.props;
+const d = paper.data;
+const boardName = (d.boards || [])[0] || 'Punjab';
+const biseLabel = d.bise ? `BISE ${d.bise}` : `${boardName} Board`;
+const isDrive = String(d.pdfUrl).startsWith('http');
+
+const all = await getCollection('pastPapers');
+const related = all
+  .filter((p: any) =>
+    p.id !== paper.id &&
+    String(p.data.class) === String(d.class) &&
+    (p.data.subject || 'General') === (d.subject || 'General') &&
+    ((p.data.boards || [])[0] || 'Punjab') === boardName)
+  .sort((a: any, b: any) => (b.data.year || 0) - (a.data.year || 0))
+  .slice(0, 6);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
+      { '@type': 'ListItem', position: 2, name: 'Past Papers', item: 'https://parhayi.pages.dev/past-papers/' },
+      { '@type': 'ListItem', position: 3, name: d.title },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'DigitalDocument',
+    name: d.title,
+    description: `Official ${d.subject} past paper for Class ${d.class}, ${d.year} — ${biseLabel}. Free PDF.`,
+    educationalLevel: `Class ${d.class}`,
+    datePublished: String(d.year),
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    publisher: { '@type': 'Organization', name: biseLabel },
+  },
+];
+---
+
+<BaseLayout
+  data-pagefind-body
+  jsonLd={jsonLd}
+  title={`${d.title} | Parhayi`}
+  description={`Download the official ${d.subject} past paper for Class ${d.class} (${d.year}) — ${biseLabel}. Free PDF, no sign-up.`}
+>
+  <div class="mx-auto w-full max-w-[900px] px-4 pt-8 sm:px-6 sm:pt-12 lg:px-8">
+    <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+      <a href={url('/')} class="transition-colors hover:text-[#1d4ed8]">Home</a>
+      <span>/</span>
+      <a href={url('/past-papers')} class="transition-colors hover:text-[#1d4ed8]">Past Papers</a>
+      <span>/</span>
+      <span class="truncate text-slate-500">Class {d.class} · {d.subject} · {d.year}</span>
+    </nav>
+
+    <a href={url(`/class/${d.class}/past-papers`)} class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#1d4ed8]">
+      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {d.class} past papers
+    </a>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+      <div class="flex items-start gap-4">
+        <SubjectIcon subject={d.subject || 'General'} size="md" />
+        <div class="flex-1">
+          <h1 class="font-display text-2xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-3xl">{d.title}</h1>
+          <p class="mt-2 text-sm text-slate-500">Official {biseLabel} exam paper. Free PDF — open it in Google Drive or download it directly.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-2.5 sm:flex-row">
+        {isDrive ? (
+          <a href={d.pdfUrl} target="_blank" rel="noopener" class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1d4ed8] px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">
+            <Icon name="external-link" size={18} strokeWidth={2.4} /> Open in Google Drive
+          </a>
+        ) : (
+          <a href={url(String(d.pdfUrl))} class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1d4ed8] px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">
+            <Icon name="download" size={18} strokeWidth={2.4} /> Download PDF
+          </a>
+        )}
+      </div>
+
+      <dl class="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Board</dt>
+          <dd class="mt-1 text-sm font-extrabold text-slate-900">{boardName}</dd>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-400">BISE</dt>
+          <dd class="mt-1 text-sm font-extrabold text-slate-900">{d.bise || '—'}</dd>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Class</dt>
+          <dd class="mt-1 text-sm font-extrabold text-slate-900">Class {d.class}</dd>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Subject</dt>
+          <dd class="mt-1 text-sm font-extrabold text-slate-900">{d.subject}</dd>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+          <dt class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Year</dt>
+          <dd class="mt-1 text-sm font-extrabold text-slate-900">{d.year}</dd>
+        </div>
+      </dl>
+    </div>
+
+    {related.length > 0 && (
+      <div class="mt-10">
+        <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900">More {d.subject} papers — {biseLabel}</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Other years for the same class and subject.</p>
+        <div class="seamed-grid mt-5 grid-cols-1 sm:grid-cols-2">
+          {related.map((r: any) => (
+            <a href={url(`/past-papers/${r.id}`)} class="group flex items-center justify-between gap-4 bg-white p-5 transition-colors hover:bg-slate-50">
+              <div class="min-w-0">
+                <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">{r.data.year}</div>
+                <div class="mt-1 truncate text-sm font-bold text-slate-900 transition-colors group-hover:text-[#1d4ed8]">{r.data.title}</div>
+              </div>
+              <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-colors group-hover:text-[#1d4ed8]" />
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <div class="pb-16 pt-10">
+      <a href={url('/past-papers')} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition-colors hover:text-[#1d4ed8]">
+        <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to all past papers
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -53,20 +53,12 @@ export const KPK_BISES: BISE[] = [
 // ─── Balochistan — 7 BISEs ───
 export const BALOCHISTAN_BISES: BISE[] = [
   { slug: 'quetta',      name: 'Quetta',      short: 'QTA' },
-  { slug: 'khuzdar',     name: 'Khuzdar',     short: 'KZD' },
-  { slug: 'turbat',      name: 'Turbat',      short: 'TRB' },
-  { slug: 'loralai',     name: 'Loralai',     short: 'LRL' },
-  { slug: 'zhob',        name: 'Zhob',        short: 'ZHB' },
-  { slug: 'nasirabad',   name: 'Nasirabad',   short: 'NSR' },
-  { slug: 'makran',      name: 'Makran',      short: 'MKR' },
-];
+  ];
 
 // ─── AJK — 3 BISEs ───
 export const AJK_BISES: BISE[] = [
   { slug: 'mirpur',      name: 'Mirpur',      short: 'MPR' },
-  { slug: 'muzaffarabad',name: 'Muzaffarabad',short: 'MZD' },
-  { slug: 'rawalakot',   name: 'Rawalakot',   short: 'RLK' },
-];
+  ];
 
 // ─── Federal — single board ───
 export const FEDERAL_BISES: BISE[] = [

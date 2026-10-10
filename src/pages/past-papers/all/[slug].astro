@@ -51,7 +51,7 @@ const boardSlug = slugify(group.board);
 const biseSlug = group.bise ? slugify(group.bise) : null;
 const biseLabel = group.bise ? `${group.bise} Board` : `${group.board} Board`;
 
-const pattern = getExamPattern(group.subject);
+const pattern = getExamPattern(group.subject, group.cls);
 const tips = pattern.studyTips || [];
 const mistakes = pattern.commonMistakes || [];
 

@@ -6,210 +6,206 @@ import { url } from '../../../lib/url';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  // Config defined INSIDE getStaticPaths to avoid TDZ
-  const TYPE_LIST: { slug: string; collection: string }[] = [
-    { slug: 'notes',           collection: 'notes' },
-    { slug: 'past-papers',     collection: 'pastPapers' },
-    { slug: 'guess-papers',    collection: 'guessPapers' },
-    { slug: 'pairing-schemes', collection: 'pairingSchemes' },
-    { slug: 'quizzes',         collection: 'quizzes' },
-    { slug: 'books',           collection: 'books' },
-    { slug: 'gazettes',        collection: 'gazettes' },
-  ];
-
-  const collections = await Promise.all([
-    getCollection('notes'),
-    getCollection('pastPapers'),
-    getCollection('guessPapers'),
-    getCollection('pairingSchemes'),
-    getCollection('quizzes'),
-    getCollection('books'),
-    getCollection('gazettes'),
-  ]);
-  const map: Record<string, any[]> = {
-    notes: collections[0],
-    pastPapers: collections[1],
-    guessPapers: collections[2],
-    pairingSchemes: collections[3],
-    quizzes: collections[4],
-    books: collections[5],
-    gazettes: collections[6],
-  };
-
-  const paths: any[] = [];
-  for (const t of TYPE_LIST) {
-    const coll = map[t.collection] || [];
-    const classes = new Set<string>();
-    coll.forEach((i: any) => classes.add(String(i.data.class)));
-    for (const cls of classes) {
-      paths.push({ params: { class: cls, type: t.slug } });
-    }
-  }
-  return paths;
+  const classes = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+  const types = ['past-papers', 'notes', 'gazettes', 'books', 'quizzes', 'guess-papers', 'pairing-schemes'];
+  return classes.flatMap(cls => types.map(type => ({ params: { class: cls, type }, props: { cls, type } })));
 }
 
-const { class: cls, type: typeSlug } = Astro.params;
+const { cls, type } = Astro.props;
+const slugify = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-// Same config — declared in the frontmatter body (runs after getStaticPaths)
-const TYPE_DATA: Record<string, {
-  label: string; singular: string; collection: string;
-  detailBase: string; icon: string; desc: string;
-}> = {
-  'notes': {
-    label: 'Notes', singular: 'note', collection: 'notes',
-    detailBase: '/note', icon: 'file-text',
-    desc: 'Chapter-wise revision notes',
-  },
-  'past-papers': {
-    label: 'Past Papers', singular: 'paper', collection: 'pastPapers',
-    detailBase: '/past-papers', icon: 'scroll-text',
-    desc: 'Official board exam papers, 2018–2026',
-  },
-  'guess-papers': {
-    label: 'Guess Papers', singular: 'paper', collection: 'guessPapers',
-    detailBase: '/guess-papers', icon: 'sparkles',
-    desc: 'Expected questions based on exam trends',
-  },
-  'pairing-schemes': {
-    label: 'Pairing Schemes', singular: 'scheme', collection: 'pairingSchemes',
-    detailBase: '/pairing-schemes', icon: 'list',
-    desc: 'Official paper structure and marks distribution',
-  },
-  'quizzes': {
-    label: 'Quizzes', singular: 'quiz', collection: 'quizzes',
-    detailBase: '/quiz', icon: 'circle-help',
-    desc: 'Interactive MCQs with instant feedback',
-  },
-  'books': {
-    label: 'Textbooks', singular: 'book', collection: 'books',
-    detailBase: '/textbook', icon: 'book-marked',
-    desc: 'Official board textbooks, free PDFs',
-  },
-  'gazettes': {
-    label: 'Result Gazettes', singular: 'gazette', collection: 'gazettes',
-    detailBase: '/gazettes', icon: 'newspaper',
-    desc: 'Official board result documents',
-  },
-};
+const [papers, notes, gazettes, books, quizzes] = await Promise.all([
+  getCollection('pastPapers'), getCollection('notes'), getCollection('gazettes'),
+  getCollection('books'), getCollection('quizzes')
+]);
 
-const cfg = TYPE_DATA[typeSlug!];
-if (!cfg) return Astro.redirect(`/class/${cls}`);
+const matchClass = (item) => String(item.data.class) === String(cls);
 
-const allItems = await getCollection(cfg.collection as any);
-const items = allItems.filter((i: any) => String(i.data.class) === cls);
+let title = '', description = '', heroIcon = 'folder', groups = [];
 
-if (!items.length) return Astro.redirect(`/class/${cls}`);
-
-const bySubject = new Map<string, any[]>();
-items.forEach((i: any) => {
-  const subj = (i.data.subject || i.data.board || 'General').replace(/\s*\([^)]*\)\s*/g, '').trim();
-  if (!bySubject.has(subj)) bySubject.set(subj, []);
-  bySubject.get(subj)!.push(i);
-});
-const subjects = [...bySubject.keys()].sort();
-
-subjects.forEach(s => {
-  bySubject.get(s)!.sort((a: any, b: any) => {
-    if (a.data.year && b.data.year) return b.data.year - a.data.year;
-    if (a.data.chapterNumber && b.data.chapterNumber) return a.data.chapterNumber - b.data.chapterNumber;
-    return (a.data.title || '').localeCompare(b.data.title || '');
+if (type === 'past-papers') {
+  title = `Class ${cls} Past Papers — All Boards (Free PDF Download)`;
+  description = `Download official Class ${cls} past papers for Punjab, Federal, Sindh, and KPK boards. Organized by BISE and subject with exam patterns and study guides.`;
+  heroIcon = 'scroll-text';
+  const items = papers.filter(matchClass);
+  const byBoard = {};
+  items.forEach(p => {
+    const board = p.data.boards?.[0] || 'Other';
+    const bise = p.data.bise || (board === 'Federal' ? 'Federal' : 'General');
+    const subject = p.data.subject || 'General';
+    if (!byBoard[board]) byBoard[board] = {};
+    if (!byBoard[board][bise]) byBoard[board][bise] = new Map();
+    const hubSlug = [slugify(board), slugify(bise), cls, slugify(subject)].filter(Boolean).join('-');
+    byBoard[board][bise].set(subject, { subject, href: `/past-papers/all/${hubSlug}` });
   });
-});
-
-const totalItems = items.length;
+  groups = Object.entries(byBoard).map(([board, bises]) => ({
+    name: board + ' Board',
+    subgroups: Object.entries(bises).map(([bise, subs]) => ({
+      name: bise === 'Federal' ? 'Federal Board (FBISE)' : (bise === 'General' ? 'General' : `BISE ${bise}`),
+      items: Array.from(subs.values()).sort((a,b) => a.subject.localeCompare(b.subject))
+    }))
+  }));
+} else if (type === 'gazettes') {
+  title = `Class ${cls} Result Gazettes — All Boards`;
+  description = `View official Class ${cls} result gazettes for all Pakistani boards. Find your BISE and year to check the official result document.`;
+  heroIcon = 'newspaper';
+  const items = gazettes.filter(matchClass);
+  const byBoard = {};
+  items.forEach(g => {
+    const board = g.data.board || 'Other';
+    const bise = g.data.bise || (board === 'Federal' ? 'Federal' : 'General');
+    if (!byBoard[board]) byBoard[board] = {};
+    if (!byBoard[board][bise]) byBoard[board][bise] = [];
+    byBoard[board][bise].push({ year: g.data.year, title: g.data.title, href: `/gazettes/${g.id}` });
+  });
+  groups = Object.entries(byBoard).map(([board, bises]) => ({
+    name: board + ' Board',
+    subgroups: Object.entries(bises).map(([bise, years]) => ({
+      name: bise === 'Federal' ? 'Federal Board (FBISE)' : (bise === 'General' ? 'General' : `BISE ${bise}`),
+      items: years.sort((a,b) => b.year - a.year)
+    }))
+  }));
+} else if (type === 'notes') {
+  title = `Class ${cls} Notes — All Subjects (Free PDF)`;
+  description = `Chapter-wise revision notes for Class ${cls}. Organized by subject for quick exam preparation.`;
+  heroIcon = 'file-text';
+  const items = notes.filter(matchClass);
+  const bySubject = {};
+  items.forEach(n => {
+    const subject = n.data.subject || 'General';
+    if (!bySubject[subject]) bySubject[subject] = [];
+    bySubject[subject].push({ title: n.data.title, href: `/note/${n.id}` });
+  });
+  groups = [{
+    name: 'Subjects',
+    subgroups: Object.entries(bySubject).map(([subject, notes]) => ({
+      name: subject,
+      items: notes
+    }))
+  }];
+} else if (type === 'books') {
+  title = `Class ${cls} Textbooks — All Boards (Free PDF)`;
+  description = `Official textbooks for Class ${cls} from Punjab, Sindh, Federal, and KPK boards.`;
+  heroIcon = 'book-marked';
+  const items = books.filter(matchClass);
+  const byBoard = {};
+  items.forEach(b => {
+    const board = b.data.boards?.[0] || 'Other';
+    if (!byBoard[board]) byBoard[board] = [];
+    byBoard[board].push({ subject: b.data.subject, href: `/textbook/${b.id}` });
+  });
+  groups = Object.entries(byBoard).map(([board, subs]) => ({
+    name: board + ' Board',
+    subgroups: [{ name: 'All Subjects', items: subs.sort((a,b) => a.subject.localeCompare(b.subject)) }]
+  }));
+} else {
+  title = `Class ${cls} ${type.replace('-', ' ')}`;
+  description = `Resources for Class ${cls}.`;
+}
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: `Class ${cls} ${cfg.label}`,
-  description: `${totalItems} ${cfg.label.toLowerCase()} for Class ${cls} Pakistani students. Free downloads.`,
+  name: title,
+  description: description,
+  educationalLevel: `Class ${cls}`,
 };
 ---
-<BaseLayout
-  title={`Class ${cls} ${cfg.label} — ${totalItems} ${totalItems === 1 ? 'Item' : 'Items'} | Parhayi`}
-  description={`Free Class ${cls} ${cfg.label.toLowerCase()} for Pakistani students. ${totalItems} items across ${subjects.length} subjects.`}
-  jsonLd={jsonLd}
->
+
+<BaseLayout data-pagefind-body jsonLd={jsonLd} title={title + ' | Parhayi'} description={description}>
   <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20">
       <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
         <span>/</span>
         <a href={url(`/class/${cls}`)} class="hover:text-[#1d4ed8]">Class {cls}</a>
         <span>/</span>
-        <span class="text-slate-500">{cfg.label}</span>
+        <span class="text-slate-500 capitalize">{type.replace('-', ' ')}</span>
       </nav>
 
       <div class="flex items-start gap-4">
-        <span class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600">
-          <Icon name={cfg.icon} size={22} strokeWidth={2.2} />
-        </span>
+        <div class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#eff4ff] text-[#1d4ed8]">
+          <Icon name={heroIcon} size={24} strokeWidth={2} />
+        </div>
         <div>
-          <div class="text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">Class {cls}</div>
-          <h1 class="mt-2 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
-            {cfg.label}
+          <h1 class="max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">
+            {title}
           </h1>
-          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-slate-500">
-            {cfg.desc} · {totalItems} {totalItems === 1 ? 'item' : 'items'} across {subjects.length} {subjects.length === 1 ? 'subject' : 'subjects'}
+          <p class="mt-3 max-w-2xl text-base text-slate-600 sm:text-lg">
+            {description}
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
-    <div class="space-y-12">
-      {subjects.map(subj => (
-        <div>
-          <div class="mb-4 flex items-center gap-3">
-            <SubjectIcon subject={subj} size="sm" />
-            <h2 class="font-display text-lg font-extrabold tracking-tight text-slate-900">{subj}</h2>
-            <span class="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400">
-              {bySubject.get(subj)!.length} {bySubject.get(subj)!.length === 1 ? 'item' : 'items'}
-            </span>
-          </div>
+  <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    {groups.length === 0 && (
+      <div class="rounded-2xl border border-slate-200 bg-slate-50 p-10 text-center">
+        <p class="text-slate-500">No resources found for Class {cls} {type} yet. Check back soon!</p>
+      </div>
+    )}
 
-          <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {bySubject.get(subj)!.map((item: any) => {
-              const year = item.data.year ? ` · ${item.data.year}` : '';
-              const chapter = item.data.chapterNumber ? `Ch ${item.data.chapterNumber}` : '';
-              const bise = item.data.bise ? ` · ${item.data.bise}` : '';
-              const board = !item.data.bise && item.data.boards?.[0] ? ` · ${item.data.boards[0]}` : '';
-              const extra = [chapter, year, bise, board].filter(Boolean).join('');
-              const detailUrl = `${cfg.detailBase}/${item.id}`;
-
-              return (
-                <a href={url(detailUrl)} class="group relative flex flex-col bg-white p-5 transition-colors hover:bg-slate-50">
-                  <h3 class="font-display text-[15px] font-extrabold leading-snug tracking-tight text-slate-900 line-clamp-2">
-                    {item.data.title}
-                  </h3>
-                  {extra && <p class="mt-1.5 text-[12px] text-slate-500">{extra}</p>}
-                  <div class="mt-4 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
-                    Open
-                    <Icon name="arrow-right" size={10} strokeWidth={2.8} />
+    <div class="space-y-10">
+      {groups.map(group => (
+        <section>
+          <h2 class="mb-6 flex items-center gap-3 font-display text-2xl font-extrabold tracking-tight text-slate-900">
+            <span class="h-6 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+            {group.name}
+          </h2>
+          
+          <div class="space-y-4">
+            {group.subgroups.map(sub => (
+              <details class="group rounded-2xl border border-slate-200 bg-white overflow-hidden" open={group.subgroups.length === 1}>
+                <summary class="flex cursor-pointer items-center justify-between gap-4 p-5 sm:p-6 hover:bg-slate-50 transition-colors">
+                  <h3 class="font-display text-lg font-bold text-slate-900 sm:text-xl">{sub.name}</h3>
+                  <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-slate-400">{sub.items.length} items</span>
+                    <Icon name="chevron-right" size={20} strokeWidth={2.4} class="text-slate-400 transition-transform group-open:rotate-90" />
                   </div>
-                </a>
-              );
-            })}
+                </summary>
+                <div class="border-t border-slate-100 bg-slate-50/50 p-5 sm:p-6">
+                  <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {sub.items.map(item => (
+                      <a href={url(item.href || '#')} class="group/card flex items-center justify-between gap-3 bg-white p-4 transition-all hover:bg-[#eff4ff] hover:z-10 hover:shadow-md">
+                        <div class="flex items-center gap-3 min-w-0">
+                          {item.subject && <SubjectIcon subject={item.subject} size="xs" />}
+                          <span class="truncate text-sm font-bold text-slate-900 group-hover/card:text-[#1d4ed8]">
+                            {item.subject || item.title || item.year}
+                          </span>
+                        </div>
+                        <Icon name="arrow-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-300 transition-all group-hover/card:translate-x-1 group-hover/card:text-[#1d4ed8]" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            ))}
           </div>
-        </div>
+        </section>
       ))}
     </div>
-  </section>
+  </div>
 
   <section class="border-t border-slate-200 bg-white">
     <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
       <div class="prose">
-        <h2>Class {cls} {cfg.label}</h2>
-        <p>{cfg.desc}. Every item on this page is written or compiled specifically for the Class {cls} Pakistani board syllabus.</p>
-        <p>Use the subject headings above to jump to what you need. Every resource is a free download — no sign-up, no ads, no paywall.</p>
+        <h2>Complete Study Material for Class {cls}</h2>
+        <p>
+          Welcome to the most organized directory for Class {cls} study resources in Pakistan. 
+          Whether you are looking for <strong>Punjab Board past papers</strong>, <strong>Federal Board textbooks</strong>, 
+          or <strong>Sindh Board notes</strong>, everything is categorized by board and subject to save you time.
+        </p>
+        <h3>How to use this page</h3>
+        <ul>
+          <li><strong>Step 1:</strong> Find your Board (e.g., Punjab, Federal, KPK, Sindh, Balochistan, AJK).</li>
+          <li><strong>Step 2:</strong> Click on your specific BISE (e.g., BISE Lahore, BISE Rawalpindi, FBISE).</li>
+          <li><strong>Step 3:</strong> Select your subject to download the complete archive of past papers, notes, or gazettes.</li>
+        </ul>
+        <p>
+          All resources are completely free and updated for the {new Date().getFullYear()} academic year.
+        </p>
       </div>
     </div>
   </section>
-
-  <div class="mx-auto max-w-[1200px] px-5 pb-16 pt-8 sm:px-7 lg:px-10">
-    <a href={url(`/class/${cls}`)} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-[#1d4ed8]">
-      <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to Class {cls}
-    </a>
-  </div>
 </BaseLayout>

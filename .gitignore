@@ -33,3 +33,4 @@ fix.cjs
 Fix.cjs
 fix-import.cjs
 *.tar.gz
+/*.csv

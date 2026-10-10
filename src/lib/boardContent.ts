@@ -199,3 +199,61 @@ export async function getClassTypeContent(boardSlug: string, cls: string, typeSl
 
   return { board, class: cls, type: typeSlug, ...cfg, items, groups };
 }
+
+// ═══════════════════════════════════════════════════════════════
+// Dynamic subject index — derived from real content, never hardcoded
+// ═══════════════════════════════════════════════════════════════
+export function classBand(cls: string): string {
+  const n = Number(cls);
+  if (n === 9 || n === 10) return 'SSC (Matric)';
+  if (n === 11 || n === 12) return 'HSSC (Intermediate)';
+  return 'Primary & Middle';
+}
+
+export async function getSubjectIndex(): Promise<any[]> {
+  const all = await loadAll();
+  const map = new Map<string, any>();
+  const sources: [string, any[]][] = [
+    ['past-papers', all.pastPapers],
+    ['notes', all.notes],
+    ['quizzes', all.quizzes],
+    ['books', all.books],
+    ['guess-papers', all.guessPapers],
+    ['pairing-schemes', all.pairingSchemes],
+  ];
+  for (const [type, items] of sources) {
+    for (const item of items as any[]) {
+      const raw = item?.data?.subject;
+      if (!raw) continue;
+      const name = String(raw).replace(/\s*\([^)]*\)\s*/g, '').trim();
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      if (!map.has(slug)) {
+        map.set(slug, { slug, name, total: 0, boards: new Set<string>(), classes: new Set<string>(), types: new Set<string>(), pairs: new Map<string, any>() });
+      }
+      const e = map.get(slug);
+      e.total += 1;
+      e.types.add(type);
+      const boards: string[] = item.data.boards || [];
+      const cls = item.data.class ? String(item.data.class) : null;
+      boards.forEach((b: string) => e.boards.add(b));
+      if (cls) {
+        e.classes.add(cls);
+        for (const b of (boards.length ? boards : ['Punjab'])) {
+          const key = b + '|' + cls;
+          if (!e.pairs.has(key)) e.pairs.set(key, { board: b, cls });
+        }
+      }
+    }
+  }
+  return [...map.values()]
+    .map((e: any) => ({
+      slug: e.slug,
+      name: e.name,
+      total: e.total,
+      boards: [...e.boards].sort(),
+      classes: [...e.classes].sort((a: string, b: string) => Number(a) - Number(b)),
+      types: [...e.types],
+      pairs: [...e.pairs.values()].sort((a: any, b: any) => Number(a.cls) - Number(b.cls) || a.board.localeCompare(b.board)),
+    }))
+    .sort((a: any, b: any) => a.name.localeCompare(b.name));
+}
