@@ -43,7 +43,7 @@ const bises = getBISEsForProvince(String(boardSlug));
 ---
 {board && typeData ? (
 <BaseLayout
-  title={`${board.name} Class ${cls} ${typeData.label} | Parhayi`}
+  title={`${board.name} Class ${cls} ${typeData.label} | TaleemMarkaz`}
   description={showBISEPicker
     ? `All ${typeData.label.toLowerCase()} for ${board.full} Class ${cls}. Choose your specific BISE to see papers for your board.`
     : `Free ${typeData.label.toLowerCase()} for ${board.full} Class ${cls}. Downloads organized by subject and year.`}
@@ -163,7 +163,7 @@ const bises = getBISEsForProvince(String(boardSlug));
 </BaseLayout>
 ) : subjectData && subjectData.subject ? (
 <BaseLayout
-  title={`${subjectData.board.name} Class ${cls} ${subjectData.subject} | Parhayi`}
+  title={`${subjectData.board.name} Class ${cls} ${subjectData.subject} | TaleemMarkaz`}
   description={`All ${subjectData.subject} material for ${subjectData.board.full} Class ${cls}: notes, past papers, guess papers, quizzes and books.`}
 >
   <div class="border-b border-slate-200">
@@ -222,7 +222,7 @@ const bises = getBISEsForProvince(String(boardSlug));
   </div>
 </BaseLayout>
 ) : (
-<BaseLayout title="Not found — Parhayi">
+<BaseLayout title="Not found — TaleemMarkaz">
   <div class="mx-auto max-w-3xl px-4 pt-20 pb-20 text-center">
     <h1 class="text-2xl font-extrabold text-slate-900">Not found</h1>
     <a href={url('/boards')} class="mt-6 inline-flex items-center gap-1.5 rounded-lg bg-[#1d4ed8] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1e3a8a]">

@@ -26,10 +26,10 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
-      { '@type': 'ListItem', position: 2, name: 'Quizzes', item: 'https://parhayi.pages.dev/quizzes/' },
-      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://parhayi.pages.dev/quizzes/class-${cls}/` },
-      { '@type': 'ListItem', position: 4, name: subj, item: `https://parhayi.pages.dev/quizzes/class-${cls}/${subjSlug}/` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Quizzes', item: 'https://taleemmarkaz.com/quizzes/' },
+      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://taleemmarkaz.com/quizzes/class-${cls}/` },
+      { '@type': 'ListItem', position: 4, name: subj, item: `https://taleemmarkaz.com/quizzes/class-${cls}/${subjSlug}/` },
       { '@type': 'ListItem', position: 5, name: d.title },
     ],
   },
@@ -49,7 +49,7 @@ const jsonLd = [
 ];
 ---
 <BaseLayout
-  title={`${d.title} — ${subj} Class ${cls} Chapter ${d.chapterNumber} | Parhayi`}
+  title={`${d.title} — ${subj} Class ${cls} Chapter ${d.chapterNumber} | TaleemMarkaz`}
   description={`Take the free ${d.title} — ${n} MCQs with instant feedback. Class ${cls} ${subj}, Chapter ${d.chapterNumber}: ${d.chapter}.`}
   jsonLd={jsonLd}
 >

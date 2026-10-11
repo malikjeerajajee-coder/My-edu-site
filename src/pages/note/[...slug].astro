@@ -38,8 +38,8 @@ const relatedQuizzes = quizzes
   .slice(0, 4);
 
 const pageTitle = isChaptered(note)
-  ? `${d.chapter || d.title} — Class ${cls} ${subj} Notes | Parhayi`
-  : `${d.title} — Class ${cls} ${subj} | Parhayi`;
+  ? `${d.chapter || d.title} — Class ${cls} ${subj} Notes | TaleemMarkaz`
+  : `${d.title} — Class ${cls} ${subj} | TaleemMarkaz`;
 
 const description = isChaptered(note)
   ? `Free chapter-wise notes for ${d.chapter || d.title} — Class ${cls} ${subj}. Key definitions, formulas and worked examples.`
@@ -50,10 +50,10 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://parhayi.pages.dev/' },
-      { '@type': 'ListItem', position: 2, name: 'Notes', item: 'https://parhayi.pages.dev/notes/' },
-      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://parhayi.pages.dev/notes/class-${cls}/` },
-      { '@type': 'ListItem', position: 4, name: subj, item: `https://parhayi.pages.dev/notes/class-${cls}/${subjSlug}/` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Notes', item: 'https://taleemmarkaz.com/notes/' },
+      { '@type': 'ListItem', position: 3, name: `Class ${cls}`, item: `https://taleemmarkaz.com/notes/class-${cls}/` },
+      { '@type': 'ListItem', position: 4, name: subj, item: `https://taleemmarkaz.com/notes/class-${cls}/${subjSlug}/` },
       { '@type': 'ListItem', position: 5, name: d.title },
     ],
   },
@@ -64,8 +64,8 @@ const jsonLd = [
     about: d.chapter || subj,
     educationalLevel: `Class ${cls}`,
     inLanguage: 'en',
-    publisher: { '@type': 'Organization', name: 'Parhayi' },
-    mainEntityOfPage: `https://parhayi.pages.dev/note/${note.id}/`,
+    publisher: { '@type': 'Organization', name: 'TaleemMarkaz' },
+    mainEntityOfPage: `https://taleemmarkaz.com/note/${note.id}/`,
   },
 ];
 ---

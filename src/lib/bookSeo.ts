@@ -95,7 +95,7 @@ export function bookSeoTitle(book: CollectionEntry<'books'>): string {
     : '';
   const year = d.year ? ` (${d.year})` : '';
   const subj = bookSubjectName(d.subject);
-  return `${subj} Class ${d.class} Textbook — ${board.abbreviation}${medium ? ' ' + medium : ''}${year} | Parhayi`;
+  return `${subj} Class ${d.class} Textbook — ${board.abbreviation}${medium ? ' ' + medium : ''}${year} | TaleemMarkaz`;
 }
 
 export function bookSeoDescription(book: CollectionEntry<'books'>): string {
@@ -114,7 +114,7 @@ export function bookSeoDescription(book: CollectionEntry<'books'>): string {
 export function boardSeo(boardName: string, classes: string[], totalBooks: number) {
   const board = boardMeta(boardName);
   return {
-    title: `${board.province} Textbooks — Class 1 to 12 Free PDF | ${board.abbreviation} | Parhayi`,
+    title: `${board.province} Textbooks — Class 1 to 12 Free PDF | ${board.abbreviation} | TaleemMarkaz`,
     description: `Download all ${board.abbreviation} textbooks for free — Classes ${classes[0]} to ${classes[classes.length - 1]}, all subjects. ${totalBooks} books available. ${board.description.split('.')[0]}.`,
     heading: `${board.province} Textbooks`,
     lede: board.description,
@@ -126,7 +126,7 @@ export function classSeo(boardName: string, cls: string, subjects: string[], tot
   const board = boardMeta(boardName);
   const subjectList = subjects.slice(0, 6).join(', ');
   return {
-    title: `Class ${cls} ${board.province} Textbooks — All Subjects | ${board.abbreviation} | Parhayi`,
+    title: `Class ${cls} ${board.province} Textbooks — All Subjects | ${board.abbreviation} | TaleemMarkaz`,
     description: `Free Class ${cls} textbook PDFs from ${board.fullName} — ${subjectList}${subjects.length > 6 ? ', and more' : ''}. ${totalBooks} books, one click download.`,
     heading: `Class ${cls} Textbooks — ${board.province} Board`,
     lede: `All ${totalBooks} Class ${cls} textbooks from ${board.authority}. Download any book as a free PDF.`,

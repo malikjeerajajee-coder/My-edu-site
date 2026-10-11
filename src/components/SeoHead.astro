@@ -15,7 +15,7 @@ const {
   jsonLd,
 } = Astro.props;
 
-const SITE = import.meta.env.SITE || 'https://parhayi.pages.dev';
+const SITE = import.meta.env.SITE || 'https://taleemmarkaz.com';
 const BASE = '';
 
 let pathname = Astro.url.pathname;
@@ -30,8 +30,8 @@ if (pathname === '/' || pathname === BASE + '/' || pathname === BASE) {
   schemas.push({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Parhayi',
-    alternateName: ['Parhayi.com', 'پڑھائی'],
+    name: 'TaleemMarkaz',
+    alternateName: ['TaleemMarkaz.com', 'پڑھائی'],
     url: SITE + '/',
     description: 'Free notes, past papers, guess papers, textbooks, quizzes and result gazettes for Pakistani students — organised by board, class and subject.',
     inLanguage: 'en-PK',
@@ -47,7 +47,7 @@ if (pathname === '/' || pathname === BASE + '/' || pathname === BASE) {
   schemas.push({
     '@context': 'https://schema.org',
     '@type': 'EducationalOrganization',
-    name: 'Parhayi',
+    name: 'TaleemMarkaz',
     url: SITE + '/',
     description: 'Free educational resources for Pakistani board students — Class 1 to 12, all provinces.',
     areaServed: { '@type': 'Country', name: 'Pakistan' },
@@ -73,8 +73,8 @@ const titleTag = title.length > 65 ? title.slice(0, 62) + '…' : title;
 <!-- Primary Meta -->
 <link rel="canonical" href={canonical} />
 <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
-<meta name="author" content="Parhayi" />
-<meta name="publisher" content="Parhayi" />
+<meta name="author" content="TaleemMarkaz" />
+<meta name="publisher" content="TaleemMarkaz" />
 <meta name="language" content="English" />
 <meta name="revisit-after" content="7 days" />
 <meta name="distribution" content="global" />
@@ -93,12 +93,12 @@ const titleTag = title.length > 65 ? title.slice(0, 62) + '…' : title;
 <meta property="og:url" content={canonical} />
 <meta property="og:title" content={titleTag} />
 <meta property="og:description" content={desc} />
-<meta property="og:site_name" content="Parhayi" />
+<meta property="og:site_name" content="TaleemMarkaz" />
 <meta property="og:locale" content="en_PK" />
 <meta property="og:image" content={SITE + '/og.png'} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="Parhayi — Free study resources for Pakistani students" />
+<meta property="og:image:alt" content="TaleemMarkaz — Free study resources for Pakistani students" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image" />
@@ -107,7 +107,7 @@ const titleTag = title.length > 65 ? title.slice(0, 62) + '…' : title;
 <meta name="twitter:title" content={titleTag} />
 <meta name="twitter:description" content={desc} />
 <meta name="twitter:image" content={SITE + '/og.png'} />
-<meta name="twitter:image:alt" content="Parhayi — Free study resources for Pakistani students" />
+<meta name="twitter:image:alt" content="TaleemMarkaz — Free study resources for Pakistani students" />
 
 <!-- Sitemap reference -->
 <link rel="sitemap" type="application/xml" href={SITE + '/sitemap-index.xml'} />

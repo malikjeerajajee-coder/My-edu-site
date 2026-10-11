@@ -5,8 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   // TODO: change to https://parhayi.com when your custom domain is live.
   // For now, this matches the Cloudflare Pages project name.
-  site: 'https://malikjeerajajee-coder.github.io',
-  base: '/My-edu-site',
+  site: 'https://taleemmarkaz.com',
+  base: '/',
   trailingSlash: 'ignore',
   vite: {
     plugins: [tailwindcss()],

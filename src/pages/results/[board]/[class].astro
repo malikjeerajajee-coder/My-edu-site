@@ -1,0 +1,204 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import { url } from '../../../lib/url';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const gazettes = await getCollection('gazettes');
+  const groups = new Map();
+  
+  for (const g of gazettes) {
+    const board = (g.data.boards || [])[0] || 'Punjab';
+    const bise = g.data.bise || null;
+    const cls = String(g.data.class);
+    
+    const boardSlug = (bise || board).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const key = `${boardSlug}-${cls}`;
+    
+    if (!groups.has(key)) {
+      groups.set(key, {
+        board,
+        bise,
+        cls,
+        boardSlug,
+        items: []
+      });
+    }
+    groups.get(key).items.push(g);
+  }
+  
+  return Array.from(groups.entries()).map(([key, data]) => ({
+    params: {
+      board: data.boardSlug,
+      class: data.cls
+    },
+    props: { data }
+  }));
+}
+
+const { data } = Astro.props;
+const { board, bise, cls, items } = data;
+
+const sorted = items.sort((a, b) => (b.data.year || 0) - (a.data.year || 0));
+const boardLabel = bise ? `${bise} Board` : (board === 'Federal' ? 'Federal Board' : `${board} Board`);
+const years = sorted.map(g => g.data.year).filter(Boolean);
+const minYear = Math.min(...years);
+const maxYear = Math.max(...years);
+
+const byYear = new Map();
+for (const g of sorted) {
+  const year = g.data.year;
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year).push(g);
+}
+
+const faqs = [
+  {
+    q: `When will ${boardLabel} Class ${cls} results be announced?`,
+    a: `${boardLabel} typically announces Class ${cls} results in ${cls === '9' || cls === '10' ? 'July-August' : 'August-September'} for annual examinations. Supplementary results are usually declared 40-60 days after the main results.`
+  },
+  {
+    q: `How to check ${boardLabel} Class ${cls} result online?`,
+    a: `You can check your result through the official ${boardLabel} website using your roll number, or by downloading the official result gazette from our archive below.`
+  },
+  {
+    q: `What is the passing marks for ${boardLabel} Class ${cls}?`,
+    a: `Students need to secure at least 33% marks in each subject and 33% aggregate to pass the ${boardLabel} Class ${cls} examination.`
+  },
+  {
+    q: `How to apply for ${boardLabel} Class ${cls} paper rechecking?`,
+    a: `Applications for paper rechecking can be submitted within 15 days of result announcement. The fee is typically Rs. 500-1000 per paper.`
+  },
+  {
+    q: `Where can I find ${boardLabel} Class ${cls} past result gazettes?`,
+    a: `We have archived ${sorted.length} official result gazettes from ${minYear} to ${maxYear}. Each gazette is the complete official document published by ${boardLabel}.`
+  }
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Results', item: 'https://taleemmarkaz.com/results/' },
+      { '@type': 'ListItem', position: 3, name: `${boardLabel} Class ${cls} Results` }
+    ]
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${boardLabel} Class ${cls} Results (${minYear}-${maxYear})`,
+    description: `Complete archive of ${boardLabel} Class ${cls} results from ${minYear} to ${maxYear}.`
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a }
+    }))
+  }
+];
+---
+
+<BaseLayout
+  data-pagefind-body
+  jsonLd={jsonLd}
+  title={`${boardLabel} Class ${cls} Results ${minYear}-${maxYear} | Official Result Gazettes | TaleemMarkaz`}
+  description={`Download official ${boardLabel} Class ${cls} result gazettes from ${minYear} to ${maxYear}. Check results, passing criteria, rechecking process.`}
+>
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20">
+      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
+        <span>/</span>
+        <a href={url('/results')} class="hover:text-[#1d4ed8]">Results</a>
+        <span>/</span>
+        <span class="text-slate-500">{boardLabel} Class {cls}</span>
+      </nav>
+
+      <h1 class="max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        {boardLabel} Class {cls} Results
+      </h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Complete archive of official {boardLabel} Class {cls} result gazettes from {minYear} to {maxYear}. Download authentic result documents.
+      </p>
+
+      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Years Available</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{minYear}-{maxYear}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Total Gazettes</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{sorted.length}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Board</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boardLabel}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Result Gazettes by Year</h2>
+      <p class="mt-2 text-base text-slate-600">Official result documents from {minYear} to {maxYear}, newest first</p>
+    </div>
+
+    <div class="space-y-8">
+      {Array.from(byYear.entries()).map(([year, gazettes]) => (
+        <div>
+          <h3 class="mb-4 flex items-center gap-3 font-display text-xl font-extrabold tracking-tight text-slate-900">
+            <span class="inline-block h-8 w-1 rounded-full bg-[#1d4ed8]"></span>
+            {year} Results
+          </h3>
+          <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {gazettes.map(g => (
+              <a
+                href={url(`/gazettes/${g.id}`)}
+                class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-[#1d4ed8]">{g.data.examType}</div>
+                  <Icon name="arrow-right" size={16} strokeWidth={2.4} class="text-slate-300 transition-colors group-hover:text-[#1d4ed8]" />
+                </div>
+                <h4 class="mt-2 font-display text-[16px] font-extrabold leading-tight tracking-tight text-slate-900">{g.data.title}</h4>
+                <p class="mt-3 text-sm leading-relaxed text-slate-500">Complete official result document for Class {cls} {g.data.examType} examination {year}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">Frequently Asked Questions</h2>
+      <div class="mt-8 space-y-2">
+        {faqs.map((faq, i) => (
+          <details class="group rounded-xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-bold text-slate-900">
+              <span>{faq.q}</span>
+              <Icon name="chevron-right" size={16} strokeWidth={2.4} class="shrink-0 text-slate-400 transition-transform group-open:rotate-90" />
+            </summary>
+            <div class="border-t border-slate-200 px-5 py-4 text-sm leading-relaxed text-slate-600">{faq.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 py-10 sm:px-7 lg:px-10">
+      <a href={url('/results')} class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-[#1d4ed8]">
+        <Icon name="arrow-left" size={16} strokeWidth={2.4} /> Back to all results
+      </a>
+    </div>
+  </div>
+</BaseLayout>
