@@ -17,15 +17,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const SITE = 'https://malikjeerajajee-coder.github.io';
-const BASE = '/My-edu-site';
-
-let pathname = Astro.url.pathname;
-if (pathname !== BASE && !pathname.startsWith(BASE + '/')) {
-  pathname = BASE + (pathname.startsWith('/') ? pathname : '/' + pathname);
-}
-let canonical = SITE + pathname;
-if (!canonical.endsWith('/') && !canonical.match(/\.[a-z0-9]+$/i)) canonical += '/';
+let canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 const schemas: object[] = [];
 if (jsonLd) {
