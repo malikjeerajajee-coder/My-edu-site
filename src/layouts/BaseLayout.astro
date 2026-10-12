@@ -17,7 +17,9 @@ const {
   noindex = false,
 } = Astro.props;
 
+let pathname = Astro.url.pathname;
 let canonical = new URL(Astro.url.pathname, Astro.site).href;
+if (!canonical.endsWith("/") && !canonical.match(/\\.[a-z0-9]+$/i)) canonical += "/";
 
 const schemas: object[] = [];
 if (jsonLd) {
