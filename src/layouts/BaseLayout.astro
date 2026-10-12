@@ -113,8 +113,7 @@ const branchActive = (item: any): boolean =>
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:site_name" content="TaleemMarkaz" />
-  <meta property="og:locale" content="en_PK" />
-  <link rel="icon" type="image/png" href={url('/favicon.png')} />
+  <meta property="og:locale" content="en_PK" /><meta property="og:image" content="https://malikjeerajajee-coder.github.io/My-edu-site/logo.png" /><meta name="twitter:card" content="summary_large_image" />
   <link rel="sitemap" type="application/xml" href={url('/sitemap-index.xml')} />
   {schemas.map(s => (
     <script type="application/ld+json" set:html={JSON.stringify(s)} />
@@ -124,16 +123,16 @@ const branchActive = (item: any): boolean =>
     summary { list-style: none; cursor: pointer; }
     details[open] > summary svg { transform: rotate(90deg); }
   </style>
-</head>
+    <meta name="theme-color" content="#2563EB" />
+  </head>
 <body class="min-h-screen bg-white">
 
   <!-- ═══════ DESKTOP SIDEBAR ═══════ -->
     <aside class="fixed top-0 bottom-0 left-0 z-40 hidden w-[260px] flex-col border-r border-slate-200 bg-white lg:flex">
       <div class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-slate-200 px-5">
         <a href={url('/')} class="flex min-w-0 flex-1 items-center gap-2.5">
-          <img src={url('/logo-icon-64.png')} alt="TaleemMarkaz" width="32" height="32" style="border-radius: 8px; display: block; flex-shrink: 0;" />
-          <span class="truncate font-display text-[17px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
-        </a>
+        <img src={url("/logo.webp")} alt="TaleemMarkaz" width="28" height="28" class="shrink-0 rounded" /><span class="font-display text-lg font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
+      </a>
       </div>
 
       <div class="shrink-0 border-b border-slate-200 px-3 py-3">
@@ -230,8 +229,7 @@ const branchActive = (item: any): boolean =>
       <Icon name="menu" size={20} strokeWidth={2.4} />
     </button>
     <a href={url('/')} class="flex items-center gap-2">
-      <img src={url('/logo-icon-64.png')} alt="TaleemMarkaz" width="28" height="28" style="border-radius: 7px; display: block;" />
-      <span class="font-display text-[15px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
+      <img src={url("/logo.webp")} alt="TaleemMarkaz" width="28" height="28" class="shrink-0 rounded" /><span class="font-display text-[15px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
     </a>
     <a
       href={url('/search')}
@@ -253,8 +251,7 @@ const branchActive = (item: any): boolean =>
       >
         <div class="flex h-[68px] shrink-0 items-center gap-2.5 border-b border-slate-200 px-5">
           <a href={url('/')} class="flex min-w-0 flex-1 items-center gap-2.5">
-            <img src={url('/logo-icon-64.png')} alt="TaleemMarkaz" width="32" height="32" style="border-radius: 8px; display: block; flex-shrink: 0;" />
-            <span class="truncate font-display text-[17px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
+            <img src={url("/logo.webp")} alt="TaleemMarkaz" width="28" height="28" class="shrink-0 rounded" /><span class="truncate font-display text-[17px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
           </a>
           <button
             type="button"
@@ -361,8 +358,7 @@ const branchActive = (item: any): boolean =>
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div class="sm:col-span-2">
             <div class="flex items-center gap-2.5">
-              <img src={url('/logo-icon-64.png')} alt="TaleemMarkaz" width="32" height="32" style="border-radius: 8px; display: block;" />
-              <span class="font-display text-[17px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
+              <img src={url("/logo.webp")} alt="TaleemMarkaz" width="28" height="28" class="shrink-0 rounded" /><span class="font-display text-[17px] font-extrabold tracking-tight text-slate-900">TaleemMarkaz</span>
             </div>
             <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-500">
               Free notes, past papers, guess papers, textbooks and result gazettes for Pakistani students — organised by board, class and subject.

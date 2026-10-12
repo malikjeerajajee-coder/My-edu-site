@@ -1,93 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
-import { BOARDS } from '../../lib/boards';
-import { getCollection } from 'astro:content';
-
-const schemes = await getCollection('pairingSchemes');
-const count = (name: string) => schemes.filter((p: any) => (p.data.boards || []).includes(name)).length;
-const boards = BOARDS.map(b => ({ ...b, count: count(b.name) })).filter(b => b.count > 0);
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: 'Pairing Schemes — Pakistani Boards',
-  description: `${schemes.length} official pairing schemes for Pakistani board students. Class 9 to 12.`,
-};
 ---
-<BaseLayout
-  title="Pairing Schemes ${new Date().getFullYear()} — Official Paper Pattern for All Boards | TaleemMarkaz"
-  description={`Download ${schemes.length} official pairing schemes. See exactly how marks are distributed across each board exam. Free PDFs.`}
-  jsonLd={jsonLd}
->
+<BaseLayout title="Pairing Schemes — Coming Soon | TaleemMarkaz" description="Official board pairing schemes with chapter-wise marks distribution are coming soon to TaleemMarkaz.">
   <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
-      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
-        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
-        <span>/</span>
-        <span class="text-slate-500">Pairing Schemes</span>
-      </nav>
-      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-        Know your paper before you sit it.
-      </h1>
-      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-        Official pairing schemes from every board — how marks are distributed, which chapters carry weight, and what the paper looks like.
-      </p>
-      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
-        <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Schemes</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{schemes.length}</dd>
-        </div>
-        <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Boards</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boards.length}</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
-    <div class="mb-8">
-      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your board</h2>
-      <p class="mt-1.5 text-sm text-slate-500">Each board's pairing scheme shows how its papers are structured.</p>
-    </div>
-
-    {boards.length === 0 ? (
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <p class="text-sm font-bold text-slate-900">Pairing schemes coming soon</p>
-      </div>
-    ) : (
-      <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {boards.map(b => (
-          <a href={url(`/board/${b.slug}`)} class="group relative flex flex-col bg-white p-7 transition-colors hover:bg-slate-50">
-            <div class="flex items-start justify-between gap-4">
-              <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.name}</h3>
-              <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="mt-1.5 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#1d4ed8]" />
-            </div>
-            <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{b.full}</p>
-            <div class="mt-8 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">
-              {b.count} {b.count === 1 ? 'scheme' : 'schemes'}
-            </div>
-          </a>
-        ))}
-      </div>
-    )}
-  </section>
-
-  <section class="border-t border-slate-200 bg-white">
-    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
-      <div class="prose">
-        <h2>What is a pairing scheme?</h2>
-        <p>A pairing scheme (also called a paper pattern or assessment scheme) is the official document that shows exactly how an exam paper is structured — how many MCQs, how many short questions, how many long questions, and how the marks are distributed across chapters.</p>
-        <p>Every board publishes its pairing scheme at the start of the academic year. Reading it tells you:</p>
-        <ul>
-          <li><strong>How many questions of each type</strong> to expect</li>
-          <li><strong>Which chapters carry the most marks</strong></li>
-          <li><strong>How much choice</strong> you'll have in the exam</li>
-          <li><strong>How much time</strong> to spend on each section</li>
-        </ul>
-        <p>Students who read their pairing scheme study more efficiently — they know exactly where to focus their time.</p>
+    <div class="mx-auto max-w-[820px] px-5 py-20 text-center sm:px-7 lg:px-10">
+      <span class="inline-flex items-center gap-2 rounded-full bg-[#eff4ff] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">Coming soon</span>
+      <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Pairing schemes are on the way</h1>
+      <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">Official chapter-wise marks distribution so you study what actually carries marks. Meanwhile, check the exam patterns on past-paper hubs:</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-2.5">
+        <a href={url('/past-papers')} class="rounded-xl bg-[#1d4ed8] px-5 py-3 text-sm font-bold text-white hover:bg-[#1e3a8a]">Browse past papers</a>
       </div>
     </div>
   </section>

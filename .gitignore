@@ -35,3 +35,6 @@ fix-import.cjs
 *.tar.gz
 /*.csv
 scripts/
+*.jpg
+*.xlsx
+.brand-backup/

@@ -1,121 +1,16 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
-import { getCollection } from 'astro:content';
-import { quizSubjectName } from '../../lib/quizMeta';
-
-const quizzes = await getCollection('quizzes');
-
-const byClass = new Map<string, { count: number; subjects: Set<string>; questions: number }>();
-quizzes.forEach((q: any) => {
-  const c = String(q.data.class);
-  if (!byClass.has(c)) byClass.set(c, { count: 0, subjects: new Set(), questions: 0 });
-  const entry = byClass.get(c)!;
-  entry.count++;
-  entry.subjects.add(quizSubjectName(q.data.subject));
-  entry.questions += q.data.questions?.length || 0;
-});
-const classes = [...byClass.entries()]
-  .map(([cls, v]) => ({ cls, count: v.count, subjects: v.subjects.size, questions: v.questions }))
-  .sort((a, b) => Number(a.cls) - Number(b.cls));
-
-const totalQuestions = quizzes.reduce((n: number, q: any) => n + (q.data.questions?.length || 0), 0);
-const totalSubjects = new Set(quizzes.map((q: any) => quizSubjectName(q.data.subject))).size;
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: 'Chapter-wise Practice Quizzes — Pakistani Board Students',
-  description: `Interactive MCQ quizzes organised by class, subject and chapter. ${quizzes.length} quizzes, ${totalQuestions} questions, instant feedback.`,
-};
 ---
-<BaseLayout
-  title="Free MCQ Quizzes — Chapter-wise Practice for Pakistani Board Students | TaleemMarkaz"
-  description={`Interactive MCQ quizzes organised by class, subject and chapter. ${quizzes.length} quizzes, ${totalQuestions} questions — instant feedback, no sign-up.`}
-  jsonLd={jsonLd}
->
+<BaseLayout title="Quizzes — Coming Soon | TaleemMarkaz" description="Interactive MCQ quizzes with instant results for every Pakistani board and class are coming soon to TaleemMarkaz.">
   <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
-      <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
-        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
-        <span>/</span>
-        <span class="text-slate-500">Quizzes</span>
-      </nav>
-      <h1 class="max-w-3xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-        Chapter-wise quizzes.
-      </h1>
-      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-        Interactive MCQ quizzes organised by class, subject and chapter — matching exactly what appears in your board exam.
-      </p>
-      <dl class="mt-10 flex flex-wrap gap-x-12 gap-y-4">
-        <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Quizzes</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{quizzes.length}</dd>
-        </div>
-        <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Questions</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalQuestions}</dd>
-        </div>
-        <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Subjects</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{totalSubjects}</dd>
-        </div>
-      </dl>
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
-    <div class="mb-8">
-      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Choose your class</h2>
-      <p class="mt-1.5 text-sm text-slate-500">Every class has its own chapter-wise quizzes.</p>
-    </div>
-
-    {classes.length === 0 ? (
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <p class="text-sm font-bold text-slate-900">Quizzes coming soon</p>
-        <p class="mt-1 text-xs text-slate-500">We're building chapter-wise MCQ quizzes for every class and subject.</p>
-      </div>
-    ) : (
-      <div class="seamed-grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-        {classes.map(c => (
-          <a href={url(`/quizzes/class-${c.cls}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
-            <span class="font-display text-4xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
-              {c.cls.padStart(2, '0')}
-            </span>
-            <div class="mt-6 text-[13px] font-bold text-slate-900">Class {c.cls}</div>
-            <div class="mt-0.5 text-[12px] text-slate-500">
-              {c.subjects} {c.subjects === 1 ? 'subject' : 'subjects'} · {c.questions} questions
-            </div>
-            <div class="mt-4 flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
-              Open
-              <Icon name="arrow-right" size={11} strokeWidth={2.6} />
-            </div>
-          </a>
-        ))}
-      </div>
-    )}
-  </section>
-
-  <section class="border-t border-slate-200 bg-white">
-    <div class="mx-auto max-w-[820px] px-5 py-16 sm:px-7 lg:px-10">
-      <div class="prose">
-        <h2>Why chapter-wise quizzes work</h2>
-        <p>Reading notes gets you ready. Testing yourself is what makes it stick. But a general "Physics quiz" barely helps — you need to know <em>which chapters</em> you've actually mastered, and which still trip you up.</p>
-        <p>Every quiz on TaleemMarkaz is tied to one specific chapter within one specific subject and class. That's how the board exams are structured, and that's how you should test yourself.</p>
-        <h3>How to use these quizzes</h3>
-        <ul>
-          <li><strong>After studying a chapter</strong> — take the quiz to see if you've really understood it</li>
-          <li><strong>Before an exam</strong> — go through each chapter's quiz to find your weak spots</li>
-          <li><strong>Spaced repetition</strong> — retake quizzes a week later to lock in the material</li>
-        </ul>
-        <h3>What to expect</h3>
-        <ul>
-          <li>One question at a time — no overwhelming wall of MCQs</li>
-          <li>Instant feedback after each choice</li>
-          <li>A running score and a final percentage</li>
-          <li>Restart any quiz as many times as you like</li>
-        </ul>
+    <div class="mx-auto max-w-[820px] px-5 py-20 text-center sm:px-7 lg:px-10">
+      <span class="inline-flex items-center gap-2 rounded-full bg-[#eff4ff] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">Coming soon</span>
+      <h1 class="mt-6 font-display text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">Quizzes are on the way</h1>
+      <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">Chapter-wise MCQ tests with instant scoring for every board and class. Meanwhile, practise with real board papers:</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-2.5">
+        <a href={url('/past-papers')} class="rounded-xl bg-[#1d4ed8] px-5 py-3 text-sm font-bold text-white hover:bg-[#1e3a8a]">Browse past papers</a>
+        <a href={url('/gazettes')} class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:border-[#1d4ed8] hover:text-[#1d4ed8]">Result gazettes</a>
       </div>
     </div>
   </section>
