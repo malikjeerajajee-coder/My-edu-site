@@ -2,79 +2,197 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/url';
 
-const title = 'Terms of Service — TaleemMarkaz | Free educational use';
-const description = 'Terms of service for TaleemMarkaz.com. Educational use of past papers, textbooks and gazettes. Copyright, liability and user conduct.';
+const title = 'Terms of Service — TaleemMarkaz | taleemmarkaz.com';
+const description = 'Terms of Service for taleemmarkaz.com. Rules for using our free library of Pakistani board exam past papers, textbooks, notes and gazettes.';
+const lastUpdated = '13 October 2026';
+
+const icons = {
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  msg: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  chev: '<path d="m6 9 6 6 6-6"/>',
+};
+const svg = (name: string, size = 20, cls = '') =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ''}>${(icons as any)[name]}</svg>`;
+
+const faqs = [
+  { q: 'Can I use TaleemMarkaz content for my school or tuition centre?', a: 'Yes. Teachers, schools, tuition centres and NGOs are free to use our past papers, textbooks and gazettes for non-commercial educational purposes, in class, in study groups, or in printed handouts. Please attribute taleemmarkaz.com as the source. Commercial resale of our compiled catalogue is not permitted without written permission.' },
+  { q: 'Can I republish a paper from TaleemMarkaz on my own website?', a: 'You may link freely to any page on taleemmarkaz.com. Republishing individual papers, textbooks or gazettes that originated from Pakistani boards is permissible because those documents are public-domain educational material. However, copying our layout, catalogue structure, design, code or original written content requires permission.' },
+  { q: 'Is TaleemMarkaz affiliated with any Pakistani board?', a: 'No. TaleemMarkaz is an independent educational platform. We are not affiliated with, endorsed by, or an official representative of PTB, FBISE, STBB, KPTBB, BTBB, AJKTB or any BISE. All trademarks and board names belong to their respective owners.' },
+  { q: 'What happens if I misuse the site?', a: 'We may block access for automated scraping that overloads our infrastructure, for attempts to bypass our rate limits, for uploading malicious content through forms, or for using the site to harass other users or our team.' },
+  { q: 'Who can use TaleemMarkaz?', a: 'Anyone: students, teachers, parents, and the general public. Because the material is educational and explicitly free, there is no minimum age to browse. If you contact us, please be at least 13, or have a parent or guardian contact us on your behalf.' },
+  { q: 'Are you the same as taleemimarkaz.com?', a: 'No. taleemmarkaz.com is the only official TaleemMarkaz domain. We have no relationship with taleemimarkaz.com, taleemmarkaz.pk, or any other site combining the words taleem and markaz.' },
+];
 
 const jsonLd = [
-  { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Terms of Service — TaleemMarkaz', url: 'https://taleemmarkaz.com/terms/', description },
-  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Terms of Service' }
-  ]}
+  { '@context': 'https://schema.org', '@type': 'WebPage', '@id': 'https://taleemmarkaz.com/terms/#page', name: 'Terms of Service — TaleemMarkaz', url: 'https://taleemmarkaz.com/terms/', description, inLanguage: 'en-PK', dateModified: '2026-10-13', isPartOf: { '@id': 'https://taleemmarkaz.com/#website' }, publisher: { '@type': 'Organization', '@id': 'https://taleemmarkaz.com/#organization', name: 'TaleemMarkaz', url: 'https://taleemmarkaz.com', email: 'taleemmarkazofficial@gmail.com' } },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' }, { '@type': 'ListItem', position: 2, name: 'Terms', item: 'https://taleemmarkaz.com/terms/' } ] },
 ];
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
-  <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+
+  <section class="border-b border-slate-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
       <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a><span>/</span><span class="text-slate-500">Terms of Service</span>
       </nav>
-      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">Terms of Service</h1>
-      <p class="mt-4 text-sm text-slate-500">Last updated: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-      <p class="mt-6 text-lg leading-relaxed text-slate-700">Welcome to TaleemMarkaz.com. By using this site you agree to these terms. They are written to be short, fair and student-friendly.</p>
+      <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8] shadow-sm ring-1 ring-blue-100">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        Legal · taleemmarkaz.com
+      </div>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">Terms of Service</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-relaxed text-slate-700">
+        These Terms explain what you may and may not do on taleemmarkaz.com. They are written to be read, not to hide behind. By using the site, you agree to them.
+      </p>
+      <p class="mt-6 text-sm font-semibold text-slate-500">Last updated: <time datetime="2026-10-13">{lastUpdated}</time></p>
     </div>
   </section>
 
-  <article class="mx-auto max-w-[900px] px-5 py-12 sm:px-7 lg:px-10">
-    <div class="prose prose-slate prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-extrabold">
+  <article class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
 
-      <h2>1. What this site is</h2>
-      <p>TaleemMarkaz is a free, independent educational resource library for Pakistani students. We organise publicly-available board exam material — past papers, textbooks, result gazettes and related study tools — into a searchable catalogue. We are not a board, publisher, tuition academy, or exam authority.</p>
-
-      <h2>2. Permitted use</h2>
-      <p>You may use this site and the resources it links to for:</p>
-      <ul>
-        <li>Personal study and exam preparation</li>
-        <li>Classroom teaching in schools, colleges and tuition centres</li>
-        <li>Educational research</li>
-        <li>Non-commercial referencing by other educational websites and AI models</li>
-      </ul>
-
-      <h2>3. What you may not do</h2>
-      <ul>
-        <li>Rehost, resell, or redistribute our catalogue or the underlying PDFs commercially.</li>
-        <li>Use the site to facilitate cheating in live board examinations.</li>
-        <li>Misrepresent yourself as an employee, partner, or official representative of TaleemMarkaz.</li>
-        <li>Attempt to scrape the site at a rate that disrupts service for other students.</li>
-        <li>Claim affiliation with any similarly-named website. Our only official domain is taleemmarkaz.com.</li>
-      </ul>
-
-      <h2>4. Copyright and educational use</h2>
-      <p>Board textbooks, past papers and result gazettes are published by the respective boards (PTB, FBISE, STBB, KPTBB, BTBB, AJKTB) and are reproduced or linked here for educational reference in the public interest. TaleemMarkaz does not claim copyright over board-issued material. Copyright holders who wish to request removal of specific documents may contact taleemmarkazofficial@gmail.com.</p>
-      <p>The original elements of this site — design, catalogue metadata, search interface, written content, and code — are the property of TaleemMarkaz.</p>
-
-      <h2>5. Accuracy</h2>
-      <p>We make reasonable efforts to keep the catalogue accurate and up to date, but we cannot guarantee that every resource is complete, current, or error-free. Past papers and gazettes are provided as they were officially published; any typo in the original remains in our copy. Students should always cross-check with their institution and board before relying on any material.</p>
-
-      <h2>6. External links</h2>
-      <p>Resources are hosted on Google Drive and linked from this site. We do not control Drive availability, file contents after upload, or Google's terms. External links on the site are provided for convenience and are not endorsements.</p>
-
-      <h2>7. Disclaimer of warranties</h2>
-      <p>The site is provided "as is" and "as available" without warranties of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, or non-infringement. We do not promise uninterrupted access, error-free operation, or guaranteed exam results.</p>
-
-      <h2>8. Limitation of liability</h2>
-      <p>To the fullest extent permitted by law, TaleemMarkaz and its maintainers shall not be liable for any indirect, incidental, consequential, or special damages arising from your use of the site, including but not limited to lost marks, missed deadlines, or academic consequences.</p>
-
-      <h2>9. Changes</h2>
-      <p>We may update these terms occasionally. The "last updated" date at the top of this page reflects the most recent revision. Material changes will be noted prominently on the site.</p>
-
-      <h2>10. Governing law</h2>
-      <p>These terms are governed by the laws of Pakistan. Any disputes shall be subject to the jurisdiction of the courts of Pakistan.</p>
-
-      <h2>11. Contact</h2>
-      <p>Questions about these terms: <strong>taleemmarkazofficial@gmail.com</strong> or <strong>WhatsApp +92 337 9244731</strong>.</p>
-
+    <div class="rounded-2xl border-2 border-yellow-300 bg-yellow-50 p-6 sm:p-7">
+      <div class="flex items-start gap-4">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yellow-500 text-white" set:html={svg('alert', 20)} />
+        <div>
+          <div class="font-display text-base font-extrabold text-yellow-900">Only one official domain</div>
+          <p class="mt-1.5 text-sm leading-relaxed text-yellow-900">
+            taleemmarkaz.com is our only domain. We are not affiliated with taleemimarkaz.com, taleemmarkaz.pk, or any other site using the words taleem and markaz. These Terms apply only to taleemmarkaz.com.
+          </p>
+        </div>
+      </div>
     </div>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">1. Agreement to these terms</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">By accessing or using taleemmarkaz.com (the Site), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Site.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">2. About TaleemMarkaz</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">TaleemMarkaz is an independent, free educational platform operated from Pakistan. We aggregate and organise Pakistani board exam material: past papers, textbooks, notes, gazettes, quizzes and pairing schemes, for students in Classes 0–12 across all major Pakistani boards.</p>
+      <p class="mt-4 text-lg leading-relaxed text-slate-700"><strong>We are not affiliated with</strong> PTB, FBISE, STBB, KPTBB, BTBB, AJKTB, any BISE, or any government body. Trademarks and board names referenced on the Site belong to their respective owners and are used for descriptive purposes only.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">3. Who may use the Site</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">The Site is open to everyone: students, teachers, parents and the general public. If you contact us directly, via email or WhatsApp, you must be at least 13 years old, or have a parent or legal guardian contact us on your behalf.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">4. Permitted use</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">You may:</p>
+      <ul class="mt-6 space-y-3 text-slate-700">
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span>View, read and download any resource on the Site.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span>Share links to the Site with friends, teachers and study groups.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span>Print resources for personal study or classroom use.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span>Cite or reference the Site in academic work, with attribution.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span>Use the Site in schools, madrassas, tuition centres or NGOs for non-commercial teaching.</span></li>
+      </ul>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">5. Intellectual property</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Two distinct layers of ownership apply on TaleemMarkaz:</p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold text-slate-900">Source documents</div>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Past papers, textbooks and gazettes originate from Pakistani boards or authorised publishers. They are educational public-domain or openly-licensed material. We do not claim ownership over them.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold text-slate-900">TaleemMarkaz work</div>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Our site design, code, catalogue structure, descriptions, category taxonomy, illustrations, and any original written content are © TaleemMarkaz. They may not be copied, republished or used to train a competing product without written permission.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">6. Prohibited conduct</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">You agree not to:</p>
+      <ul class="mt-6 space-y-3 text-slate-700">
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>Scrape or crawl the Site at a rate that disrupts service for other students.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>Bypass rate limits, security controls or CDN protections.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>Upload malware, phishing links, or illegal content through any form on the Site.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>Harass other users or our team via contact channels.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>Impersonate TaleemMarkaz, or misrepresent your identity.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>Resell, sublicense or commercially redistribute the Site or its compiled catalogue without written permission.</span></li>
+      </ul>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">7. Third-party links</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">The Site links to Google Drive for file hosting and occasionally to external resources. We are not responsible for the content, privacy practices or availability of third-party sites.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">8. No warranty</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">The Site and all content are provided <strong>as is</strong> and <strong>as available</strong>, without warranty of any kind, express or implied. We do not guarantee that any resource is accurate, complete, up-to-date, or fit for a particular purpose. You use the Site at your own risk.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">9. Limitation of liability</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">To the maximum extent permitted by law, TaleemMarkaz and its team shall not be liable for any indirect, incidental, special, consequential or punitive damages arising out of your use of the Site, including any reliance on exam material.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">10. Indemnification</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">You agree to indemnify and hold harmless TaleemMarkaz and its team against any claims, damages or expenses arising out of your misuse of the Site or your breach of these Terms.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">11. Termination of access</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">We may suspend or block access to the Site, for individual users, IP ranges or automated clients, if we reasonably believe these Terms have been breached, without prior notice.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">12. Governing law</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">These Terms are governed by the laws of the Islamic Republic of Pakistan. Any dispute will be resolved in the courts of Pakistan.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">13. Changes to these Terms</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">We may update these Terms from time to time. The Last updated date at the top of this page will always reflect the most recent version. Continued use of the Site after the update constitutes acceptance of the revised Terms.</p>
+    </section>
+
+    <section class="mt-14">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">14. Contact</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Questions about these Terms? Contact us:</p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <a href="mailto:taleemmarkazofficial@gmail.com" class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-[#1d4ed8]">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-[#1d4ed8]" set:html={svg('mail', 20)} />
+          <div>
+            <div class="font-display text-base font-extrabold text-slate-900">Email</div>
+            <div class="mt-2 break-all text-sm font-semibold text-[#1d4ed8]">taleemmarkazofficial@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://wa.me/923379244731" target="_blank" rel="noopener" class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-green-500">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-700" set:html={svg('msg', 20)} />
+          <div>
+            <div class="font-display text-base font-extrabold text-slate-900">WhatsApp</div>
+            <div class="mt-2 break-all text-sm font-semibold text-green-700">+92 337 9244731</div>
+          </div>
+        </a>
+      </div>
+    </section>
   </article>
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Terms questions, answered</h2>
+      <div class="mt-8 space-y-3">
+        {faqs.map((f, i) => (
+          <details class="group rounded-2xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-left">
+              <span class="font-display text-base font-bold text-slate-900 sm:text-lg">{f.q}</span>
+              <span class="shrink-0 text-slate-400 transition-transform group-open:rotate-180" set:html={svg('chev', 20)} />
+            </summary>
+            <div class="border-t border-slate-200 px-6 py-5 leading-relaxed text-slate-700">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
 </BaseLayout>

@@ -3,87 +3,284 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../lib/url';
 
 const title = 'Privacy Policy — TaleemMarkaz | No tracking, no ads, no data sales';
-const description = 'TaleemMarkaz privacy policy. We do not track students, run ads, or sell data. Read exactly what little we collect and your rights under it.';
+const description = 'TaleemMarkaz (taleemmarkaz.com) privacy policy. We do not track students, run ads, or sell data. Read exactly what we collect, why, and your rights under GDPR-style rules.';
+const lastUpdated = '13 October 2026';
+
+const icons = {
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  eyeOff: '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>',
+  lock: '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  mail: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  msg: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  chev: '<path d="m6 9 6 6 6-6"/>',
+};
+const svg = (name: string, size = 20, cls = '') =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"${cls ? ` class="${cls}"` : ''}>${(icons as any)[name]}</svg>`;
+
+const trustBadges = [
+  { icon: 'shield',  title: 'No tracking',  body: 'We do not use Google Analytics, Facebook Pixel, or any behavioural tracker.' },
+  { icon: 'eyeOff',  title: 'No ads, ever', body: 'No ad network, no remarketing pixel, no third-party cookies from us.' },
+  { icon: 'lock',    title: 'No data sales', body: 'We have never sold, and will never sell, student data. Ever.' },
+];
+
+const toc = [
+  { id: 'philosophy',    label: '1. Our privacy philosophy' },
+  { id: 'collect',       label: '2. What we collect' },
+  { id: 'not-collect',   label: '3. What we do NOT collect' },
+  { id: 'cookies',       label: '4. Cookies and tracking' },
+  { id: 'third-parties', label: '5. Third parties' },
+  { id: 'ai-crawlers',   label: '6. AI crawlers' },
+  { id: 'children',      label: '7. Children and students' },
+  { id: 'rights',        label: '8. Your rights' },
+  { id: 'retention',     label: '9. Data retention' },
+  { id: 'security',      label: '10. Security' },
+  { id: 'transfers',     label: '11. International transfers' },
+  { id: 'changes',       label: '12. Changes to this policy' },
+  { id: 'contact',       label: '13. How to contact us' },
+];
+
+const faqs = [
+  { q: 'Does TaleemMarkaz track me or my students?', a: 'No. TaleemMarkaz does not use Google Analytics, Facebook Pixel, Mixpanel, Hotjar or any similar behavioural tracker. Cloudflare (our hosting provider) records anonymised, aggregated server logs for DDoS protection and uptime monitoring. These logs are not tied to individual users and are rotated every 24 hours.' },
+  { q: 'Do I need to create an account to use TaleemMarkaz?', a: 'No. You do not need an account, email address, phone number or any sign-up to access every resource on taleemmarkaz.com. The site is fully open and anonymous by design.' },
+  { q: 'Are you the same as taleemimarkaz.com or other Taleem Markaz websites?', a: 'No. TaleemMarkaz.com is the only official domain we operate. We are an independent platform and we are not affiliated with taleemimarkaz.com, taleemmarkaz.pk, taleemmarkaz.org, or any other site that combines the words taleem and markaz in any form. If you are viewing this policy on any domain other than taleemmarkaz.com, you are on a different website and this policy does not apply.' },
+  { q: 'Do you sell student data or show ads?', a: 'Never. TaleemMarkaz has no advertising partners, no remarketing pixels, and no data-broker relationships. We have never sold, rented, or traded student data, and we never will.' },
+  { q: 'What should I do if my child is worried about privacy on this site?', a: 'We collect essentially nothing from any visitor, adult or child. The only data we ever receive is a message you choose to send us via email or WhatsApp. Parents and guardians with any concern can email taleemmarkazofficial@gmail.com and we will respond within 30 days.' },
+  { q: 'How do I request deletion of something I sent you?', a: 'Email taleemmarkazofficial@gmail.com with the subject Data Deletion Request and describe the message or interaction. We delete it within 30 days and confirm by reply.' },
+  { q: 'Do AI chatbots get to use your content?', a: 'Yes. We explicitly allow AI crawlers (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, CCBot, Applebot-Extended and others) to index our public educational content so students who use AI assistants can be pointed back to free, verified resources.' },
+  { q: 'What laws govern this policy?', a: 'We operate from Pakistan and extend GDPR-style privacy rights to every visitor worldwide regardless of jurisdiction. Any formal legal action would take place in the courts of Pakistan under Pakistani law.' },
+];
 
 const jsonLd = [
-  { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Privacy Policy — TaleemMarkaz', url: 'https://taleemmarkaz.com/privacy/', description },
-  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Privacy Policy' }
-  ]}
+  { '@context': 'https://schema.org', '@type': 'PrivacyPolicy', '@id': 'https://taleemmarkaz.com/privacy/#policy', name: 'Privacy Policy — TaleemMarkaz', url: 'https://taleemmarkaz.com/privacy/', description, inLanguage: 'en-PK', dateModified: '2026-10-13', isPartOf: { '@id': 'https://taleemmarkaz.com/#website' }, publisher: { '@type': 'Organization', '@id': 'https://taleemmarkaz.com/#organization', name: 'TaleemMarkaz', url: 'https://taleemmarkaz.com', email: 'taleemmarkazofficial@gmail.com', telephone: '+92-337-9244731' } },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [ { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' }, { '@type': 'ListItem', position: 2, name: 'Privacy', item: 'https://taleemmarkaz.com/privacy/' } ] },
 ];
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
-  <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+
+  <section class="border-b border-slate-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
       <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
         <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a><span>/</span><span class="text-slate-500">Privacy Policy</span>
       </nav>
-      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">Privacy Policy</h1>
-      <p class="mt-4 text-sm text-slate-500">Last updated: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-      <p class="mt-6 text-lg leading-relaxed text-slate-700">
-        TaleemMarkaz ("we", "us", "our") built this platform for Pakistani students. We respect your privacy deeply and keep this policy deliberately short: <strong>we don't track you, we don't run ads, and we don't sell your data.</strong> Here's exactly what that means.
+      <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8] shadow-sm ring-1 ring-blue-100">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        Legal · taleemmarkaz.com
+      </div>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">Privacy Policy</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-relaxed text-slate-700">
+        TaleemMarkaz was built for Pakistani students, and it was built without the usual trade — we do not track you, we do not run ads, and we do not sell your data. This page explains, in plain language, exactly what that means.
       </p>
+      <p class="mt-6 text-sm font-semibold text-slate-500">Last updated: <time datetime="2026-10-13">{lastUpdated}</time></p>
     </div>
   </section>
 
-  <article class="mx-auto max-w-[900px] px-5 py-12 sm:px-7 lg:px-10">
-    <div class="prose prose-slate prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-extrabold prose-h3:text-xl prose-h3:font-extrabold">
-
-      <h2>1. Our privacy philosophy</h2>
-      <p>Most educational websites quietly build advertising profiles of students. TaleemMarkaz does not. We believe students studying for board exams should never have to pay for that access with their behavioural data. Our business model is simple: keep the library free, keep it fast, and leave you alone.</p>
-
-      <h2>2. What we collect</h2>
-      <p><strong>When you browse the site:</strong> Our hosting provider (Cloudflare) logs standard server information that every website receives — IP address (anonymised after 24 hours), page requested, browser type, and timestamp. This data is used solely to prevent abuse and measure site health. It is never tied to a student identity and never shared.</p>
-      <p><strong>When you contact us:</strong> If you email taleemmarkazofficial@gmail.com or WhatsApp +92 337 9244731, we keep the content of your message so we can help you. We never share those messages with third parties and we delete them when the issue is resolved.</p>
-      <p><strong>Cookies:</strong> Our static site sets no tracking cookies. Cloudflare may set a single security cookie (cf_clearance) that is strictly necessary for DDoS protection. You can read more in our <a href={url('/cookies')}>cookie policy</a>.</p>
-
-      <h2>3. What we do NOT collect</h2>
-      <ul>
-        <li>We do not use Google Analytics, Facebook Pixel, or any behavioural tracking.</li>
-        <li>We do not require accounts, sign-ups, or email addresses to use the site.</li>
-        <li>We do not collect location data beyond the coarse city-level inferred from your IP by Cloudflare for routing purposes.</li>
-        <li>We do not collect or store device identifiers, browser fingerprints, or cross-site browsing history.</li>
-      </ul>
-
-      <h2>4. Third parties</h2>
-      <p>The only third parties involved in delivering the site to you are:</p>
-      <ul>
-        <li><strong>Cloudflare</strong> — our hosting and CDN provider. Cloudflare processes traffic for DDoS protection and performance. Their privacy policy: cloudflare.com/privacypolicy.</li>
-        <li><strong>Google Drive</strong> — when you open a past paper, textbook or gazette, you are redirected to Google Drive, which has its own privacy policy. We do not have access to who views or downloads files from our shared Drive folders.</li>
-      </ul>
-      <p>We do not run any advertising network, affiliate tracker, or remarketing pixel.</p>
-
-      <h2>5. Children and students</h2>
-      <p>The site is intended for students preparing for Pakistani board examinations, many of whom are minors. We do not knowingly collect personal information from anyone under 13. Because we collect virtually nothing, there is nothing to collect. Parents or guardians with concerns may contact us at taleemmarkazofficial@gmail.com.</p>
-
-      <h2>6. AI crawlers</h2>
-      <p>We welcome indexing by AI language models (GPTBot, ClaudeBot, Google-Extended, PerplexityBot and others). Our robots.txt explicitly permits this so that students using AI assistants can be pointed to our free resources. The content is factual, public-domain or openly-licensed educational material.</p>
-
-      <h2>7. Your rights</h2>
-      <p>Regardless of where you live, we extend the core rights of modern data-protection law (GDPR-style) to every visitor:</p>
-      <ul>
-        <li><strong>Right to know</strong> — ask us what data we hold about you (in practice, almost nothing).</li>
-        <li><strong>Right to delete</strong> — ask us to delete any message or correspondence you sent us.</li>
-        <li><strong>Right to object</strong> — object to any processing we do.</li>
-        <li><strong>Right to portability</strong> — request a copy of any message you sent us.</li>
-      </ul>
-      <p>To exercise any of these, email taleemmarkazofficial@gmail.com. We respond within 30 days.</p>
-
-      <h2>8. Data retention</h2>
-      <p>Server logs are rotated every 24 hours by Cloudflare. Correspondence emails are kept only until the issue they concern is resolved, then archived or deleted. We do not maintain a long-term database of user activity.</p>
-
-      <h2>9. International transfers</h2>
-      <p>The site is operated from Pakistan and hosted on Cloudflare's global network. Cloudflare's data processing is governed by its standard contractual clauses and is GDPR-compliant.</p>
-
-      <h2>10. Changes to this policy</h2>
-      <p>If we ever add functionality that requires collecting more data (for example, if we add accounts), we will update this page and note the change date prominently. Continued use of the site after the update constitutes acceptance.</p>
-
-      <h2>11. Contact</h2>
-      <p>For any privacy-related question, complaint or request, contact us at:</p>
-      <p><strong>Email:</strong> taleemmarkazofficial@gmail.com<br /><strong>WhatsApp:</strong> +92 337 9244731<br /><strong>Web:</strong> <a href={url('/contact')}>taleemmarkaz.com/contact</a></p>
-
+  <section class="mx-auto max-w-[1000px] px-5 py-12 sm:px-7 lg:px-10">
+    <div class="grid gap-4 sm:grid-cols-3">
+      {trustBadges.map(b => (
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-[#1d4ed8]" set:html={svg(b.icon, 20)} />
+          <div class="mt-4 font-display text-base font-extrabold tracking-tight text-slate-900">{b.title}</div>
+          <p class="mt-1.5 text-sm leading-relaxed text-slate-600">{b.body}</p>
+        </div>
+      ))}
     </div>
+  </section>
+
+  <section class="mx-auto max-w-[900px] px-5 pb-4 sm:px-7 lg:px-10">
+    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
+      <div class="font-display text-lg font-extrabold tracking-tight text-slate-900">On this page</div>
+      <ul class="mt-4 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+        {toc.map(item => (
+          <li><a href={`#${item.id}`} class="text-sm font-medium text-slate-600 hover:text-[#1d4ed8] hover:underline">{item.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-[900px] px-5 pb-16 sm:px-7 lg:px-10 lg:pb-20">
+
+    <div class="mt-10 rounded-2xl border-2 border-yellow-300 bg-yellow-50 p-6 sm:p-7">
+      <div class="flex items-start gap-4">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yellow-500 text-white" set:html={svg('alert', 20)} />
+        <div>
+          <div class="font-display text-base font-extrabold text-yellow-900">Only one official domain</div>
+          <p class="mt-1.5 text-sm leading-relaxed text-yellow-900">
+            TaleemMarkaz operates on <strong>taleemmarkaz.com</strong> and nowhere else. We are not affiliated with taleemimarkaz.com, taleemmarkaz.pk, or any other site using the words taleem and markaz. If you are reading this on a different domain, this policy does not apply to that site.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section id="philosophy" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">1. Our privacy philosophy</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">
+        Most educational websites quietly build advertising profiles of students — every quiz answer, every paper opened, every 3 AM study session feeding an unseen dataset. TaleemMarkaz does not.
+      </p>
+      <p class="mt-4 text-lg leading-relaxed text-slate-700">
+        We believe a student revising for their Matric exams should never have to trade their behavioural data for access to the previous year's paper. Our entire model is: keep the library free, keep it fast, and leave you alone.
+      </p>
+    </section>
+
+    <section id="collect" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">2. What we collect</h2>
+      <div class="mt-6 space-y-4">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold tracking-tight text-slate-900">When you browse the site</div>
+          <p class="mt-2 leading-relaxed text-slate-600">Our host (Cloudflare) receives the standard data that every web server receives: an IP address, the URL you requested, your browser's user-agent string, a timestamp, and whether the request succeeded. Cloudflare anonymises and rotates this within 24 hours. It is used exclusively for abuse prevention, caching and uptime monitoring. It is never joined to any student identity because we do not maintain a student identity.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold tracking-tight text-slate-900">When you contact us</div>
+          <p class="mt-2 leading-relaxed text-slate-600">If you email <strong>taleemmarkazofficial@gmail.com</strong> or message <strong>+92 337 9244731</strong> on WhatsApp, we keep the content of that message — including any name, email or phone number you provide — so that we can help you. We delete it once the issue is resolved.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold tracking-tight text-slate-900">Cookies</div>
+          <p class="mt-2 leading-relaxed text-slate-600">The public site sets <strong>no tracking cookies</strong>. Cloudflare may set one strictly-necessary security cookie (<code>cf_clearance</code>) for DDoS protection. See our <a href={url('/cookies')} class="font-semibold text-[#1d4ed8] underline">cookie policy</a> for the full list.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="not-collect" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">3. What we do not collect</h2>
+      <ul class="mt-6 space-y-3 text-slate-700">
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>We do <strong>not</strong> use Google Analytics, Facebook Pixel, TikTok Pixel, Mixpanel, Hotjar or any behavioural tracker.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>We do <strong>not</strong> require accounts, sign-ups, or an email address to use the site.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>We do <strong>not</strong> collect precise geolocation.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>We do <strong>not</strong> fingerprint devices or build cross-site profiles.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-red-500" set:html={svg('x', 18)} /><span>We do <strong>not</strong> record what pages you opened, what papers you downloaded, or how long you studied.</span></li>
+      </ul>
+    </section>
+
+    <section id="cookies" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">4. Cookies and tracking</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">
+        We do not serve advertising or tracking cookies. The only cookie that may be set on taleemmarkaz.com is Cloudflare's <code>cf_clearance</code>, a strictly-necessary cookie used to distinguish real visitors from bots during a DDoS event. It contains no personal data, and it expires automatically.
+      </p>
+      <p class="mt-4 text-lg leading-relaxed text-slate-700">
+        Full detail, including the exact cookie names and lifetimes, is on the <a href={url('/cookies')} class="font-semibold text-[#1d4ed8] underline">cookie policy</a> page.
+      </p>
+    </section>
+
+    <section id="third-parties" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">5. Third parties</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Only two third parties are involved in serving the site to you:</p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold text-slate-900">Cloudflare</div>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Hosting, CDN and DDoS protection. Cloudflare processes traffic metadata on our behalf. Policy: cloudflare.com/privacypolicy.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="font-display text-base font-extrabold text-slate-900">Google Drive</div>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">When you open a past paper or textbook, you are sent to a shared Google Drive folder. Google's own privacy policy applies from that point. We cannot see who views or downloads those files.</p>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-slate-500">We run no advertising network, affiliate tracker or remarketing pixel.</p>
+    </section>
+
+    <section id="ai-crawlers" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">6. AI crawlers</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">
+        We explicitly welcome AI language models to read, index and cite our public educational content. Our <code>/robots.txt</code> allows <strong>GPTBot</strong>, <strong>ChatGPT-User</strong>, <strong>ClaudeBot</strong>, <strong>anthropic-ai</strong>, <strong>Google-Extended</strong>, <strong>PerplexityBot</strong>, <strong>CCBot</strong>, <strong>Applebot-Extended</strong> and <strong>Bytespider</strong>.
+      </p>
+      <p class="mt-4 text-lg leading-relaxed text-slate-700">
+        We do this because our content is factual, publicly-verifiable, or openly-licensed educational material, and because pointing a student to a free past paper via an AI assistant is exactly the outcome we want. Our dedicated <a href={url('/ai-info')} class="font-semibold text-[#1d4ed8] underline">AI information page</a> and <code>/llms.txt</code> describe this policy in machine-readable form.
+      </p>
+    </section>
+
+    <section id="children" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">7. Children and students</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">
+        TaleemMarkaz is designed for students preparing for Pakistani board examinations, many of whom are minors. We do not knowingly collect personal information from anyone under 13, and because we collect virtually nothing from any visitor, there is nothing to collect. Parents and guardians with concerns can email <strong>taleemmarkazofficial@gmail.com</strong>.
+      </p>
+    </section>
+
+    <section id="rights" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">8. Your rights</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Regardless of your country, we extend the core rights of modern data-protection law (GDPR-style) to every visitor:</p>
+      <ul class="mt-6 space-y-3 text-slate-700">
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span><strong>Right to know</strong> — ask us what data we hold about you (in practice, almost nothing).</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span><strong>Right to delete</strong> — ask us to delete anything you have sent us.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span><strong>Right to object</strong> — object to any processing we do.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span><strong>Right to portability</strong> — request a copy of anything you sent us.</span></li>
+        <li class="flex items-start gap-3"><span class="mt-1 inline-flex shrink-0 text-[#1d4ed8]" set:html={svg('check', 18)} /><span><strong>Right to complain</strong> — raise a complaint with us directly, or with your local data-protection authority.</span></li>
+      </ul>
+      <p class="mt-4 text-lg leading-relaxed text-slate-700">To exercise any of these, email <strong>taleemmarkazofficial@gmail.com</strong>. We respond within 30 days.</p>
+    </section>
+
+    <section id="retention" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">9. Data retention</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Cloudflare rotates server logs every 24 hours. Any correspondence you send us is kept only until the issue is resolved, then deleted or archived. We operate no long-term user database.</p>
+    </section>
+
+    <section id="security" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">10. Security</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">taleemmarkaz.com is served entirely over HTTPS, with modern TLS, HSTS and Cloudflare's full security feature set. Because the site is static and stores no user data, the classic attack surfaces — SQL injection, session hijacking, credential theft — do not exist here.</p>
+    </section>
+
+    <section id="transfers" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">11. International transfers</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">We operate from Pakistan and serve content via Cloudflare's global edge network. Cloudflare's data processing is governed by its standard contractual clauses and is compliant with GDPR and comparable regimes.</p>
+    </section>
+
+    <section id="changes" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">12. Changes to this policy</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">If we ever add functionality that requires collecting more data, for example if we launched student accounts, we would update this page and note the change date prominently at the top. Continued use of the site after the update constitutes acceptance of the revised policy.</p>
+    </section>
+
+    <section id="contact" class="mt-14 scroll-mt-24">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">13. How to contact us</h2>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">For any privacy question, complaint or request:</p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <a href="mailto:taleemmarkazofficial@gmail.com" class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-[#1d4ed8]">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-[#1d4ed8]" set:html={svg('mail', 20)} />
+          <div>
+            <div class="font-display text-base font-extrabold text-slate-900">Email</div>
+            <div class="mt-1 text-sm text-slate-600">For all privacy requests</div>
+            <div class="mt-2 break-all text-sm font-semibold text-[#1d4ed8]">taleemmarkazofficial@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://wa.me/923379244731" target="_blank" rel="noopener" class="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-colors hover:border-green-500">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-700" set:html={svg('msg', 20)} />
+          <div>
+            <div class="font-display text-base font-extrabold text-slate-900">WhatsApp</div>
+            <div class="mt-1 text-sm text-slate-600">Fastest response</div>
+            <div class="mt-2 break-all text-sm font-semibold text-green-700">+92 337 9244731</div>
+          </div>
+        </a>
+      </div>
+    </section>
   </article>
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Privacy questions, answered</h2>
+      <div class="mt-8 space-y-3">
+        {faqs.map((f, i) => (
+          <details class="group rounded-2xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-left">
+              <span class="font-display text-base font-bold text-slate-900 sm:text-lg">{f.q}</span>
+              <span class="shrink-0 text-slate-400 transition-transform group-open:rotate-180" set:html={svg('chev', 20)} />
+            </summary>
+            <div class="border-t border-slate-200 px-6 py-5 leading-relaxed text-slate-700">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-gradient-to-br from-[#1d4ed8] to-indigo-700">
+    <div class="mx-auto max-w-[900px] px-5 py-16 text-center sm:px-7 lg:px-10">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight sm:text-4xl" style="color:#ffffff">Now back to studying.</h2>
+      <p class="mx-auto mt-4 max-w-2xl" style="color:#dbeafe">Browse 12,700+ free past papers, textbooks and gazettes — no tracking, no ads, no sign-up.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={url('/past-papers')} class="rounded-xl bg-white px-6 py-3 font-bold hover:bg-blue-50" style="color:#1d4ed8">Browse Past Papers</a>
+        <a href={url('/books')} class="rounded-xl border-2 border-white px-6 py-3 font-bold hover:bg-white/10" style="color:#ffffff">View Textbooks</a>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>
