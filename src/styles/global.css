@@ -1,4 +1,9 @@
 @import "@fontsource-variable/plus-jakarta-sans";
+
+/* Force Tailwind v4 to scan all .astro files */
+@source "../pages/**/*.astro";
+@source "../components/**/*.astro";
+@source "../layouts/**/*.astro";
 @import "tailwindcss";
 
 @theme {
@@ -894,4 +899,28 @@ input, input:focus, input:focus-visible { outline: none; box-shadow: none; }
 .badge-secondary {
   background: #f1f5f9;
   color: #475569;
+}
+
+/* ─── Horizontal overflow safety (added 2026-10-13) ─── */
+/* Prevents long emails/URLs/code from pushing layout wider than viewport */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+a, code, pre, td, th {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Allow flex text children to shrink below their intrinsic content width */
+.flex > div, .flex > p, .flex > span,
+.inline-flex > div, .inline-flex > p, .inline-flex > span {
+  min-width: 0;
+}
+
+/* Utility: apply manually to any element that must break long tokens */
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
