@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+
+const title = 'Disclaimer — TaleemMarkaz | Educational reference only';
+const description = 'TaleemMarkaz disclaimer. We are an independent educational library, not affiliated with any Pakistani board. Content is for reference and study purposes.';
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Disclaimer — TaleemMarkaz', url: 'https://taleemmarkaz.com/disclaimer/' },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Disclaimer' }
+  ]}
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+      <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a><span>/</span><span class="text-slate-500">Disclaimer</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">Disclaimer</h1>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Please read this disclaimer carefully before using TaleemMarkaz.com.</p>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-[900px] px-5 py-12 sm:px-7 lg:px-10">
+    <div class="prose prose-slate prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-extrabold">
+
+      <h2>Independent platform</h2>
+      <p>TaleemMarkaz is an <strong>independent educational platform</strong>. We are not affiliated with, endorsed by, sponsored by, or in any way officially connected to any of the following organisations:</p>
+      <ul>
+        <li>Punjab Textbook Board (PTB) or any of the nine Punjab BISEs</li>
+        <li>Federal Board of Intermediate and Secondary Education (FBISE)</li>
+        <li>Sindh Textbook Board (STBB) or any Sindh BISE</li>
+        <li>Khyber Pakhtunkhwa Textbook Board (KPTBB) or any KPK BISE</li>
+        <li>Balochistan Textbook Board (BTBB)</li>
+        <li>AJK Textbook Board (AJKTB)</li>
+        <li>Any similarly-named website such as "Taleem Markaz", "Taleem-Markaz", "taleemmarkaz.pk" or similar variations</li>
+      </ul>
+      <p>The only official web address of this platform is <strong>taleemmarkaz.com</strong>.</p>
+
+      <h2>Educational use only</h2>
+      <p>All content on this site — past papers, textbooks, result gazettes, notes, quizzes and study tools — is provided <strong>for educational reference and study purposes only</strong>. Nothing on this site constitutes official academic advice, legal advice, or a guarantee of exam results.</p>
+
+      <h2>Not a substitute for official sources</h2>
+      <p>Students should always verify exam dates, syllabi, result announcements and official notifications directly with their respective boards. TaleemMarkaz is a supplementary study library, not an official board portal.</p>
+
+      <h2>Third-party content</h2>
+      <p>PDFs and documents are linked from Google Drive and other third-party sources. We do not host these files on our own servers. Their availability, content and licensing are governed by the original publishers and Google's terms of service.</p>
+
+      <h2>No guarantee of results</h2>
+      <p>Using resources from TaleemMarkaz does not guarantee any particular academic outcome. Exam success depends on each student's preparation, institution, and board. We provide the materials; the work is yours.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this disclaimer: <strong>taleemmarkazofficial@gmail.com</strong> or <strong>WhatsApp +92 337 9244731</strong>.</p>
+
+    </div>
+  </article>
+</BaseLayout>

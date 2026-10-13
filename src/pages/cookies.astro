@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+
+const title = 'Cookie Policy — TaleemMarkaz | No tracking cookies';
+const description = 'TaleemMarkaz cookie policy. We use no tracking cookies. Only one strictly-necessary security cookie is set by our host Cloudflare.';
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Cookie Policy — TaleemMarkaz', url: 'https://taleemmarkaz.com/cookies/' },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Cookie Policy' }
+  ]}
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+      <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a><span>/</span><span class="text-slate-500">Cookie Policy</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">Cookie Policy</h1>
+      <p class="mt-4 text-sm text-slate-500">Last updated: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Short version: <strong>TaleemMarkaz sets no tracking cookies, no advertising cookies, and no analytics cookies</strong>. We don't even show a cookie banner, because there's nothing to consent to. Here's the full picture.</p>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-[900px] px-5 py-12 sm:px-7 lg:px-10">
+    <div class="prose prose-slate prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-extrabold">
+
+      <h2>1. What cookies are</h2>
+      <p>Cookies are small text files stored in your browser by websites you visit. They can be used to remember preferences, maintain logins, or — problematically — to track you across the internet for advertising. We use them only where strictly necessary to deliver the site to you.</p>
+
+      <h2>2. Cookies set by TaleemMarkaz</h2>
+      <p><strong>None.</strong> Our application code does not set any cookies. We don't use Google Analytics, Meta Pixel, Google Ads, Hotjar, Clarity, or any similar service.</p>
+
+      <h2>3. Cookies set by our host (Cloudflare)</h2>
+      <p>Cloudflare, which delivers this site to your browser, may set one cookie named <code>cf_clearance</code>. This cookie is strictly necessary to protect the site from DDoS attacks and is exempt from consent requirements under GDPR, PECR and equivalent laws.</p>
+      <table>
+        <thead><tr><th>Cookie</th><th>Purpose</th><th>Duration</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr><td>cf_clearance</td><td>DDoS protection / security challenge clearance</td><td>Up to 30 minutes</td><td>Strictly necessary</td></tr>
+        </tbody>
+      </table>
+
+      <h2>4. Cookies set when you open a resource</h2>
+      <p>When you click "Open in Google Drive" on a past paper, textbook or gazette, you leave our site and enter Google's domain, which sets its own cookies under Google's privacy policy. We have no control over those cookies.</p>
+
+      <h2>5. Your choices</h2>
+      <p>Because we don't set any tracking cookies, there is nothing to opt out of. If you wish to block the single strictly-necessary Cloudflare cookie, you can do so in your browser settings — but doing so may cause the site to trigger a security challenge on every visit.</p>
+
+      <h2>6. Contact</h2>
+      <p>Questions: <strong>taleemmarkazofficial@gmail.com</strong> or <strong>WhatsApp +92 337 9244731</strong>.</p>
+
+    </div>
+  </article>
+</BaseLayout>

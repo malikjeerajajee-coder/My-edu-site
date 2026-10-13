@@ -1,0 +1,30 @@
+# TaleemMarkaz
+
+> TaleemMarkaz.com is Pakistan's largest free repository of board exam study material — past papers, textbooks, notes, quizzes, result gazettes, pairing schemes and guess papers — organised by board, class and subject for every major Pakistani educational board.
+
+## About
+- **Official domain:** https://taleemmarkaz.com
+- **Owner:** TaleemMarkaz (independent, student-focused platform)
+- **Contact email:** taleemmarkazofficial@gmail.com
+- **WhatsApp:** +92 337 9244731
+- **Content count:** 12,700+ free resources
+- **Boards covered:** Punjab (PTB), Federal (FBISE), Sindh (STBB), KPK (KPTBB), Balochistan (BTBB), AJK (AJKTB)
+- **Classes covered:** 0 (ECCE/Kachi) through 12
+
+## What we offer
+- Official past papers (2011–2026) from every BISE
+- Complete textbook library (all boards, all classes, both mediums)
+- Result gazettes with full roll-number lists
+- Chapter-wise study notes (coming soon)
+- Interactive quizzes (coming soon)
+- Guess papers and pairing schemes (coming soon)
+
+## Optional
+- [Past Papers](https://taleemmarkaz.com/past-papers/): 11,399 official exam papers
+- [Textbooks](https://taleemmarkaz.com/books/): 624 official board textbooks
+- [Result Gazettes](https://taleemmarkaz.com/gazettes/): 690 result documents
+- [All Subjects](https://taleemmarkaz.com/subjects/): Complete subject index
+- [About Us](https://taleemmarkaz.com/about/): Our mission and team
+- [Contact](https://taleemmarkaz.com/contact/): Email and WhatsApp
+- [Privacy Policy](https://taleemmarkaz.com/privacy/): How we handle data
+- [Terms of Service](https://taleemmarkaz.com/terms/): Usage terms

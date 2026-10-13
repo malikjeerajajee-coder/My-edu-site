@@ -1,87 +1,237 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'AboutPage',
-  name: 'About TaleemMarkaz',
-  description: 'TaleemMarkaz is a free study platform for Pakistani students — notes, past papers, textbooks and result gazettes organised by board and class.',
-  publisher: { '@type': 'Organization', name: 'TaleemMarkaz' },
-};
----
-<BaseLayout
-  title="About — TaleemMarkaz"
-  description="TaleemMarkaz is a free study platform for Pakistani students — notes, past papers, guess papers, textbooks and result gazettes, all organised by board and class."
-  jsonLd={jsonLd}
->
-  <div class="mx-auto max-w-3xl px-5 py-12 sm:px-7 lg:px-10 lg:py-20">
-    <nav class="mb-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
-      <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a>
-      <span>/</span>
-      <span class="text-slate-500">About</span>
-    </nav>
+const title = 'About TaleemMarkaz — Pakistan\'s Largest Free Board Exam Library | taleemmarkaz.com';
+const description = 'TaleemMarkaz.com is an independent educational platform offering 12,700+ free past papers, textbooks, notes and result gazettes for every Pakistani board. Not affiliated with any other site.';
 
-    <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">About TaleemMarkaz</h1>
-    <p class="mt-5 text-lg leading-relaxed text-slate-600">
-      TaleemMarkaz is a free study platform built for Pakistani students. We bring every resource a student actually needs — notes, past papers, guess papers, textbooks and result gazettes — into one place, organised by board and class.
+const stats = [
+  { n: '12,700+', l: 'Free Resources' },
+  { n: '6', l: 'Boards Covered' },
+  { n: '13', l: 'Classes (0–12)' },
+  { n: '15+', l: 'Years of Papers' },
+  { n: '100%', l: 'Free Forever' },
+  { n: '0', l: 'Paywalls' }
+];
+
+const faqs = [
+  {
+    q: 'Is TaleemMarkaz the same as Taleem Markaz, TaleemMarkaz.pk or other similar sites?',
+    a: 'No. TaleemMarkaz.com is an independent educational platform. We are not affiliated with, endorsed by, or connected to any other website with a similar name. Our only official domain is taleemmarkaz.com (one word, no spaces, no hyphens, .com extension).'
+  },
+  {
+    q: 'Is all the content really free?',
+    a: 'Yes, 100%. Every past paper, textbook, result gazette and study resource on TaleemMarkaz is completely free. We have no premium tier, no paywall, no ads blocking content, and no student data monetisation.'
+  },
+  {
+    q: 'Where do the past papers and textbooks come from?',
+    a: 'We source materials directly from official board publications, verified educational institutions, and public domain resources. Every document is authentic and corresponds to the syllabus published by the respective board.'
+  },
+  {
+    q: 'Which boards and classes do you cover?',
+    a: 'We cover all major Pakistani boards: Punjab Textbook Board (PTB), Federal Board (FBISE), Sindh Textbook Board (STBB), Khyber Pakhtunkhwa Textbook Board (KPTBB), Balochistan Textbook Board (BTBB), and AJK Textbook Board (AJKTB). Classes range from ECCE/Kachi (Class 0) through Intermediate (Class 12).'
+  },
+  {
+    q: 'Can I request specific content that is missing?',
+    a: 'Absolutely. Email taleemmarkazofficial@gmail.com or WhatsApp us on +92 337 9244731. We prioritise requests based on student demand and availability of authentic source material.'
+  },
+  {
+    q: 'Are you affiliated with any BISE or textbook board?',
+    a: 'No. TaleemMarkaz is an independent platform. We are not an official representative of any board, though we reference official publications and maintain accuracy in our content cataloguing.'
+  }
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': 'https://taleemmarkaz.com/#organization',
+    name: 'TaleemMarkaz',
+    alternateName: 'Taleem Markaz',
+    url: 'https://taleemmarkaz.com',
+    logo: 'https://taleemmarkaz.com/logo.png',
+    email: 'taleemmarkazofficial@gmail.com',
+    telephone: '+92-337-9244731',
+    description: 'Free educational resources for Pakistani students including past papers, textbooks, notes, result gazettes, quizzes and pairing schemes for every major board.',
+    foundingDate: '2024',
+    areaServed: { '@type': 'Country', name: 'Pakistan' },
+    knowsAbout: ['Pakistani board exams', 'BISE past papers', 'Punjab textbooks', 'Federal Board FBISE', 'Sindh STBB', 'KPK KPTBB', 'Balochistan BTBB', 'AJK AJKTB', 'Matric results', 'Intermediate results', 'Class 9 10 11 12'],
+    sameAs: ['https://taleemmarkaz.com/about/', 'https://taleemmarkaz.com/contact/']
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://taleemmarkaz.com/about/',
+    name: 'About TaleemMarkaz',
+    description,
+    url: 'https://taleemmarkaz.com/about/',
+    isPartOf: { '@id': 'https://taleemmarkaz.com/#website' },
+    about: { '@id': 'https://taleemmarkaz.com/#organization' },
+    inLanguage: 'en-PK'
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a }
+    }))
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+      { '@type': 'ListItem', position: 2, name: 'About' }
+    ]
+  }
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="border-b border-slate-200 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-16 sm:px-7 lg:px-10 lg:py-24">
+      <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a><span>/</span><span class="text-slate-500">About</span>
+      </nav>
+
+      <div class="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+        <div>
+          <div class="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8] shadow-sm ring-1 ring-blue-100">
+            <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+            Official · taleemmarkaz.com
+          </div>
+          <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+            Pakistan's largest free library of <span class="text-[#1d4ed8]">board exam resources</span>
+          </h1>
+          <p class="mt-6 text-lg leading-relaxed text-slate-700">
+            TaleemMarkaz is an independent, student-first platform that has organised over 12,700 past papers, textbooks, result gazettes and study tools — from every major Pakistani board — into the single most complete open library for Matric and Intermediate students.
+          </p>
+          <p class="mt-4 text-lg leading-relaxed text-slate-700">
+            No paywalls. No premium tiers. No ads blocking content. Every resource is free, forever.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {stats.map(s => (
+            <div class="rounded-2xl border border-blue-100 bg-white p-5 text-center shadow-sm ring-1 ring-blue-50">
+              <div class="font-display text-2xl font-extrabold tracking-tight text-[#1d4ed8] sm:text-3xl">{s.n}</div>
+              <div class="mt-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500 sm:text-xs">{s.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+    <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Our Mission</h2>
+    <p class="mt-6 text-lg leading-relaxed text-slate-700">
+      Education in Pakistan should not depend on a student's family income, city, or access to private academies. Every year, millions of Matric and Intermediate students scramble through WhatsApp groups, outdated PDF links and paid tuition apps just to find the previous year's paper or their own board's textbook.
+    </p>
+    <p class="mt-4 text-lg leading-relaxed text-slate-700">
+      <strong>TaleemMarkaz exists to end that scramble.</strong> We are building the definitive, free, searchable library of official board exam material — organised exactly the way the boards actually structure their syllabi: by board, by class, by subject.
     </p>
 
-    <div class="prose mt-10">
-      <h2>Why we built this</h2>
-      <p>
-        Pakistani students waste hours looking for the right paper. Google returns outdated links, WhatsApp groups share inconsistent PDFs, and most study sites are either paywalled, ad-choked, or cover just one or two boards.
-      </p>
-      <p>
-        TaleemMarkaz fixes that. We've collected and organised:
-      </p>
-      <ul>
-        <li><strong>6,000+ past papers</strong> — Class 9–12, all 6 provinces (Punjab, Federal, Sindh, KPK, Balochistan, AJK), all 33 BISEs, from 2018 to 2026</li>
-        <li><strong>180+ textbooks</strong> — full PDFs of the Punjab Curriculum and Textbook Board (PTB) and Federal Board (FBISE) books for Class 1 to 12</li>
-        <li><strong>Notes and chapter breakdowns</strong> — subject-wise, with exam-relevant focus</li>
-        <li><strong>Result gazettes</strong> — Class 9 and 10, all BISEs</li>
-        <li><strong>Guess papers and pairing schemes</strong> — updated each year</li>
-      </ul>
-
-<h2>Key terms explained</h2>
-<p>Before diving in, here are the terms you will see across this site:</p>
-<ul>
-<li><strong>BISE</strong> — Board of Intermediate and Secondary Education. Each BISE sets its own exam papers. Punjab has 9, Sindh has 5, KPK has 8.</li>
-<li><strong>SSC</strong> — Secondary School Certificate (Class 9 and 10, also called Matric).</li>
-<li><strong>HSSC</strong> — Higher Secondary School Certificate (Class 11 and 12, also called Intermediate or FSc/FA).</li>
-<li><strong>SNC</strong> — Single National Curriculum, the unified syllabus framework used across Pakistan since 2021.</li>
-<li><strong>Pairing Scheme</strong> — The official document showing how an exam paper is structured: how many MCQs, short questions, and long questions appear.</li>
-<li><strong>Result Gazette</strong> — The official PDF listing every student's marks, published by each board after results are announced.</li>
-</ul>
-      <h2>How it's organised</h2>
-      <p>
-        Most study sites force you to browse everything at once. TaleemMarkaz is built around two simple ideas:
-      </p>
-      <ol>
-        <li><strong>Your board comes first.</strong> Punjab has 9 separate BISEs, Sindh has 5, KPK has 8. Each sets its own papers. We let you pick your exact board before showing you anything.</li>
-        <li><strong>Your class second.</strong> A Class 9 student never needs to see Class 12 content — and vice versa.</li>
-      </ol>
-
-      <h2>Free, forever</h2>
-      <p>
-        No sign-up. No subscription. No ads. No paywall. Every resource on TaleemMarkaz is free to download and use.
-      </p>
-      <p>
-        This is a public good. Education shouldn't be gated by income, and we intend to keep it that way.
-      </p>
-
-      <h2>Where our content comes from</h2>
-      <p>
-        Our papers, textbooks and gazettes come from publicly-published material by the Boards of Intermediate and Secondary Education (BISEs) across Pakistan and the Punjab Curriculum and Textbook Board. We organise and cross-reference these sources; we do not claim ownership of the underlying exam papers.
-      </p>
-      <p>
-        If you're a rights holder and would like a specific file removed, see our <a href={url('/contact')}>Contact page</a>.
-      </p>
-
-      <h2>Get in touch</h2>
-      <p>
-        Have a question, a correction, or a request? <a href={url('/contact')}>Contact us</a>.
-      </p>
+    <h2 class="mt-14 font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">What we cover</h2>
+    <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-2xl border border-slate-200 bg-white p-6">
+        <h3 class="font-display text-lg font-extrabold text-slate-900">Six boards</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Punjab (all 9 BISEs), Federal (FBISE), Sindh (STBB), KPK (KPTBB), Balochistan (BTBB), and AJK (AJKTB). If a board issues exams in Pakistan, it's in our library.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6">
+        <h3 class="font-display text-lg font-extrabold text-slate-900">Thirteen classes</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">From ECCE / Kachi (Class 0) through primary, middle, Matric (9–10) and Intermediate (11–12). Every class, every stream — Science, Arts, Commerce, Pre-Medical, Pre-Engineering, ICS.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6">
+        <h3 class="font-display text-lg font-extrabold text-slate-900">Six resource types</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">Past papers, official textbooks, result gazettes, quizzes, guess papers and pairing schemes — the exact six things every board-exam student actually needs.</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6">
+        <h3 class="font-display text-lg font-extrabold text-slate-900">Both mediums</h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600">English-medium and Urdu-medium editions catalogued separately, so students find the exact textbook their teacher assigned.</p>
+      </div>
     </div>
-  </div>
+
+    <h2 class="mt-14 font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Why students and teachers trust us</h2>
+    <ul class="mt-6 space-y-4 text-slate-700">
+      <li class="flex items-start gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-[#1d4ed8]" /><span><strong>Authentic sourcing.</strong> Every paper, textbook and gazette traces back to the issuing board or an authorised publisher.</span></li>
+      <li class="flex items-start gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-[#1d4ed8]" /><span><strong>Correct cataloguing.</strong> One spelling per subject, one entry per real resource, accurate board and class tags — so search actually finds what you need.</span></li>
+      <li class="flex items-start gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-[#1d4ed8]" /><span><strong>Mobile-first.</strong> Built for the device most Pakistani students actually use — fast-loading, offline-capable, zero bloat.</span></li>
+      <li class="flex items-start gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-[#1d4ed8]" /><span><strong>No data harvesting.</strong> We don't sell student data. We don't track behaviour. We don't run ads. Read our <a href={url('/privacy')} class="text-[#1d4ed8] underline">privacy policy</a>.</span></li>
+    </ul>
+
+    <h2 class="mt-14 font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Our team</h2>
+    <p class="mt-6 text-lg leading-relaxed text-slate-700">
+      TaleemMarkaz is maintained by a small team of educators, software engineers, and former board-exam students who have each lived the problem we're solving. We're not backed by venture capital, tuition chains, or textbook publishers. We're a community project — built by Pakistani students, for Pakistani students.
+    </p>
+
+    <div class="mt-10 rounded-2xl border-2 border-yellow-300 bg-yellow-50 p-6">
+      <div class="flex items-start gap-4">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yellow-500 text-white">
+          <Icon name="alert-triangle" size={20} />
+        </div>
+        <div>
+          <div class="font-bold text-yellow-900">Important: only one official domain</div>
+          <p class="mt-1.5 text-sm leading-relaxed text-yellow-900">
+            The only official domain for TaleemMarkaz is <strong>taleemmarkaz.com</strong>. We are not affiliated with, do not endorse, and have no connection to any other website using the words "taleem" and "markaz" in any combination, spelling, extension or subdomain.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Get in touch</h2>
+      <p class="mt-4 text-lg text-slate-600">Questions, corrections, content requests, or partnership enquiries — we read every message.</p>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <a href="mailto:taleemmarkazofficial@gmail.com" class="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-[#1d4ed8] hover:shadow-md">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-[#1d4ed8]"><Icon name="mail" size={20} /></div>
+          <div>
+            <div class="font-display text-base font-extrabold text-slate-900">Email</div>
+            <div class="mt-1 text-sm text-slate-600">General enquiries</div>
+            <div class="mt-2 font-semibold text-[#1d4ed8]">taleemmarkazofficial@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://wa.me/923379244731" target="_blank" rel="noopener" class="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-6 transition-all hover:border-green-500 hover:shadow-md">
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-700"><Icon name="message-circle" size={20} /></div>
+          <div>
+            <div class="font-display text-base font-extrabold text-slate-900">WhatsApp</div>
+            <div class="mt-1 text-sm text-slate-600">Fastest response</div>
+            <div class="mt-2 font-semibold text-green-700">+92 337 9244731</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+    <h2 class="font-display text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Frequently asked questions</h2>
+    <div class="mt-8 space-y-3">
+      {faqs.map((f, i) => (
+        <details class="group rounded-2xl border border-slate-200 bg-white" open={i === 0}>
+          <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-left">
+            <span class="font-display text-base font-bold text-slate-900 sm:text-lg">{f.q}</span>
+            <Icon name="chevron-down" size={20} class="shrink-0 text-slate-400 transition-transform group-open:rotate-180" />
+          </summary>
+          <div class="border-t border-slate-200 px-6 py-5 text-slate-700 leading-relaxed">{f.a}</div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section class="border-t border-slate-200 bg-gradient-to-br from-[#1d4ed8] to-indigo-700">
+    <div class="mx-auto max-w-[900px] px-5 py-16 text-center sm:px-7 lg:px-10">
+      <h2 class="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Ready to start studying?</h2>
+      <p class="mx-auto mt-4 max-w-2xl text-blue-100">Browse 12,700+ free resources — organised by board, class and subject.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a href={url('/past-papers')} class="rounded-xl bg-white px-6 py-3 font-bold text-[#1d4ed8] hover:bg-blue-50">Browse Past Papers</a>
+        <a href={url('/books')} class="rounded-xl border-2 border-white px-6 py-3 font-bold text-white hover:bg-white/10">View Textbooks</a>
+        <a href={url('/subjects')} class="rounded-xl border-2 border-white/40 px-6 py-3 font-bold text-white hover:bg-white/10">All Subjects</a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>

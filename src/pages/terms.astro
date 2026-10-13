@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/url';
+
+const title = 'Terms of Service — TaleemMarkaz | Free educational use';
+const description = 'Terms of service for TaleemMarkaz.com. Educational use of past papers, textbooks and gazettes. Copyright, liability and user conduct.';
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Terms of Service — TaleemMarkaz', url: 'https://taleemmarkaz.com/terms/', description },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Terms of Service' }
+  ]}
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[900px] px-5 py-16 sm:px-7 lg:px-10 lg:py-20">
+      <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-400">
+        <a href={url('/')} class="hover:text-[#1d4ed8]">Home</a><span>/</span><span class="text-slate-500">Terms of Service</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl">Terms of Service</h1>
+      <p class="mt-4 text-sm text-slate-500">Last updated: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      <p class="mt-6 text-lg leading-relaxed text-slate-700">Welcome to TaleemMarkaz.com. By using this site you agree to these terms. They are written to be short, fair and student-friendly.</p>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-[900px] px-5 py-12 sm:px-7 lg:px-10">
+    <div class="prose prose-slate prose-lg max-w-none prose-headings:font-display prose-headings:tracking-tight prose-h2:text-2xl prose-h2:font-extrabold">
+
+      <h2>1. What this site is</h2>
+      <p>TaleemMarkaz is a free, independent educational resource library for Pakistani students. We organise publicly-available board exam material — past papers, textbooks, result gazettes and related study tools — into a searchable catalogue. We are not a board, publisher, tuition academy, or exam authority.</p>
+
+      <h2>2. Permitted use</h2>
+      <p>You may use this site and the resources it links to for:</p>
+      <ul>
+        <li>Personal study and exam preparation</li>
+        <li>Classroom teaching in schools, colleges and tuition centres</li>
+        <li>Educational research</li>
+        <li>Non-commercial referencing by other educational websites and AI models</li>
+      </ul>
+
+      <h2>3. What you may not do</h2>
+      <ul>
+        <li>Rehost, resell, or redistribute our catalogue or the underlying PDFs commercially.</li>
+        <li>Use the site to facilitate cheating in live board examinations.</li>
+        <li>Misrepresent yourself as an employee, partner, or official representative of TaleemMarkaz.</li>
+        <li>Attempt to scrape the site at a rate that disrupts service for other students.</li>
+        <li>Claim affiliation with any similarly-named website. Our only official domain is taleemmarkaz.com.</li>
+      </ul>
+
+      <h2>4. Copyright and educational use</h2>
+      <p>Board textbooks, past papers and result gazettes are published by the respective boards (PTB, FBISE, STBB, KPTBB, BTBB, AJKTB) and are reproduced or linked here for educational reference in the public interest. TaleemMarkaz does not claim copyright over board-issued material. Copyright holders who wish to request removal of specific documents may contact taleemmarkazofficial@gmail.com.</p>
+      <p>The original elements of this site — design, catalogue metadata, search interface, written content, and code — are the property of TaleemMarkaz.</p>
+
+      <h2>5. Accuracy</h2>
+      <p>We make reasonable efforts to keep the catalogue accurate and up to date, but we cannot guarantee that every resource is complete, current, or error-free. Past papers and gazettes are provided as they were officially published; any typo in the original remains in our copy. Students should always cross-check with their institution and board before relying on any material.</p>
+
+      <h2>6. External links</h2>
+      <p>Resources are hosted on Google Drive and linked from this site. We do not control Drive availability, file contents after upload, or Google's terms. External links on the site are provided for convenience and are not endorsements.</p>
+
+      <h2>7. Disclaimer of warranties</h2>
+      <p>The site is provided "as is" and "as available" without warranties of any kind, express or implied, including but not limited to merchantability, fitness for a particular purpose, or non-infringement. We do not promise uninterrupted access, error-free operation, or guaranteed exam results.</p>
+
+      <h2>8. Limitation of liability</h2>
+      <p>To the fullest extent permitted by law, TaleemMarkaz and its maintainers shall not be liable for any indirect, incidental, consequential, or special damages arising from your use of the site, including but not limited to lost marks, missed deadlines, or academic consequences.</p>
+
+      <h2>9. Changes</h2>
+      <p>We may update these terms occasionally. The "last updated" date at the top of this page reflects the most recent revision. Material changes will be noted prominently on the site.</p>
+
+      <h2>10. Governing law</h2>
+      <p>These terms are governed by the laws of Pakistan. Any disputes shall be subject to the jurisdiction of the courts of Pakistan.</p>
+
+      <h2>11. Contact</h2>
+      <p>Questions about these terms: <strong>taleemmarkazofficial@gmail.com</strong> or <strong>WhatsApp +92 337 9244731</strong>.</p>
+
+    </div>
+  </article>
+</BaseLayout>
