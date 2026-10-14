@@ -2,96 +2,93 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
-import { getCollection } from 'astro:content';
+import { CLASS11_BOARDS, RESULT_YEAR, RESULT_DATE } from '../../lib/class11Data';
 
-const gazettes = await getCollection('gazettes');
-const boardGroups = new Map();
+const title = `Class 11 Result ${RESULT_YEAR} — All 9 Punjab Boards | TaleemMarkaz`;
+const description = `Check Class 11 (1st Year / HSSC Part-I) result ${RESULT_YEAR} for all nine Punjab boards — Lahore, Gujranwala, Faisalabad, Multan, Rawalpindi, Sargodha, Bahawalpur, DG Khan, Sahiwal — by roll number, SMS, or gazette PDF.`;
 
-for (const g of gazettes) {
-  const board = (g.data.boards || [])[0] || 'Punjab';
-  const bise = g.data.bise || null;
-  const cls = String(g.data.class);
-  
-  const boardKey = bise || board;
-  
-  if (!boardGroups.has(boardKey)) {
-    boardGroups.set(boardKey, { board, bise, classes: new Map() });
-  }
-  
-  const bg = boardGroups.get(boardKey);
-  if (!bg.classes.has(cls)) {
-    bg.classes.set(cls, { count: 0, years: new Set() });
-  }
-  
-  const clsData = bg.classes.get(cls);
-  clsData.count++;
-  clsData.years.add(g.data.year);
-}
-
-const boardArray = Array.from(boardGroups.entries()).map(([key, data]) => ({
-  key,
-  ...data,
-  classes: Array.from(data.classes.entries()).map(([cls, info]) => ({
-    cls,
-    ...info,
-    years: Array.from(info.years).sort((a, b) => b - a)
-  })).sort((a, b) => Number(a.cls) - Number(b.cls))
-}));
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: 'Pakistani Board Results Archive',
-  description: 'Complete archive of result gazettes from all Pakistani boards.'
-};
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description, url: 'https://taleemmarkaz.com/results/', inLanguage: 'en-PK', dateModified: '2026-10-14', isPartOf: { '@id': 'https://taleemmarkaz.com/#website' } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Results', item: 'https://taleemmarkaz.com/results/' },
+  ]},
+];
 ---
 
-<BaseLayout
-  title="Pakistani Board Results Archive | All Boards & Classes | TaleemMarkaz"
-  description="Complete archive of official result gazettes from Punjab, Sindh, KPK, Balochistan, Federal, and AJK boards."
-  jsonLd={jsonLd}
->
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+
+  <!-- Hero — homepage pattern -->
   <section class="border-b border-slate-200">
-    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20">
-      <h1 class="max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-        Pakistani Board Results Archive
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        Result year {RESULT_YEAR}
+      </div>
+
+      <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Punjab board results {RESULT_YEAR}.
       </h1>
+
       <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-        Complete collection of official result gazettes from all Pakistani educational boards. Download authentic result documents.
+        Free guides to checking <strong class="text-slate-900">Class 11 (1st Year / HSSC Part-I)</strong> results across all nine Punjab boards — roll number, SMS, and gazette methods for every BISE.
       </p>
+
+      <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Boards</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">9</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Result date</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">Oct 22</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Class</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">11</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Cost</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">Free</dd>
+        </div>
+      </dl>
     </div>
   </section>
 
+  <!-- Board grid — seamed-grid pattern -->
   <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
-    <div class="space-y-10">
-      {boardArray.map(bg => {
-        const boardSlug = (bg.bise || bg.board).toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        const boardLabel = bg.bise ? `${bg.bise} Board` : (bg.board === 'Federal' ? 'Federal Board' : `${bg.board} Board`);
-        
-        return (
-          <div>
-            <h2 class="mb-6 flex items-center gap-3 font-display text-2xl font-extrabold tracking-tight text-slate-900">
-              <span class="h-6 w-1.5 rounded-full bg-[#1d4ed8]"></span>
-              {boardLabel}
-            </h2>
-            <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {bg.classes.map(c => (
-                <a
-                  href={url(`/results/${boardSlug}/${c.cls}`)}
-                  class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50"
-                >
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="text-[11px] font-bold uppercase tracking-[0.1em] text-[#1d4ed8]">Class {c.cls}</div>
-                    <Icon name="arrow-right" size={16} strokeWidth={2.4} class="text-slate-300 transition-colors group-hover:text-[#1d4ed8]" />
-                  </div>
-                  <h3 class="mt-2 font-display text-lg font-extrabold tracking-tight text-slate-900">{c.count} Result Gazettes</h3>
-                  <p class="mt-3 text-sm leading-relaxed text-slate-500">Years: {c.years[0]}{c.years.length > 1 ? `-${c.years[c.years.length - 1]}` : ''}</p>
-                </a>
-              ))}
-            </div>
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Class 11 result by board</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Pick your board for the SMS code, official portal, gazette link and full how-to-check guide.</p>
+    </div>
+
+    <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      {CLASS11_BOARDS.map(b => (
+        <a href={url(`/results/${b.slug}/class-11/`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+          <div class="flex items-start justify-between gap-4">
+            <h3 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.shortName}</h3>
+            <Icon name="arrow-up-right" size={16} strokeWidth={2.4} class="mt-1.5 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </div>
-        );
-      })}
+          <p class="mt-2 text-[13px] leading-relaxed text-slate-500">{b.name}</p>
+          <div class="mt-6 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">SMS {b.smsCode}</div>
+        </a>
+      ))}
     </div>
   </section>
+
+  <!-- Disambiguation — minimal -->
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <div class="flex items-start gap-4">
+        <Icon name="alert-triangle" size={20} class="mt-0.5 shrink-0 text-slate-400" />
+        <div>
+          <div class="font-display text-base font-extrabold text-slate-900">TaleemMarkaz is independent</div>
+          <p class="mt-1.5 max-w-3xl text-sm leading-relaxed text-slate-600">
+            TaleemMarkaz.com is not affiliated with any Pakistani board, and not affiliated with taleemimarkaz.com or any similarly-named website. We provide free guides to official result channels only.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>

@@ -1,0 +1,283 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Icon from '../../../components/Icon.astro';
+import { url } from '../../../lib/url';
+import {
+  CLASS11_BOARDS, RESULT_YEAR, RESULT_DATE, RESULT_TIME,
+  TOTAL_MARKS, PASSING_PERCENT, PASSING_MARKS, GRADING_SCALE,
+} from '../../../lib/class11Data';
+
+export function getStaticPaths() {
+  return CLASS11_BOARDS.map(b => ({ params: { board: b.slug }, props: { board: b } }));
+}
+
+const { board } = Astro.props;
+const b = board as typeof CLASS11_BOARDS[number];
+const year = RESULT_YEAR;
+
+const title = `Class 11 Result ${year} ${b.name} — Check 1st Year Result by Roll Number & SMS`;
+const description = `Check Class 11 (1st Year / HSSC Part-I) result ${year} for ${b.name} — online by roll number, SMS to ${b.smsCode}, or gazette PDF. Expected date: ${RESULT_DATE} at ${RESULT_TIME}. Free, no sign-up.`;
+
+const faqs = [
+  { q: `When will the ${b.name} Class 11 result ${year} be announced?`, a: `The Punjab Boards Committee of Chairpersons has tentatively scheduled the HSSC Part-I (Class 11) result for ${RESULT_DATE} at ${RESULT_TIME}. ${b.name} follows this schedule, though the board may adjust by a day. Bookmark this page — we publish the confirmed date within minutes of the board's notification.` },
+  { q: `How do I check my ${b.shortName} board Class 11 result by roll number?`, a: `Go to the official ${b.name} website (${b.officialDomain}), click the Results section, choose Intermediate Part-I (11th Class) ${year}, enter your roll number, and submit. Your detailed marksheet with subject-wise marks will appear.` },
+  { q: `What is the SMS code to check the ${b.shortName} board 11th class result ${year}?`, a: `Type your roll number in a new SMS and send it to ${b.smsCode}. You will receive a reply SMS within 1–2 minutes with your result status, total marks, and grade. Works on all Pakistani networks.` },
+  { q: `Can I download the ${b.name} 11th class result gazette ${year}?`, a: `Yes. On result day, the board uploads the complete result gazette as a PDF on ${b.officialDomain}. Download it, then search for your roll number (Ctrl+F on desktop, or PDF search on mobile).` },
+  { q: `What are the passing marks for ${b.name} Class 11 ${year}?`, a: `Under the Punjab Boards new ${year} evaluation policy, the minimum passing marks have been raised from 33% to ${PASSING_PERCENT}%. For a total of ${TOTAL_MARKS} marks, you must score at least ${PASSING_MARKS} marks to pass. The term Fail has been replaced with Unsatisfactory (U grade).` },
+  { q: `What if I fail a subject in ${b.shortName} board Class 11?`, a: `Students who fail up to two subjects in Class 11 can appear in the supplementary examination, usually held 2–3 months after the annual result. Failing more than two subjects requires repeating the year.` },
+  { q: `Is the ${b.shortName} board Class 11 result ${year} available on TaleemMarkaz?`, a: `Yes — this page is the fastest way to reach every official result channel for ${b.name}. We link directly to the board's online portal, explain the SMS code (${b.smsCode}), and provide the gazette download link as soon as the board publishes it. We do not host the result data itself.` },
+  { q: `Can I check the ${b.shortName} board 11th class result by name instead of roll number?`, a: `The board's official online portal only accepts roll numbers, not names. However, the result gazette PDF lists candidates by name and father's name alongside roll numbers. Download the gazette and search for your name there.` },
+];
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebPage', '@id': `https://taleemmarkaz.com/results/${b.slug}/class-11/#page`,
+    name: title, description, url: `https://taleemmarkaz.com/results/${b.slug}/class-11/`,
+    inLanguage: 'en-PK', dateModified: '2026-10-14', isPartOf: { '@id': 'https://taleemmarkaz.com/#website' },
+    publisher: { '@type': 'Organization', '@id': 'https://taleemmarkaz.com/#organization', name: 'TaleemMarkaz', url: 'https://taleemmarkaz.com' } },
+  { '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Results', item: 'https://taleemmarkaz.com/results/' },
+    { '@type': 'ListItem', position: 3, name: `${b.shortName} Class 11` },
+  ]},
+  { '@context': 'https://schema.org', '@type': 'HowTo',
+    name: `How to check ${b.name} Class 11 Result ${year} by Roll Number`, totalTime: 'PT2M',
+    step: [
+      { '@type': 'HowToStep', position: 1, name: 'Open official portal', text: `Visit ${b.officialDomain}` },
+      { '@type': 'HowToStep', position: 2, name: 'Go to Results', text: 'Click the Results or Notifications section' },
+      { '@type': 'HowToStep', position: 3, name: 'Select class', text: `Choose Intermediate Part-I (11th Class) ${year}` },
+      { '@type': 'HowToStep', position: 4, name: 'Enter roll number', text: 'Type your 6-digit roll number' },
+      { '@type': 'HowToStep', position: 5, name: 'View result', text: 'Submit and view or print your detailed marksheet' },
+    ]},
+];
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+
+  <!-- Hero — homepage pattern -->
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+
+      <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
+        <a href={url('/')} class="hover:text-slate-700">Home</a><span>/</span>
+        <a href={url('/results')} class="hover:text-slate-700">Results</a><span>/</span>
+        <span class="text-slate-500">{b.shortName} Class 11</span>
+      </nav>
+
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        HSSC Part-I · Result {year}
+      </div>
+
+      <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        Class 11 result {year} — {b.shortName} board.
+      </h1>
+
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Check your 1st Year / HSSC Part-I {year} result for <strong class="text-slate-900">{b.name}</strong> — online by roll number, via SMS to <strong class="text-slate-900">{b.smsCode}</strong>, or by downloading the official gazette PDF. Expected result date: <strong class="text-slate-900">{RESULT_DATE}</strong> at {RESULT_TIME}.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <a href={`https://${b.officialDomain}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-5 py-2.5 text-sm font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
+          Check on {b.officialDomain}
+          <Icon name="arrow-up-right" size={14} strokeWidth={2.4} />
+        </a>
+        <a href="#how-to-check" class="text-sm font-bold text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900">
+          How to check
+        </a>
+      </div>
+
+      <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Result date</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">Oct 22, {year}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">SMS code</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.smsCode}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Passing</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{PASSING_PERCENT}%</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Total marks</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{TOTAL_MARKS}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- About board -->
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">About {b.name}</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Board profile, jurisdiction and official result channels.</p>
+    </div>
+
+    <p class="max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
+      {b.name} is one of the nine Boards of Intermediate and Secondary Education in Punjab, Pakistan. It was established in {b.established} and is headquartered in {b.hq}. The board conducts Matric (SSC) and Intermediate (HSSC) examinations annually for students from {b.districts}.
+    </p>
+
+    <dl class="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Established</dt>
+        <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.established}</dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">HQ</dt>
+        <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.hq}</dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">SMS code</dt>
+        <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.smsCode}</dd>
+      </div>
+      <div>
+        <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Official site</dt>
+        <dd class="mt-1 break-all font-display text-lg font-extrabold tracking-tight text-slate-900">{b.officialDomain}</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- How to check -->
+  <section id="how-to-check" class="scroll-mt-24 border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <div class="mb-8">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">How to check {b.shortName} board Class 11 result {year}</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Three official methods. All free. No sign-up required.</p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">Method 01</div>
+          <h3 class="mt-3 font-display text-lg font-extrabold text-slate-900">Online by roll number</h3>
+          <ol class="mt-5 space-y-3 text-sm leading-relaxed text-slate-600">
+            <li>1. Open <a href={`https://${b.officialDomain}`} target="_blank" rel="noopener" class="break-all font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500">{b.officialDomain}</a></li>
+            <li>2. Click <strong class="text-slate-900">Results</strong> in the top menu.</li>
+            <li>3. Select <strong class="text-slate-900">Intermediate Part-I (11th Class) {year}</strong>.</li>
+            <li>4. Enter your 6-digit roll number.</li>
+            <li>5. Submit to view your detailed marksheet.</li>
+          </ol>
+          <p class="mt-5 text-xs leading-relaxed text-slate-500">
+            On result day the board's server overloads for 15–20 minutes. If it times out, wait or use SMS.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">Method 02</div>
+          <h3 class="mt-3 font-display text-lg font-extrabold text-slate-900">Via SMS (fastest)</h3>
+          <ol class="mt-5 space-y-3 text-sm leading-relaxed text-slate-600">
+            <li>1. Open your phone's messaging app.</li>
+            <li>2. Type your <strong class="text-slate-900">roll number</strong> (nothing else).</li>
+            <li>3. Send to <strong class="text-slate-900">{b.smsCode}</strong>.</li>
+            <li>4. You'll receive a reply within 1–2 minutes with your result and grade.</li>
+          </ol>
+          <p class="mt-5 text-xs leading-relaxed text-slate-500">
+            Works on all networks: Jazz, Zong, Telenor, Ufone. Standard SMS charges (Rs. 2–5).
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-6">
+          <div class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">Method 03</div>
+          <h3 class="mt-3 font-display text-lg font-extrabold text-slate-900">Gazette PDF</h3>
+          <ol class="mt-5 space-y-3 text-sm leading-relaxed text-slate-600">
+            <li>1. Visit <a href={`https://${b.officialDomain}`} target="_blank" rel="noopener" class="break-all font-semibold text-slate-900 underline decoration-slate-300 underline-offset-2 hover:decoration-slate-500">{b.officialDomain}</a> on result day.</li>
+            <li>2. Find the <strong class="text-slate-900">Result Gazette {year}</strong> link.</li>
+            <li>3. Download the PDF (usually 50–200 MB).</li>
+            <li>4. Press Ctrl+F (or PDF search) to find your roll number.</li>
+          </ol>
+          <p class="mt-5 text-xs leading-relaxed text-slate-500">
+            Essential if you forgot your roll number — search by name and father's name instead.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grading -->
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.shortName} board Class 11 grading system {year}</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Passing mark raised from 33% to {PASSING_PERCENT}% under the new 2026 policy. "Fail" replaced with "Unsatisfactory" (U).</p>
+    </div>
+
+    <div class="overflow-x-auto rounded-2xl border border-slate-200">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Grade</th>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Percentage</th>
+            <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Marks / {TOTAL_MARKS}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {GRADING_SCALE.map(g => (
+            <tr class="border-t border-slate-100">
+              <td class="px-6 py-4 font-display text-base font-extrabold text-slate-900">{g.grade}</td>
+              <td class="px-6 py-4 text-slate-600">{g.marks}</td>
+              <td class="px-6 py-4 text-slate-600">{g.range}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <div class="mb-8">
+        <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">{b.shortName} board Class 11 result — FAQ</h2>
+        <p class="mt-1.5 text-sm text-slate-500">Answers to the questions students ask most on result day.</p>
+      </div>
+      <div class="mx-auto max-w-3xl space-y-3">
+        {faqs.map((f, i) => (
+          <details class="group rounded-2xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-left">
+              <span class="font-display text-[15px] font-bold text-slate-900">{f.q}</span>
+              <Icon name="chevron-down" size={20} class="shrink-0 text-slate-400 transition-transform group-open:rotate-180" />
+            </summary>
+            <div class="border-t border-slate-200 px-6 py-5 text-sm leading-relaxed text-slate-600">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Other boards -->
+  <section class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <div class="mb-8">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Class 11 result for other Punjab boards</h2>
+      <p class="mt-1.5 text-sm text-slate-500">All nine Punjab BISE boards announce results on the same day.</p>
+    </div>
+
+    <div class="seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {CLASS11_BOARDS.filter(x => x.slug !== b.slug).map(x => (
+        <a href={url(`/results/${x.slug}/class-11/`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
+          <div class="flex items-start justify-between gap-4">
+            <h3 class="font-display text-lg font-extrabold text-slate-900">{x.shortName}</h3>
+            <Icon name="arrow-up-right" size={14} strokeWidth={2.4} class="mt-1 text-slate-300 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </div>
+          <div class="mt-3 text-[11px] font-bold uppercase tracking-[0.1em] text-slate-400">SMS {x.smsCode}</div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Disambiguation — minimal -->
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[1200px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <div class="flex items-start gap-4">
+        <Icon name="alert-triangle" size={20} class="mt-0.5 shrink-0 text-slate-400" />
+        <div>
+          <div class="font-display text-base font-extrabold text-slate-900">TaleemMarkaz is independent</div>
+          <p class="mt-1.5 max-w-3xl text-sm leading-relaxed text-slate-600">
+            TaleemMarkaz.com is not affiliated with {b.name} or any Pakistani board. The authoritative source for your result is always <strong class="text-slate-900">{b.officialDomain}</strong>. We are also not affiliated with taleemimarkaz.com or any similarly-named website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

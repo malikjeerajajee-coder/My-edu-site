@@ -40,3 +40,9 @@ scripts/
 .brand-backup/
 
 .wrangler/
+.preview-root/
+
+# Backups
+*.bak
+*.bak-*
+*.bak.*
