@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { url } from '../lib/url';
+import { classLabel, classShortLabel } from '../lib/classNames';
 import { BOARDS } from '../lib/boards';
 import { getCollection } from 'astro:content';
 
@@ -85,7 +86,7 @@ const jsonLd = {
       <form action={url('/search')} method="get" role="search" class="mt-8 flex max-w-xl items-center gap-2 rounded-xl border border-slate-300 bg-white p-1.5 pl-4 transition-colors focus-within:border-[#1d4ed8]">
         <Icon name="search" size={18} strokeWidth={2.4} class="shrink-0 text-slate-400" />
         <input type="search" name="q" placeholder="Search notes, past papers, books…" class="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400" />
-        <button type="submit" class="rounded-lg bg-[#1d4ed8] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#1e3a8a]">Search</button>
+        <button type="submit" class="rounded-lg bg-[#1d4ed8] px-5 py-2.5 text-sm font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">Search</button>
       </form>
 
       <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
@@ -119,10 +120,10 @@ const jsonLd = {
     <div class="seamed-grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6">
       {classes.map(c => (
         <a href={url(`/class/${c}`)} class="group relative flex flex-col bg-white p-6 transition-colors hover:bg-slate-50">
-          <span class="font-display text-3xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
-            {c.padStart(2, '0')}
+          <span class="font-display text-2xl font-extrabold leading-none tracking-tight tabular-nums text-slate-900">
+            {classShortLabel(c)}
           </span>
-          <div class="mt-5 text-[13px] font-bold text-slate-900">Class {c}</div>
+          <div class="mt-5 text-[13px] font-bold text-slate-900">{classLabel(c)}</div>
           <div class="mt-0.5 text-[11px] text-slate-500">{classCount(c).toLocaleString()} items</div>
           <div class="mt-4 flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400 transition-colors group-hover:text-[#1d4ed8]">
             Open
