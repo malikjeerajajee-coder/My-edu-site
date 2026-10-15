@@ -6,7 +6,7 @@ import { url } from '../../../lib/url';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const classes = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+  const classes = ['0','1','2','3','4','5','6','7','8','9','10','11','12'];
   const types = ['past-papers', 'notes', 'gazettes', 'books', 'quizzes', 'guess-papers', 'pairing-schemes'];
   return classes.flatMap(cls => types.map(type => ({ params: { class: cls, type }, props: { cls, type } })));
 }
