@@ -28,52 +28,14 @@ if (jsonLd) {
 }
 
 // Nav tree (Save My Exams style)
-const CLASS_NUMS = ['9', '10', '11', '12'];
-
 const navTree: any[] = [
   {
-    label: 'Browse',
+    label: 'Library',
     items: [
-      { href: '/',       label: 'Home',       icon: 'home' },
-      { href: '/boards', label: 'All boards', icon: 'graduation-cap' },
-      { href: '/books',  label: 'Textbooks',  icon: 'book-marked' },
-    ],
-  },
-  {
-    label: 'By class',
-    items: CLASS_NUMS.map((n: string) => ({
-      href: `/class/${n}`,
-      label: `Class ${n}`,
-      children: [
-        { href: `/class/${n}`,             label: 'Overview' },
-        { href: `/class/${n}/notes`,       label: 'Notes' },
-        { href: `/class/${n}/past-papers`, label: 'Past papers' },
-        { href: `/class/${n}/quizzes`,     label: 'Quizzes' },
-        { href: `/class/${n}/books`,       label: 'Textbooks' },
-      ],
-    })),
-  },
-  {
-    label: 'By board',
-    items: ([
-      { slug: 'punjab',      name: 'Punjab' },
-      { slug: 'federal',     name: 'Federal' },
-      { slug: 'sindh',       name: 'Sindh' },
-      { slug: 'kpk',         name: 'KPK' },
-      { slug: 'balochistan', name: 'Balochistan' },
-      { slug: 'ajk',         name: 'AJK' },
-    ] as { slug: string; name: string }[]).map(bd => ({
-      href: `/board/${bd.slug}`,
-      label: bd.name,
-      children: CLASS_NUMS.map((n: string) => ({
-        href: `/board/${bd.slug}/class-${n}`,
-        label: `Class ${n}`,
-      })),
-    })),
-  },
-  {
-    label: 'Exam prep',
-    items: [
+      { href: '/',                label: 'Home',            icon: 'home' },
+      { href: '/boards',          label: 'All boards',      icon: 'graduation-cap' },
+      { href: '/books',           label: 'Textbooks',       icon: 'book-marked' },
+      { href: '/results',         label: 'Results',         icon: 'bar-chart' },
       { href: '/past-papers',     label: 'Past papers',     icon: 'scroll-text' },
       { href: '/guess-papers',    label: 'Guess papers',    icon: 'sparkles' },
       { href: '/pairing-schemes', label: 'Pairing schemes', icon: 'list' },
