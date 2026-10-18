@@ -11,7 +11,7 @@ export async function getStaticPaths() {
   for (const board of BOARDS) {
     if (!board.biseAware) continue;
     for (const bise of board.bises) {
-      for (const cls of ['9', '10']) {
+      for (const cls of ['9', '10', '11', '12']) {
         for (const t of ['past-papers', 'gazettes']) {
           paths.push({
             params: { board: board.slug, bise: bise.slug, class: `class-${cls}`, type: t },
