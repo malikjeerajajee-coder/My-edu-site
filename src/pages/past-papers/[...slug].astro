@@ -114,6 +114,31 @@ const jsonLd = [
       </dl>
     </div>
 
+    
+    <section class="mt-12 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+      <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900 mb-4">
+        About the Class {d.class} {d.subject} Past Paper {d.year}
+      </h2>
+      <div class="space-y-4 text-sm leading-relaxed text-slate-600">
+        <p>
+          This is the official <strong>{d.subject}</strong> past paper for <strong>Class {d.class}</strong> students, conducted by <strong>{biseLabel}</strong> in the year <strong>{d.year}</strong>. TaleemMarkaz provides this paper completely free of cost to help students prepare for their upcoming board examinations.
+        </p>
+        <p>
+          The {d.subject} paper is designed to test the student's understanding of the core curriculum set by the {boardName}. By practicing this {d.year} paper, you can get a realistic idea of the exam's difficulty level, the types of questions asked, and the time management required to complete it successfully.
+        </p>
+        <h3 class="font-display text-base font-extrabold text-slate-900 mt-6 mb-2">Why you should solve this paper</h3>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>Understand the exact paper pattern and marking scheme for {d.subject} in {biseLabel}.</li>
+          <li>Identify the most frequently asked questions and important topics.</li>
+          <li>Improve your speed and accuracy for the upcoming {d.subject} board exam.</li>
+        </ul>
+        <p class="mt-4">
+          If you are looking for more resources, you can explore our complete library of <a href={url(`/class/${d.class}/notes`)} class="font-semibold text-[#1d4ed8] hover:underline">Class {d.class} notes</a> or check the <a href={url(`/class/${d.class}/guess-papers`)} class="font-semibold text-[#1d4ed8] hover:underline">guess papers</a> to further boost your preparation.
+        </p>
+      </div>
+    </section>
+
+
     {related.length > 0 && (
       <div class="mt-10">
         <h2 class="font-display text-xl font-extrabold tracking-tight text-slate-900">More {d.subject} papers — {biseLabel}</h2>
