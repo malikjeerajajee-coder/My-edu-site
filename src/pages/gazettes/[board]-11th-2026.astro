@@ -15,8 +15,9 @@ const { boardName, boardSlug } = Astro.props;
 const year = '2026';
 const resultDate = 'October 22, 2026';
 
-const title = `${boardName} 11th Class Result Gazette ${year} PDF Download | TaleemMarkaz`;
-const description = `Download the official ${boardName} 11th Class (1st Year) Result Gazette ${year} PDF. Expected date: ${resultDate}. Check your HSSC Part-I result by roll number online.`;
+// --- SEO OPTIMIZATION: CTR focused Title & Description ---
+const title = `BISE ${boardName} 11th Class Result Gazette ${year} PDF Download`;
+const description = `Check BISE ${boardName} 1st Year (11th Class) result by roll number online. Download official HSSC Part-I Result Gazette ${year} PDF here. Expected date: ${resultDate}.`;
 
 const faqs = [
   { q: `When will the ${boardName} 11th Class Result Gazette ${year} be available?`, a: `The BISE ${boardName} is expected to announce the 11th Class (HSSC Part-I) result on ${resultDate}. The official result gazette PDF is usually uploaded to the board's website on the same day or within 24 hours.` },
@@ -25,24 +26,50 @@ const faqs = [
   { q: `What should I do if the gazette PDF is not downloading?`, a: `If the file is too large or the board's server is slow, try using a different browser or download it after a few hours. Peak traffic on result day often causes temporary server issues.` }
 ];
 
+// --- TECH SEO: Advanced Schema Markup ---
 const jsonLd = [
-  { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: `https://taleemmarkaz.com/gazettes/${boardSlug}-11th-2026/`, inLanguage: 'en-PK' },
-  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
-  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Gazettes', item: 'https://taleemmarkaz.com/gazettes/' },
-    { '@type': 'ListItem', position: 3, name: `${boardName} 11th Class 2026` }
-  ]}
+  { 
+    '@context': 'https://schema.org', 
+    '@type': 'WebPage', 
+    '@id': `https://taleemmarkaz.com/gazettes/${boardSlug}-11th-2026/#webpage`,
+    name: title, 
+    description, 
+    url: `https://taleemmarkaz.com/gazettes/${boardSlug}-11th-2026/`, 
+    inLanguage: 'en-PK',
+    dateModified: '2026-10-19',
+    isPartOf: { '@id': 'https://taleemmarkaz.com/#website' },
+    publisher: { '@type': 'Organization', '@id': 'https://taleemmarkaz.com/#organization', name: 'TaleemMarkaz' }
+  },
+  { 
+    '@context': 'https://schema.org', 
+    '@type': 'FAQPage', 
+    mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) 
+  },
+  { 
+    '@context': 'https://schema.org', 
+    '@type': 'BreadcrumbList', 
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Gazettes', item: 'https://taleemmarkaz.com/gazettes/' },
+      { '@type': 'ListItem', position: 3, name: `${boardName} 11th Class 2026` }
+    ]
+  }
 ];
 
 // REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL GOOGLE DRIVE LINK LATER
 const placeholderDriveLink = "#";
+
+// Filter out the current board to show links to the other 8
+const otherBoards = PUNJAB_BISES.filter(b => b.slug !== boardSlug);
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
 
+  <!-- HERO (Speed optimized, no external images, instant LCP) -->
   <section class="border-b border-slate-200">
     <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+      
+      <!-- Breadcrumbs -->
       <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
         <a href={url('/')} class="hover:text-slate-700">Home</a><span>/</span>
         <a href={url('/gazettes')} class="hover:text-slate-700">Gazettes</a><span>/</span>
@@ -54,17 +81,23 @@ const placeholderDriveLink = "#";
         BISE {boardName} · HSSC Part-I
       </div>
 
+      <!-- H1 with exact match keyword -->
       <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
         {boardName} 11th Class Result Gazette {year}.
       </h1>
 
       <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
-        Download the official <strong>{boardName} 11th Class (1st Year) Result Gazette {year} PDF</strong>. Expected result date: <strong>{resultDate}</strong> at 10:00 AM PKT.
+        Download the official <strong>{boardName} 1st Year Result Gazette {year} PDF</strong>. Expected result date: <strong>{resultDate}</strong> at 10:00 AM PKT.
       </p>
       
-      <div class="mt-8">
+      <!-- Primary Action -->
+      <div class="mt-8 flex flex-wrap gap-4">
         <a href={placeholderDriveLink} class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-6 py-3 font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
-          <Icon name="download" size={18} /> Download Gazette PDF (Available Soon)
+          <Icon name="download" size={18} /> Download Gazette PDF (Soon)
+        </a>
+        <!-- Strong Interlink to Results Hub -->
+        <a href={url(`/results/${boardSlug}/class-11/`)} class="inline-flex items-center gap-2 rounded-lg border-2 border-slate-200 bg-white px-6 py-3 font-bold text-slate-700 transition-colors hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
+          Check Result Online
         </a>
       </div>
 
@@ -85,7 +118,28 @@ const placeholderDriveLink = "#";
     </div>
   </section>
 
+  <!-- CONTENT & INTERLINKING -->
   <article class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    
+    <!-- Deep Internal Linking Block (Boosts SEO Ranking) -->
+    <div class="mb-12 rounded-2xl bg-slate-50 p-6 border border-slate-200">
+      <h2 class="font-display text-lg font-extrabold text-slate-900 mb-4">Related Resources for {boardName} 11th Class</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <a href={url(`/past-papers/${boardSlug}/class-11/`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
+          <Icon name="arrow-right" size={14} /> Download {boardName} 11th Past Papers
+        </a>
+        <a href={url(`/books/${boardSlug}/class-11/`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
+          <Icon name="arrow-right" size={14} /> Download {boardName} 11th Textbooks
+        </a>
+        <a href={url(`/notes/class-11/`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
+          <Icon name="arrow-right" size={14} /> Read 11th Class Chapter Notes
+        </a>
+        <a href={url(`/class/11/guess-papers`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
+          <Icon name="arrow-right" size={14} /> 11th Class Guess Papers 2026
+        </a>
+      </div>
+    </div>
+
     <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">How to download the {boardName} 11th Class Gazette {year}</h2>
     <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
       The BISE {boardName} will publish the official gazette PDF on its website shortly after the result announcement. Because thousands of students try to access it at once, the board's servers can sometimes slow down.
@@ -109,29 +163,40 @@ const placeholderDriveLink = "#";
         </div>
       </div>
     </div>
-
-    <h2 class="mt-14 font-display text-2xl font-extrabold tracking-tight text-slate-900">Check {boardName} 11th Class Result Online</h2>
-    <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-      If you don't want to download the whole gazette, you can check your individual result by roll number.
-    </p>
-    <div class="mt-6">
-      <a href={url(`/results/${boardSlug}/class-11/`)} class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-5 py-2.5 text-sm font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
-        Check {boardName} Result by Roll Number <Icon name="arrow-right" size={16} />
-      </a>
-    </div>
   </article>
 
+  <!-- CROSS-LINKING TO OTHER BOARDS (Huge SEO Signal) -->
   <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">11th Class Gazette {year} for Other Punjab Boards</h2>
+      <p class="mt-1.5 text-sm text-slate-500">Looking for a different board? Check the 1st year gazettes for all BISEs.</p>
+      
+      <div class="mt-8 seamed-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {otherBoards.map(b => (
+          <a href={url(`/gazettes/${b.slug}-11th-2026/`)} class="group relative flex flex-col bg-white p-5 transition-colors hover:bg-slate-50 border border-slate-200 rounded-lg">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="font-display text-base font-extrabold text-slate-900 group-hover:text-[#1d4ed8]">{b.name}</h3>
+              <Icon name="arrow-up-right" size={14} class="text-slate-300 group-hover:text-[#1d4ed8]" />
+            </div>
+            <div class="mt-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">11th Class Gazette</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="border-t border-slate-200 bg-white">
     <div class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
       <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions</h2>
       <div class="mt-8 space-y-3">
         {faqs.map((f, i) => (
-          <details class="group rounded-2xl border border-slate-200 bg-white" open={i === 0}>
+          <details class="group rounded-2xl border border-slate-200 bg-slate-50" open={i === 0}>
             <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-left">
               <span class="font-display text-base font-bold text-slate-900">{f.q}</span>
               <Icon name="chevron-down" size={20} class="shrink-0 text-slate-400 transition-transform group-open:rotate-180" />
             </summary>
-            <div class="border-t border-slate-200 px-6 py-5 text-sm leading-relaxed text-slate-600">{f.a}</div>
+            <div class="border-t border-slate-200 px-6 py-5 text-sm leading-relaxed text-slate-600 bg-white">{f.a}</div>
           </details>
         ))}
       </div>
