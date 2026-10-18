@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { url } from '../../lib/url';
+import { PUNJAB_BISES } from '../../lib/boards';
+
+export function getStaticPaths() {
+  return PUNJAB_BISES.map(b => ({
+    params: { board: b.slug },
+    props: { boardName: b.name, boardSlug: b.slug }
+  }));
+}
+
+const { boardName, boardSlug } = Astro.props;
+const year = '2026';
+const resultDate = 'October 22, 2026';
+
+const title = `${boardName} 11th Class Result Gazette ${year} PDF Download | TaleemMarkaz`;
+const description = `Download the official ${boardName} 11th Class (1st Year) Result Gazette ${year} PDF. Expected date: ${resultDate}. Check your HSSC Part-I result by roll number online.`;
+
+const faqs = [
+  { q: `When will the ${boardName} 11th Class Result Gazette ${year} be available?`, a: `The BISE ${boardName} is expected to announce the 11th Class (HSSC Part-I) result on ${resultDate}. The official result gazette PDF is usually uploaded to the board's website on the same day or within 24 hours.` },
+  { q: `How can I download the ${boardName} 1st Year Result Gazette ${year}?`, a: `Once the result is announced, a direct download link will be available on this page. Alternatively, you can visit the official ${boardName} website and look for the "Results" or "Downloads" section.` },
+  { q: `Can I check my 11th Class result without the gazette?`, a: `Yes. You can check your result online by visiting the official ${boardName} result portal and entering your roll number. The gazette is mostly used by schools and colleges to view mass results.` },
+  { q: `What should I do if the gazette PDF is not downloading?`, a: `If the file is too large or the board's server is slow, try using a different browser or download it after a few hours. Peak traffic on result day often causes temporary server issues.` }
+];
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: `https://taleemmarkaz.com/gazettes/${boardSlug}-11th-2026/`, inLanguage: 'en-PK' },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Gazettes', item: 'https://taleemmarkaz.com/gazettes/' },
+    { '@type': 'ListItem', position: 3, name: `${boardName} 11th Class 2026` }
+  ]}
+];
+
+// REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL GOOGLE DRIVE LINK LATER
+const placeholderDriveLink = "#";
+---
+
+<BaseLayout title={title} description={description} jsonLd={jsonLd}>
+
+  <section class="border-b border-slate-200">
+    <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
+      <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
+        <a href={url('/')} class="hover:text-slate-700">Home</a><span>/</span>
+        <a href={url('/gazettes')} class="hover:text-slate-700">Gazettes</a><span>/</span>
+        <span class="text-slate-500">{boardName} 11th Class 2026</span>
+      </nav>
+
+      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
+        BISE {boardName} · HSSC Part-I
+      </div>
+
+      <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+        {boardName} 11th Class Result Gazette {year}.
+      </h1>
+
+      <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        Download the official <strong>{boardName} 11th Class (1st Year) Result Gazette {year} PDF</strong>. Expected result date: <strong>{resultDate}</strong> at 10:00 AM PKT.
+      </p>
+      
+      <div class="mt-8">
+        <a href={placeholderDriveLink} class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-6 py-3 font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
+          <Icon name="download" size={18} /> Download Gazette PDF (Available Soon)
+        </a>
+      </div>
+
+      <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Board</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boardName}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Class</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">11th (1st Year)</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Result Date</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{resultDate}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <article class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+    <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">How to download the {boardName} 11th Class Gazette {year}</h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+      The BISE {boardName} will publish the official gazette PDF on its website shortly after the result announcement. Because thousands of students try to access it at once, the board's servers can sometimes slow down.
+    </p>
+    <ol class="mt-4 space-y-2 text-base leading-relaxed text-slate-600 sm:text-lg list-decimal pl-5">
+      <li>Visit the official BISE {boardName} website.</li>
+      <li>Navigate to the <strong>Results</strong> or <strong>Downloads</strong> section.</li>
+      <li>Look for "HSSC Part-I (11th Class) Result Gazette {year}".</li>
+      <li>Download the PDF (Note: Gazettes are often 50MB - 200MB in size).</li>
+      <li>Use the search function (Ctrl+F) to quickly find your roll number.</li>
+    </ol>
+
+    <div class="mt-8 rounded-2xl border-2 border-yellow-300 bg-yellow-50 p-6">
+      <div class="flex items-start gap-4">
+        <Icon name="alert-triangle" size={20} class="mt-0.5 shrink-0 text-yellow-600" />
+        <div>
+          <div class="font-display text-base font-extrabold text-yellow-900">Wait for the official PDF</div>
+          <p class="mt-1.5 text-sm leading-relaxed text-yellow-900">
+            We will update the download button on this page with the direct link as soon as BISE {boardName} officially publishes the {year} file. Do not rely on unofficial or leaked result files.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mt-14 font-display text-2xl font-extrabold tracking-tight text-slate-900">Check {boardName} 11th Class Result Online</h2>
+    <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+      If you don't want to download the whole gazette, you can check your individual result by roll number.
+    </p>
+    <div class="mt-6">
+      <a href={url(`/results/${boardSlug}/class-11/`)} class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-5 py-2.5 text-sm font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
+        Check {boardName} Result by Roll Number <Icon name="arrow-right" size={16} />
+      </a>
+    </div>
+  </article>
+
+  <section class="border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
+      <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions</h2>
+      <div class="mt-8 space-y-3">
+        {faqs.map((f, i) => (
+          <details class="group rounded-2xl border border-slate-200 bg-white" open={i === 0}>
+            <summary class="flex cursor-pointer items-center justify-between gap-4 p-6 text-left">
+              <span class="font-display text-base font-bold text-slate-900">{f.q}</span>
+              <Icon name="chevron-down" size={20} class="shrink-0 text-slate-400 transition-transform group-open:rotate-180" />
+            </summary>
+            <div class="border-t border-slate-200 px-6 py-5 text-sm leading-relaxed text-slate-600">{f.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
