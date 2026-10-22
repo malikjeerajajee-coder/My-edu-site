@@ -1,12 +1,9 @@
-# Redirect old textbook pages to the main books hub
-/textbook/* /books/ 301
+# 1. Fix the 404s where old book links were missing the /textbook/ prefix
+/books/punjab-* /textbook/punjab-:splat 301
+/books/federal-* /textbook/federal-:splat 301
+/books/sindh-* /textbook/sindh-:splat 301
+/books/balochistan-* /textbook/balochistan-:splat 301
 
-# Redirect broken individual book links to their board hubs
-/books/punjab-* /books/punjab/ 301
-/books/federal-* /books/federal/ 301
-/books/sindh-* /books/sindh/ 301
-/books/balochistan-* /books/balochistan/ 301
-
-# Redirect broken filtered board pages to the main class hub
+# 2. Fix the filtered board past-paper 404s (sent to the Class Hub)
 /board/:board/:bise/class-:class/past-papers* /class/:class/past-papers 301
 /board/:board/class-:class/past-papers* /class/:class/past-papers 301
