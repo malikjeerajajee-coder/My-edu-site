@@ -1,13 +1,12 @@
-# Redirect old thin pages to new consolidated pages
-# This maintains SEO value from any existing backlinks
+# Redirect old textbook pages to the main books hub
+/textbook/* /books/ 301
 
-# Example redirects (you'll need to generate these programmatically)
-# /past-papers/biology-10-2018  /past-papers/punjab-lahore-10-biology  301
-# /past-papers/biology-10-2019  /past-papers/punjab-lahore-10-biology  301
-/books/* /textbook/:splat 301
+# Redirect broken individual book links to their board hubs
+/books/punjab-* /books/punjab/ 301
+/books/federal-* /books/federal/ 301
+/books/sindh-* /books/sindh/ 301
+/books/balochistan-* /books/balochistan/ 301
+
+# Redirect broken filtered board pages to the main class hub
 /board/:board/:bise/class-:class/past-papers* /class/:class/past-papers 301
 /board/:board/class-:class/past-papers* /class/:class/past-papers 301
-/books/punjab-* /textbook/punjab-:splat 301
-/books/federal-* /textbook/federal-:splat 301
-/books/sindh-* /textbook/sindh-:splat 301
-/books/balochistan-* /textbook/balochistan-:splat 301
