@@ -56,7 +56,12 @@ if (type === 'past-papers') {
     const bise = g.data.bise || (board === 'Federal' ? 'Federal' : 'General');
     if (!byBoard[board]) byBoard[board] = {};
     if (!byBoard[board][bise]) byBoard[board][bise] = [];
-    byBoard[board][bise].push({ year: g.data.year, title: g.data.title, href: `/gazettes/${g.id}` });
+    let link = `/gazettes/${g.id}`;
+        if (g.data.class === '11' && g.data.year === 2026 && g.data.bise) {
+          const slug = g.data.bise.toLowerCase().replace(/ /g, '-');
+          link = `/gazettes/${slug}-11th-2026/`;
+        }
+        byBoard[board][bise].push({ year: g.data.year, title: g.data.title, href: link });
   });
   groups = Object.entries(byBoard).map(([board, bises]) => ({
     name: board + ' Board',
