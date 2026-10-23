@@ -12,7 +12,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     server: {
       watch: {
-        ignored: ['**/src/content/**', '**/dist/**', '**/.astro/**', '**/node_modules/**'],
+        ignored: ['**/src/content/**', '**/dist/**', '**/.astro/**', '**/node_modules/**', '**/.preview-root/**', '**/.preview/**', '**/.brand-backup/**', '**/.wrangler/**'],
       },
     },
   },
