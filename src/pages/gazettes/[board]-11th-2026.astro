@@ -2,43 +2,48 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { url } from '../../lib/url';
-import { PUNJAB_BISES } from '../../lib/boards';
+import { CLASS11_BOARDS } from '../../lib/class11Data';
 
 export function getStaticPaths() {
-  return PUNJAB_BISES.map(b => ({
+  return CLASS11_BOARDS.map(b => ({
     params: { board: b.slug },
-    props: { boardName: b.name, boardSlug: b.slug }
+    props: { board: b }
   }));
 }
 
-const { boardName, boardSlug } = Astro.props;
+const { board } = Astro.props;
 const year = '2026';
 const resultDate = 'October 22, 2026';
 
-// --- SEO OPTIMIZATION: CTR focused Title & Description ---
-const title = `BISE ${boardName} 11th Class Result Gazette ${year} PDF Download`;
-const description = `Check BISE ${boardName} 1st Year (11th Class) result by roll number online. Download official HSSC Part-I Result Gazette ${year} PDF here. Expected date: ${resultDate}.`;
+const title = `${board.name} 11th Class Result Gazette ${year} PDF (${board.totalPages} Pages)`;
+const description = `Download the official ${board.name} HSSC Part-I Result Gazette ${year} PDF. The file is ${board.fileSize} and contains ${board.totalPages} pages. Overall pass percentage: ${board.passPercentage}.`;
 
 const faqs = [
-  { q: `When will the ${boardName} 11th Class Result Gazette ${year} be available?`, a: `The BISE ${boardName} is expected to announce the 11th Class (HSSC Part-I) result on ${resultDate}. The official result gazette PDF is usually uploaded to the board's website on the same day or within 24 hours.` },
-  { q: `How can I download the ${boardName} 1st Year Result Gazette ${year}?`, a: `Once the result is announced, a direct download link will be available on this page. Alternatively, you can visit the official ${boardName} website and look for the "Results" or "Downloads" section.` },
-  { q: `Can I check my 11th Class result without the gazette?`, a: `Yes. You can check your result online by visiting the official ${boardName} result portal and entering your roll number. The gazette is mostly used by schools and colleges to view mass results.` },
-  { q: `What should I do if the gazette PDF is not downloading?`, a: `If the file is too large or the board's server is slow, try using a different browser or download it after a few hours. Peak traffic on result day often causes temporary server issues.` }
+  { q: `How many pages is the ${board.name} 11th Class Gazette ${year}?`, a: `The official ${board.name} HSSC Part-I gazette PDF for ${year} contains ${board.totalPages} pages. It is a large document because it lists the results for over ${board.candidates} candidates across all districts (${board.districts}).` },
+  { q: `What is the file size of the ${board.name} gazette PDF?`, a: `The PDF file size is approximately ${board.fileSize}. We recommend downloading it over a Wi-Fi connection to avoid using too much mobile data.` },
+  { q: `How can I find my roll number in a ${board.totalPages}-page document?`, a: `Do not scroll manually. After opening the PDF, press Ctrl+F (on a computer) or tap the search icon (on mobile) and type your roll number. The PDF reader will jump directly to the page containing your result.` },
+  { q: `What was the overall pass percentage for ${board.name} in ${year}?`, a: `According to the official result statistics, the overall pass percentage for ${board.name} Class 11 in ${year} was ${board.passPercentage}, with ${board.candidates} candidates appearing for the exams.` }
 ];
 
-// --- TECH SEO: Advanced Schema Markup ---
 const jsonLd = [
   { 
     '@context': 'https://schema.org', 
     '@type': 'WebPage', 
-    '@id': `https://taleemmarkaz.com/gazettes/${boardSlug}-11th-2026/#webpage`,
-    name: title, 
-    description, 
-    url: `https://taleemmarkaz.com/gazettes/${boardSlug}-11th-2026/`, 
-    inLanguage: 'en-PK',
-    dateModified: '2026-10-19',
+    '@id': `https://taleemmarkaz.com/gazettes/${board.slug}-11th-2026/#webpage`,
+    name: title, description, url: `https://taleemmarkaz.com/gazettes/${board.slug}-11th-2026/`, 
+    inLanguage: 'en-PK', dateModified: '2026-10-23',
     isPartOf: { '@id': 'https://taleemmarkaz.com/#website' },
     publisher: { '@type': 'Organization', '@id': 'https://taleemmarkaz.com/#organization', name: 'TaleemMarkaz' }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'DigitalDocument',
+    name: `${board.name} 11th Class Result Gazette ${year}`,
+    description: `Official HSSC Part-I Result Gazette for ${board.name} Board. ${board.totalPages} pages, ${board.fileSize}.`,
+    url: board.gazetteUrl,
+    encodingFormat: 'application/pdf',
+    about: { '@type': 'Thing', name: `Class 11 Result ${year}` },
+    publisher: { '@type': 'Organization', name: `BISE ${board.name}` }
   },
   { 
     '@context': 'https://schema.org', 
@@ -51,121 +56,94 @@ const jsonLd = [
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://taleemmarkaz.com/' },
       { '@type': 'ListItem', position: 2, name: 'Gazettes', item: 'https://taleemmarkaz.com/gazettes/' },
-      { '@type': 'ListItem', position: 3, name: `${boardName} 11th Class 2026` }
+      { '@type': 'ListItem', position: 3, name: `${board.name} 11th Class 2026` }
     ]
   }
 ];
 
-// REPLACE THIS PLACEHOLDER WITH YOUR ACTUAL GOOGLE DRIVE LINK LATER
-const placeholderDriveLink = "#";
-
-// Filter out the current board to show links to the other 8
-const otherBoards = PUNJAB_BISES.filter(b => b.slug !== boardSlug);
+const otherBoards = CLASS11_BOARDS.filter(b => b.slug !== board.slug);
 ---
 
 <BaseLayout title={title} description={description} jsonLd={jsonLd}>
 
-  <!-- HERO (Speed optimized, no external images, instant LCP) -->
   <section class="border-b border-slate-200">
     <div class="mx-auto max-w-[1200px] px-5 pt-14 pb-16 sm:px-7 lg:px-10 lg:pt-20 lg:pb-24">
-      
-      <!-- Breadcrumbs -->
       <nav class="mb-8 flex flex-wrap items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400">
         <a href={url('/')} class="hover:text-slate-700">Home</a><span>/</span>
         <a href={url('/gazettes')} class="hover:text-slate-700">Gazettes</a><span>/</span>
-        <span class="text-slate-500">{boardName} 11th Class 2026</span>
+        <span class="text-slate-500">{board.name} 11th Class 2026</span>
       </nav>
 
       <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#1d4ed8]">
         <span class="h-1.5 w-1.5 rounded-full bg-[#1d4ed8]"></span>
-        BISE {boardName} · HSSC Part-I
+        HSSC Part-I Annual Examination 2026
       </div>
 
-      <!-- H1 with exact match keyword -->
       <h1 class="mt-6 max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-        {boardName} 11th Class Result Gazette {year}.
+        {board.name} 11th Class Result Gazette {year}.
       </h1>
 
       <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
-        Download the official <strong>{boardName} 1st Year Result Gazette {year} PDF</strong>. Expected result date: <strong>{resultDate}</strong> at 10:00 AM PKT.
+        Download the official <strong>{board.name} 1st Year Result Gazette {year} PDF</strong>. This document is <strong>{board.totalPages} pages</strong> long and contains the complete roll-number-wise result data for all candidates.
       </p>
       
-      <!-- Primary Action -->
       <div class="mt-8 flex flex-wrap gap-4">
-        <a href={placeholderDriveLink} class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-6 py-3 font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
-          <Icon name="download" size={18} /> Download Gazette PDF (Soon)
+        <a href={board.gazetteUrl} target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-lg bg-[#1d4ed8] px-6 py-3 font-bold transition-colors hover:bg-[#1e3a8a]" style="color:#ffffff">
+          <Icon name="download" size={18} /> Download PDF ({board.fileSize})
         </a>
-        <!-- Strong Interlink to Results Hub -->
-        <a href={url(`/results/${boardSlug}/class-11/`)} class="inline-flex items-center gap-2 rounded-lg border-2 border-slate-200 bg-white px-6 py-3 font-bold text-slate-700 transition-colors hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
-          Check Result Online
+        <a href={url(`/results/${board.slug}/class-11/`)} class="inline-flex items-center gap-2 rounded-lg border-2 border-slate-200 bg-white px-6 py-3 font-bold text-slate-700 transition-colors hover:border-[#1d4ed8] hover:text-[#1d4ed8]">
+          Check Result by Roll Number
         </a>
       </div>
 
       <dl class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:gap-x-14">
         <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Board</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{boardName}</dd>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">PDF Pages</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{board.totalPages}</dd>
         </div>
         <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Class</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">11th (1st Year)</dd>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">File Size</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{board.fileSize}</dd>
         </div>
         <div>
-          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Result Date</dt>
-          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{resultDate}</dd>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Pass Percentage</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{board.passPercentage}</dd>
+        </div>
+        <div>
+          <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">Candidates</dt>
+          <dd class="mt-1 font-display text-2xl font-extrabold tracking-tight text-slate-900">{board.candidates}</dd>
         </div>
       </dl>
     </div>
   </section>
 
-  <!-- CONTENT & INTERLINKING -->
   <article class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
     
-    <!-- Deep Internal Linking Block (Boosts SEO Ranking) -->
+    <!-- Unique Board Stats Section -->
     <div class="mb-12 rounded-2xl bg-slate-50 p-6 border border-slate-200">
-      <h2 class="font-display text-lg font-extrabold text-slate-900 mb-4">Related Resources for {boardName} 11th Class</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <a href={url(`/past-papers/${boardSlug}/class-11/`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
-          <Icon name="arrow-right" size={14} /> Download {boardName} 11th Past Papers
-        </a>
-        <a href={url(`/books/${boardSlug}/class-11/`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
-          <Icon name="arrow-right" size={14} /> Download {boardName} 11th Textbooks
-        </a>
-        <a href={url(`/notes/class-11/`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
-          <Icon name="arrow-right" size={14} /> Read 11th Class Chapter Notes
-        </a>
-        <a href={url(`/class/11/guess-papers`)} class="flex items-center gap-2 text-sm font-semibold text-[#1d4ed8] hover:underline">
-          <Icon name="arrow-right" size={14} /> 11th Class Guess Papers 2026
-        </a>
-      </div>
+      <h2 class="font-display text-lg font-extrabold text-slate-900 mb-4">About {board.name} Result Statistics {year}</h2>
+      <p class="text-sm leading-relaxed text-slate-600">
+        The {board.name} conducted the HSSC Part-I exams across its jurisdiction, which includes <strong>{board.districts}</strong>. A total of <strong>{board.candidates}</strong> candidates appeared for the exams. The overall pass percentage for {board.name} in {year} was <strong>{board.passPercentage}</strong>. 
+      </p>
+      <p class="mt-3 text-sm leading-relaxed text-slate-600">
+        Because {board.name} covers multiple districts, the gazette PDF is a massive document containing <strong>{board.totalPages} pages</strong>. It is highly recommended to use the search function in your PDF reader rather than scrolling manually.
+      </p>
     </div>
 
-    <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">How to download the {boardName} 11th Class Gazette {year}</h2>
+    <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">How to search a {board.totalPages}-page gazette</h2>
     <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-      The BISE {boardName} will publish the official gazette PDF on its website shortly after the result announcement. Because thousands of students try to access it at once, the board's servers can sometimes slow down.
+      Finding your result in a {board.fileSize} PDF does not have to be difficult. Follow these steps:
     </p>
     <ol class="mt-4 space-y-2 text-base leading-relaxed text-slate-600 sm:text-lg list-decimal pl-5">
-      <li>Visit the official BISE {boardName} website.</li>
-      <li>Navigate to the <strong>Results</strong> or <strong>Downloads</strong> section.</li>
-      <li>Look for "HSSC Part-I (11th Class) Result Gazette {year}".</li>
-      <li>Download the PDF (Note: Gazettes are often 50MB - 200MB in size).</li>
-      <li>Use the search function (Ctrl+F) to quickly find your roll number.</li>
+      <li>Click the <strong>Download PDF</strong> button above.</li>
+      <li>Open the file in Google Drive or your phone's default PDF viewer.</li>
+      <li>Press <strong>Ctrl+F</strong> (on desktop) or tap the <strong>magnifying glass icon</strong> (on mobile).</li>
+      <li>Type your <strong>roll number</strong> exactly as it appears on your admit card.</li>
+      <li>The PDF will instantly jump to the correct page out of {board.totalPages}.</li>
     </ol>
-
-    <div class="mt-8 rounded-2xl border-2 border-yellow-300 bg-yellow-50 p-6">
-      <div class="flex items-start gap-4">
-        <Icon name="alert-triangle" size={20} class="mt-0.5 shrink-0 text-yellow-600" />
-        <div>
-          <div class="font-display text-base font-extrabold text-yellow-900">Wait for the official PDF</div>
-          <p class="mt-1.5 text-sm leading-relaxed text-yellow-900">
-            We will update the download button on this page with the direct link as soon as BISE {boardName} officially publishes the {year} file. Do not rely on unofficial or leaked result files.
-          </p>
-        </div>
-      </div>
-    </div>
   </article>
 
-  <!-- CROSS-LINKING TO OTHER BOARDS (Huge SEO Signal) -->
+  <!-- Cross-linking to other boards -->
   <section class="border-t border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
       <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">11th Class Gazette {year} for Other Punjab Boards</h2>
@@ -178,14 +156,14 @@ const otherBoards = PUNJAB_BISES.filter(b => b.slug !== boardSlug);
               <h3 class="font-display text-base font-extrabold text-slate-900 group-hover:text-[#1d4ed8]">{b.name}</h3>
               <Icon name="arrow-up-right" size={14} class="text-slate-300 group-hover:text-[#1d4ed8]" />
             </div>
-            <div class="mt-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">11th Class Gazette</div>
+            <div class="mt-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">{b.totalPages} Pages</div>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
+  <!-- FAQ Section -->
   <section class="border-t border-slate-200 bg-white">
     <div class="mx-auto max-w-[900px] px-5 py-14 sm:px-7 lg:px-10 lg:py-16">
       <h2 class="font-display text-2xl font-extrabold tracking-tight text-slate-900">Frequently Asked Questions</h2>
